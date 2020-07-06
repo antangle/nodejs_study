@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="autobid_setting.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="autobid_setting.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-back" onclick="back();">
+                        취소
+                    </div>
+                    <div class="top-title">
+                        SKT 자동입찰 설정
+                    </div>
+                    <div class="top-date">
+                        2020.04.01
+                    </div>
+                    <div class="top-save">
+                        완료
+                    </div>
+                </div>
+            </div>
+
+            <div class="select-wrap">
+                <div class="select-container">
+                    <div class="select-item type">
+                        <div class="select-key">
+                            유형 선택
+                        </div>
+                        <div class="select-value">
+                            <div class="select-option select" onclick="select(this)">번호이동</div>
+                            <div class="select-option" onclick="select(this)">기기 변경</div>
+                        </div>
+                    </div>
+                    <div class="select-item phone">
+                        <div class="select-key">
+                            기기 선택
+                        </div>
+                        <div class="select-value">
+                            <div class="select-category hot">
+                                인기
+                            </div>
+                            <div class="select-option">갤럭시S20울트라</div>
+                            <div class="select-option">갤럭시S20</div>
+                            <div class="select-option">아이폰11</div>
+                            <div class="select-option">아이폰11프로</div>
+                            <div class="select-option">아이폰XS맥스</div>
+                            <div class="select-option">아이폰XR</div>
+                            <div class="select-option">최대갯수 정해야함</div>
+                            <div class="select-category normal">
+                                일반
+                            </div>
+                            <div class="select-option">갤럭시 Fold</div>
+                            <div class="select-option">갤럭시Note7</div>
+                            <div class="select-option">갤럭시S7</div>
+                            <div class="select-option">갤럭시S2</div>
+                            <div class="select-option">갤럭시울트라</div>
+                            <div class="select-option">아이폰XR</div>
+                            <div class="select-option">마짐은 우측기준으로 20</div>
+                            <div class="select-option">아이폰8</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

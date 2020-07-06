@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="my_withdraw.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="my_withdraw.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-btn">
+                        <div class="top-back" onclick="back();">
+                            취소
+                        </div>
+                    </div>
+                    <div class="top-title">
+                        회원 탈퇴
+                    </div>
+                </div>
+            </div>
+
+            <div class="caution-wrap">
+                <div class="caution-container">
+                    <div class="caution-title">
+                        회원탈퇴 전에 유의사항을 꼭 읽어주세요 !
+                    </div>
+                    <div class="caution-content">
+                        회원 탈퇴 시 피치폰 서비스를 탈퇴되며, 회사가 운영하는 다른 제휴 서비스는 이용 가능합니다. 피치폰 회원 탈퇴 후 재가입할 경우 탈퇴 전의 회원정보와 거래 정보 및 포인트, 쿠폰 정보 등은 복구되지 않습니다. 피치폰 회원탈퇴시 회원님이 보유하고 있던 비현금성 포인트와 쿠폰은 모두 소명되며, 복구가 불가능합니다. 다만 유상성 쿠폰의 경우 쿠폰을 모두 사용 완료하거나 환불 후 코폰 소멸에 대한 동의를 받습니다. 피치폰 회원이 탈퇴하려는 경우 결제 편의를 목적으로 회원이 지정(선택)한 부가 서비스가 해지되며, 해당 서비스 회원의 자격도 자동으로 상실(탈퇴)됩니다.  회원 탈퇴한 계정의 피치폰 서비스 이용 기록은 모두 삭제되며, 삭제된 데이터는 복구가 불가능합니다. 다만 거래정보가 있는 경우 판매거래 정보 관리를 위해 아이디, 거래 내역<결제 내역, 삭제된 리뷰 포함>에 대한 기본 정보는 탈퇴 후 5년간 보관 합니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="agree-wrap">
+                <div class="agree-container">
+                    <div class="agree-icon" onclick="agree(this)">
+                        <img class="agreed-btn-img" 
+                            src="/common/res/icon/ic-checkbox-active-16@2x.png"
+                            srcset="/common/res/icon/ic-checkbox-active-16@2x.png 2x,
+                            /common/res/icon/ic-checkbox-active-16@3x.png 3x"/>
+                    </div>
+                    <div class="agree-txt">
+                        모든 약관에 동의하며 탈퇴에 승인합니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="withdraw-wrap">
+                <div class="withdraw-btn">
+                    탈퇴하기
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

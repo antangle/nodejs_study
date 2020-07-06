@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="auction_rank.css">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="auction_rank.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-btn">
+                        <div class="top-back" onclick="back();">
+                            취소
+                        </div>
+                        <div class="top-confirm" onclick="confirm();">
+                            확인
+                        </div>
+                    </div>
+
+                    <div class="top-title">
+                        선호순위 설정
+                    </div>
+
+                    <div class="top-sub-title">
+                        순위를 부여하여 더 나은 조건을 만들 수 있어요!
+                        <br>좋은 조건부터 차례로 3개만 선택해주세요.
+                    </div>
+                    <div class="top-msg hide">
+                        선택은 3위까지만 가능해요!
+                    </div>
+                </div>
+            </div>
+
+            <div class="bid-wrap">
+                <div class="bid-container">
+                    <div class="bid-pack">
+                        <div class="bid-row">
+                            <div class="bid-card" onclick="cardClick(this, 1);">
+                                <div class="bid-card-head">
+                                    <div class="bid-card-shop">
+                                        무지무지싼가게🤔
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-rank">
+                                    1위
+                                </div>
+
+                                <div class="bid-card-content">
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            파트너 할인
+                                        </div>
+                                        <div class="bid-card-value">
+                                            310,000원
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            요금조건
+                                        </div>
+                                        <div class="bid-card-value">
+                                            SKT 79요금제
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info-big">
+                                        <div class="bid-card-key">
+                                            비고
+                                        </div>
+                                        <div class="bid-card-value-small">
+                                            갤럭시 버즈 플러스 혹은
+                                            <br>에어팟 증정 예정
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-divider"></div>
+                                
+                                <div class="bid-card-foot">
+                                    <div class="bid-card-price">
+                                        <div class="bid-card-price-txt">
+                                            총 월 납입액
+                                        </div>
+                                        <div class="bid-card-price-num">
+                                            94,550원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bid-card" onclick="cardClick(this, 2);">
+                                <div class="bid-card-head">
+                                    <div class="bid-card-shop">
+                                        무지무지싼가게
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-rank">
+                                    1위
+                                </div>
+
+                                <div class="bid-card-content">
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            파트너 할인
+                                        </div>
+                                        <div class="bid-card-value">
+                                            310,000원
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            요금조건
+                                        </div>
+                                        <div class="bid-card-value">
+                                            SKT 79요금제
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info-big">
+                                        <div class="bid-card-key">
+                                            비고
+                                        </div>
+                                        <div class="bid-card-value-small">
+                                            갤럭시 버즈 플러스 혹은
+                                            <br>에어팟 증정 예정
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-divider"></div>
+                                
+                                <div class="bid-card-foot">
+                                    <div class="bid-card-price">
+                                        <div class="bid-card-price-txt">
+                                            총 월 납입액
+                                        </div>
+                                        <div class="bid-card-price-num">
+                                            94,550원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bid-row">
+                            <div class="bid-card" onclick="cardClick(this, 3);">
+                                <div class="bid-card-head">
+                                    <div class="bid-card-shop">
+                                        무지무지싼가게
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-rank">
+                                    1위
+                                </div>
+
+                                <div class="bid-card-content">
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            파트너 할인
+                                        </div>
+                                        <div class="bid-card-value">
+                                            310,000원
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            요금조건
+                                        </div>
+                                        <div class="bid-card-value">
+                                            SKT 79요금제
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info-big">
+                                        <div class="bid-card-key">
+                                            비고
+                                        </div>
+                                        <div class="bid-card-value-small">
+                                            갤럭시 버즈 플러스 혹은
+                                            <br>에어팟 증정 예정
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-divider"></div>
+                                
+                                <div class="bid-card-foot">
+                                    <div class="bid-card-price">
+                                        <div class="bid-card-price-txt">
+                                            총 월 납입액
+                                        </div>
+                                        <div class="bid-card-price-num">
+                                            94,550원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bid-card" onclick="cardClick(this, 4);">
+                                <div class="bid-card-head">
+                                    <div class="bid-card-shop">
+                                        무지무지싼가게
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-rank">
+                                    1위
+                                </div>
+
+                                <div class="bid-card-content">
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            파트너 할인
+                                        </div>
+                                        <div class="bid-card-value">
+                                            310,000원
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            요금조건
+                                        </div>
+                                        <div class="bid-card-value">
+                                            SKT 79요금제
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info-big">
+                                        <div class="bid-card-key">
+                                            비고
+                                        </div>
+                                        <div class="bid-card-value-small">
+                                            갤럭시 버즈 플러스 혹은
+                                            <br>에어팟 증정 예정
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-divider"></div>
+                                
+                                <div class="bid-card-foot">
+                                    <div class="bid-card-price">
+                                        <div class="bid-card-price-txt">
+                                            총 월 납입액
+                                        </div>
+                                        <div class="bid-card-price-num">
+                                            94,550원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bid-row">
+                            <div class="bid-card" onclick="cardClick(this, 5);">
+                                <div class="bid-card-head">
+                                    <div class="bid-card-shop">
+                                        무지무지싼가게
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-rank">
+                                    1위
+                                </div>
+
+                                <div class="bid-card-content">
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            파트너 할인
+                                        </div>
+                                        <div class="bid-card-value">
+                                            310,000원
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            요금조건
+                                        </div>
+                                        <div class="bid-card-value">
+                                            SKT 79요금제
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info-big">
+                                        <div class="bid-card-key">
+                                            비고
+                                        </div>
+                                        <div class="bid-card-value-small">
+                                            갤럭시 버즈 플러스 혹은
+                                            <br>에어팟 증정 예정
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-divider"></div>
+                                
+                                <div class="bid-card-foot">
+                                    <div class="bid-card-price">
+                                        <div class="bid-card-price-txt">
+                                            총 월 납입액
+                                        </div>
+                                        <div class="bid-card-price-num">
+                                            94,550원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bid-card" onclick="cardClick(this, 6);">
+                                <div class="bid-card-head">
+                                    <div class="bid-card-shop">
+                                        무지무지싼가게
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-rank">
+                                    1위
+                                </div>
+
+                                <div class="bid-card-content">
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            파트너 할인
+                                        </div>
+                                        <div class="bid-card-value">
+                                            310,000원
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info">
+                                        <div class="bid-card-key">
+                                            요금조건
+                                        </div>
+                                        <div class="bid-card-value">
+                                            SKT 79요금제
+                                        </div>
+                                    </div>
+                                    <div class="bid-card-info-big">
+                                        <div class="bid-card-key">
+                                            비고
+                                        </div>
+                                        <div class="bid-card-value-small">
+                                            갤럭시 버즈 플러스 혹은
+                                            <br>에어팟 증정 예정
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bid-card-divider"></div>
+                                
+                                <div class="bid-card-foot">
+                                    <div class="bid-card-price">
+                                        <div class="bid-card-price-txt">
+                                            총 월 납입액
+                                        </div>
+                                        <div class="bid-card-price-num">
+                                            94,550원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

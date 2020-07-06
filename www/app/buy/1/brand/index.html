@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="buy_1_brand.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="buy_1_brand.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <a class="top-back" href="/app/home/">
+                        <img class="top-back-arrow"
+                            src="/common/res/icon/mybid-header-back@2x.png"
+                            srcset="/common/res/icon/mybid-header-back@2x.png 2x,
+                            /common/res/icon/mybid-header-back@3x.png 3x"/>
+                    </a>
+                    <div class="top-bar">
+                        <img class="top-bar-man"
+                            src="/common/res/icon/emoji-running@2x.png"
+                            srcset="/common/res/icon/emoji-running@2x.png 2x,
+                            /common/res/icon/emoji-running@3x.png 3x"/>
+                        <div class="top-bar-line">
+                            <div class="top-bar-gray">
+                            </div>
+                            <div class="top-bar-red">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="title-wrap">
+                <div class="title-container">
+                    <div class="title-1">
+                        Step 1
+                    </div>
+                    <div class="title-2">
+                        구매하실 휴대폰 기종을 골라주세요.
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-device-wrap">
+                <div class="brand-device-container">
+                    <div class="brand-device-back" onclick="back()">
+                        <img class="brand-device-back-arrow"
+                            src="/common/res/icon/ic-leftbtn@2x.png"
+                            srcset="/common/res/icon/ic-leftbtn@2x.png 2x,
+                            /common/res/icon/ic-leftbtn@3x.png 3x"/>
+                    </div>
+                    <div class="brand-device-title">
+                        제조사별 기종
+                    </div>
+                    <div class="brand-device-select">
+                        <img class="brand-device-select-icon"
+                            src="/common/res/icon/emoji-checkmark@2x.png"
+                            srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                            /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                        <div class="brand-device-select-txt" id="device_select_name">
+                            아이폰11 프로 선택됨
+                        </div>
+                    </div>
+                    <div class="brand-list">
+                        <div class="brand-item selected" onclick="brandClicked(this, 1);">
+                            삼성
+                        </div>
+                        <div class="brand-item" onclick="brandClicked(this, 2);">
+                            Apple
+                        </div>
+                        <div class="brand-item" onclick="brandClicked(this, 3);">
+                            LG
+                        </div>
+                        <div class="brand-item" onclick="brandClicked(this, 4);">
+                            기타
+                        </div>
+                    </div>
+                    <div class="brand-device-list">
+                        <div class="brand-device-row">
+                            <div class="brand-device-item select" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                        </div>
+                        <div class="brand-device-row">
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                        </div>
+                        <div class="brand-device-row">
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                            <div class="brand-device-item" onclick="selectPhone(this)">
+                                <img class="brand-device-item-img"
+                                    src="/common/res/img/test@3x.png"
+                                    srcset="/common/res/img/test@3x.png 2x,
+                                    /common/res/img/test@3x.png 3x"/>
+                                <div class="brand-device-item-brand">
+                                    Samsung
+                                </div>
+                                <div class="brand-device-item-name">
+                                    갤럭시 S20+ 울트라
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a class="step-next-btn" href="/app/buy/2/">
+                <div class="step-next-txt">
+                    다음단계
+                </div>
+                <div class="step-next-link">
+                    <img class="step-next-arrow"
+                        src="/common/res/icon/ic-jumpbtn@2x.png"
+                        srcset="/common/res/icon/ic-jumpbtn@2x.png 2x,
+                        /common/res/icon/ic-jumpbtn@3x.png 3x"/>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

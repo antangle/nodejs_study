@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="join_finish.css">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="join_finish.js"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="complete-bg"></div>
+            <div class="complete-card">
+                <img class="icon-left"
+                    src="/common/res/icon/emoji-partypopper@2x.png"
+                    srcset="/common/res/icon/emoji-partypopper@2x.png 2x,
+                    /common/res/icon/emoji-partypopper@3x.png 3x"/>
+                <div class="complete-title">
+                    회원가입 완료
+                </div>
+                <img class="icon-right"
+                    src="/common/res/icon/emoji-partypopper@2x.png"
+                    srcset="/common/res/icon/emoji-partypopper@2x.png 2x,
+                    /common/res/icon/emoji-partypopper@3x.png 3x"/>
+                <div class="complete-content">
+                    피치폰 회원이 되신 것을
+                    <br>진심으로 축하드려요 !
+                </div>
+            </div>
+            <a class="log-in-btn" onclick="none()">
+                로그인하기
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

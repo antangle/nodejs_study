@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="home.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="home.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="banner-wrap">
+                <div class="banner-container">
+                    <div class="banner-swiper">
+                        <!-- TODO:: Swiper is needed (200427) -->
+                    </div>
+                </div>
+            </div>
+
+            <a class="auction-btn" href="/app/buy/1/"><!-- TODO:: Maybe 'a' tag (200427) -->
+                <div class="txt-1">
+                    달콤한 경매 시작하기
+                </div>
+                <div class="auction-btn-link"><!-- TODO:: Then this place must be changed. (200427) -->
+                    <img class="auction-btn-link-arrow"
+                        src="/common/res/icon/ic-jumpbtn.png"
+                        srcset="/common/res/icon/ic-jumpbtn@2x.png 2x,
+                        /common/res/icon/ic-jumpbtn@3x.png 3x"/>
+                </div>
+            </a>
+
+            <div class="sell-rank-wrap">
+                <div class="sell-rank-container">
+                    <div class="sell-rank-title">
+                        <img class="sell-rank-title-icon"
+                            src="/common/res/icon/emoji-rocket.png"
+                            srcset="/common/res/icon/emoji-rocket@2x.png 2x,
+                            /common/res/icon/emoji-rocket@3x.png 3x"/>
+                        <div class="sell-rank-title-title">
+                            실시간 판매 순위
+                        </div>
+                        <div class="sell-rank-title-date">
+                            02.28. 16시 기준
+                        </div>
+                    </div>
+                    <div class="rank_bar"></div>
+                    <div class="sell-rank-top show">
+                        <div class="sell-rank-item">
+                            <div class="sell-rank-item-num">
+                                01
+                            </div>
+                            <div class="sell-rank-item-title">
+                                Phone Name
+                            </div>
+                            <div class="sell-rank-item-change up">
+                                <img class="sell-rank-item-change-arrow"
+                                    src="/common/res/icon/ic-increase@2x.png"
+                                    srcset="/common/res/icon/ic-increase@2x.png 2x,
+                                    /common/res/icon/ic-increase@3x.png 3x"/>
+                                <div class="sell-rank-item-change-num">
+                                    1
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sell-rank-show" onclick="showSellRank()">
+                            <img class="sell-rank-show-img"
+                                src="/common/res/icon/ic-unfold.png"
+                                srcset="/common/res/icon/ic-unfold@2x.png 2x,
+                                /common/res/icon/ic-unfold@3x.png 3x"/>
+                        </div>
+                    </div>
+                    <div class="sell-rank-list hide">
+                        <div class="sell-rank-item">
+                            <div class="sell-rank-item-num">
+                                01
+                            </div>
+                            <div class="sell-rank-item-title">
+                                Phone Name
+                            </div>
+                            <div class="sell-rank-item-change up">
+                                <img class="sell-rank-item-change-arrow"
+                                    src="/common/res/icon/ic-increase@2x.png"
+                                    srcset="/common/res/icon/ic-increase@2x.png 2x,
+                                    /common/res/icon/ic-increase@3x.png 3x"/>
+                                <div class="sell-rank-item-change-num">
+                                    1
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sell-rank-item">
+                            <div class="sell-rank-item-num">
+                                02
+                            </div>
+                            <div class="sell-rank-item-title">
+                                Phone Name
+                            </div>
+                            <div class="sell-rank-item-change down">
+                                <img class="sell-rank-item-change-arrow"
+                                    src="/common/res/icon/ic-increase@2x.png"
+                                    srcset="/common/res/icon/ic-increase@2x.png 2x,
+                                    /common/res/icon/ic-increase@3x.png 3x"/>
+                                <div class="sell-rank-item-change-num">
+                                    1
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sell-rank-last-divider"></div>
+                        <div class="sell-rank-hide" onclick="hideSellRank();">
+                            접기
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="guide-btn-wrap">
+                <div class="guide-btn-container"><!-- TODO:: Maybe 'a' tag (200427) -->
+                    <img class="guide-poper-icon"
+                        src="/common/res/icon/emoji-partypopper@2x.png"
+                        srcset="/common/res/icon/emoji-partypopper@2x.png 2x,
+                        /common/res/icon/emoji-partypopper@3x.png 3x"/>
+                    <div class="txt">
+                        어서와, 
+                        <br>피치폰은 처음이지?
+                    </div>
+                    <a class="guide-btn-link" href="/"><!-- TODO:: Then this place must be changed. (200427) -->
+                        <div class="guide-btn-link-txt">
+                            활용서 보기
+                        </div>
+                        <img class="guide-btn-link-arrow"
+                            src="/common/res/icon/ic-jumpbtn.png"
+                            srcset="/common/res/icon/ic-jumpbtn@2x.png 2x,
+                            /common/res/icon/ic-jumpbtn@3x.png 3x"/>
+                    </a>
+                </div>
+            </div>
+
+            <div class="today-lowest-wrap">
+                <div class="today-lowest-container">
+                    <div class="today-lowest-title">
+                        <img class="today-lowest-title-icon"
+                            src="/common/res/icon/emoji-dollar.png"
+                            srcset="/common/res/icon/emoji-dollar@2x.png 2x,
+                            /common/res/icon/emoji-dollar@3x.png 3x"/>
+                        <div class="today-lowest-title-title">
+                            오늘의 최저 낙찰가
+                        </div>
+                        <div class="today-lowest-title-date">
+                            02.28. 16시 기준
+                        </div>
+                    </div>
+                    <div class="today-lowest-bar title"></div>
+                    <div class="today-lowest-list">
+                        <div class="today-lowest-item">
+                            <img class="today-lowest-item-img"
+                                src="/common/res/img/img-ip-11.png"
+                                srcset="/common/res/img/img-ip-11@2x.png 2x,
+                                /common/res/img/img-ip-11@3x.png 3x"/>
+                            <div class="today-lowest-item-content">
+                                <div class="today-lowest-item-title">
+                                    갤럭시 Z 플립 256GB
+                                </div>
+                                <div class="today-lowest-item-price">
+                                    <div class="today-lowest-item-price-final">
+                                        1,150,000<span>원</span>
+                                    </div>
+                                    <div class="today-lowest-item-price-origin">
+                                        1,380,000원
+                                    </div>
+                                </div>
+                                <img class="facekiss-icon"
+                                    src="/common/res/icon/emoji-facekiss.png"
+                                    srcset="/common/res/icon/emoji-facekiss@2x.png 2x,
+                                    /common/res/icon/emoji-facekiss@3x.png 3x"/>
+                                <div class="today-lowest-item-event">
+                                    <div class="today-lowest-item-event-price">
+                                        230,000원
+                                    </div>
+                                    <div class="today-lowest-item-event-txt">
+                                        파트너할인
+                                    </div>
+                                </div>
+                                <div class="today-lowest-item-tag">
+                                    <ul>
+                                        <li>요금제 8만원 이상</li>
+                                        <li>24개월 약정</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="today-lowest-bar"></div>
+                        <div class="today-lowest-item">
+                            <img class="today-lowest-item-img"
+                                src="/common/res/img/img-ip-11.png"
+                                srcset="/common/res/img/img-ip-11@2x.png 2x,
+                                /common/res/img/img-ip-11@3x.png 3x"/>
+                            <div class="today-lowest-item-content">
+                                <div class="today-lowest-item-title">
+                                    갤럭시 S20+ 울트라 512GB
+                                </div>
+                                <div class="today-lowest-item-price">
+                                    <div class="today-lowest-item-price-final">
+                                        1,250,000<span>원</span>
+                                    </div>
+                                    <div class="today-lowest-item-price-origin">
+                                        1,380,000원원
+                                    </div>
+                                </div>
+                                <img class="facekiss-icon"
+                                    src="/common/res/icon/emoji-facekiss.png"
+                                    srcset="/common/res/icon/emoji-facekiss@2x.png 2x,
+                                    /common/res/icon/emoji-facekiss@3x.png 3x"/>
+                                <div class="today-lowest-item-event">
+                                    <div class="today-lowest-item-event-price">
+                                        230,000원
+                                    </div>
+                                    <div class="today-lowest-item-event-txt">
+                                        파트너할인
+                                    </div>
+                                </div>
+                                <div class="today-lowest-item-tag">
+                                    <ul>
+                                        <li>요금제 8만원 이상</li>
+                                        <li>24개월 약정</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="today-lowest-bar"></div>
+                        <div class="today-lowest-item">
+                            <img class="today-lowest-item-img"
+                                src="/common/res/img/img-ip-11.png"
+                                srcset="/common/res/img/img-ip-11@2x.png 2x,
+                                /common/res/img/img-ip-11@3x.png 3x"/>
+                            <div class="today-lowest-item-content">
+                                <div class="today-lowest-item-title">
+                                    아이폰 11 256GB
+                                </div>
+                                <div class="today-lowest-item-price">
+                                    <div class="today-lowest-item-price-final">
+                                        880,000<span>원</span>
+                                    </div>
+                                    <div class="today-lowest-item-price-origin">
+                                        1,380,000원
+                                    </div>
+                                </div>
+                                <img class="facekiss-icon"
+                                    src="/common/res/icon/emoji-facekiss.png"
+                                    srcset="/common/res/icon/emoji-facekiss@2x.png 2x,
+                                    /common/res/icon/emoji-facekiss@3x.png 3x"/>
+                                <div class="today-lowest-item-event">
+                                    <div class="today-lowest-item-event-price">
+                                        500,000원
+                                    </div>
+                                    <div class="today-lowest-item-event-txt">
+                                        파트너할인
+                                    </div>
+                                </div>
+                                <div class="today-lowest-item-tag">
+                                    <ul>
+                                        <li>요금제 8만원 이상</li>
+                                        <li>24개월 약정</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="today-lowest-bar last"></div>
+                        <a class="today-lowest-more" href="/">
+                            <div class="today-lowest-more-title">
+                                더보기
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

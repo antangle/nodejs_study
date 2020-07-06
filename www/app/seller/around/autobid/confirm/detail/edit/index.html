@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="detail_edit.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="detail_edit.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-back" onclick="back();">
+                        취소
+                    </div>
+                    <div class="top-title">
+                        KT 자동입찰
+                    </div>
+                    <div class="top-name">
+                        갤럭시S20울트라
+                    </div>
+                    <div class="top-save">
+                        완료
+                    </div>
+                </div>
+            </div>
+
+            <div class="select-wrap">
+                <div class="select-container">
+                    <div class="select-key">
+                        유형 선택
+                    </div>
+                    <div class="select-option select" onclick="select(this)">번호이동</div>
+                    <div class="select-option" onclick="select(this)">기기 변경</div>
+                </div>
+            </div>
+
+            <div class="setting-wrap">
+                <div class="setting-container">
+                    <div class="setting-item title">
+                        <div class="setting-key-title">
+                            요금제
+                        </div>
+                        <div class="setting-value-title">
+                            파트너 할인/원
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-key">
+                            퍼펙트 35
+                        </div>
+                        <input class="setting-value" type="text" value="100,000" id="sk35" name="sk35" placeholder="할인가 입력">
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-key">
+                            퍼펙트 65
+                        </div>
+                        <input class="setting-value" type="text" id="sk65" name="sk65" placeholder="할인가 입력">
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-key">
+                            퍼펙트 85
+                        </div>
+                        <input class="setting-value" type="text" id="sk85" name="sk85" placeholder="할인가 입력">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

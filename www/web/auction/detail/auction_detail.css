@@ -1,0 +1,522 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+p{
+    font-family: inherit;
+    font-weight: bold;
+    display: inline;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none !important;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.popup-wrap{
+    display: block;
+    box-sizing: border-box;
+    position: sticky;
+    margin: auto;
+    margin-bottom: -730px;
+    top: 0px;
+    padding-top: 183px;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: 730px;
+    background-color: rgba(0, 0, 0, 0.35);
+    z-index: 3;
+}
+
+.popup-wrap .popup-container{
+    display: block;
+    margin: auto;
+    width: 320px;
+    height: 320px;
+    border-radius: 23px;
+    box-shadow: 0 13px 20px 0 rgba(0, 0, 0, 0.13);
+    border: solid 1px #ededf2;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.popup-wrap .popup-container .popup-head{
+    display: block;
+    box-sizing: border-box;
+    margin: auto;
+    padding-top: 22px;
+    width: 320px;
+    height: 60px;
+    line-height: 22px;
+    font-family: 'GmarketSansBold';
+    font-size: 20px;
+    letter-spacing: -0.22px;
+    text-align: center;
+    color: #222222;
+    background-color: #f8f9fb;
+}
+
+.popup-wrap .popup-container .popup-content{
+    display: block;
+    padding-top: 42px;
+}
+
+.popup-wrap .popup-container .popup-content .popup-content-1{
+    display: block;
+    height: 18px;
+    line-height: 22px;
+    font-size: 16px;
+    font-family: 'GmarketSansBold';
+    letter-spacing: -0.48px;
+    text-align: center;
+    color: #222222;
+}
+
+.popup-wrap .popup-container .popup-content .popup-content-1 p{
+    color: #ff295a;
+}
+
+.popup-wrap .popup-container .popup-content .popup-content-2{
+    display: block;
+    margin-top: 16px;
+    height: 60px;
+    line-height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    text-align: center;
+    color: #616368;
+}
+
+.popup-wrap .popup-container .popup-foot{
+    display: block;
+    margin-top: 52px;
+    font-size: 0px;
+}
+
+.popup-wrap .popup-container .popup-foot .cancel-btn{
+    display: inline-block;
+    margin-left: 20px;
+    width: 70px;
+    height: 46px;
+    line-height: 52px;
+    font-family: 'GmarketSansMedium';
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: -0.65px;
+    color: #ffffff;
+    border-radius: 14px;
+    background-color: #2d3038;
+}
+
+.popup-wrap .popup-container .popup-foot .confirm-btn{
+    display: inline-block;
+    margin-left: 8px;
+    width: 202px;
+    height: 46px;
+    line-height: 52px;
+    font-size: 18px;
+    font-family: 'GmarketSansBold';
+    letter-spacing: -0.74px;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 14px;
+    background-color: #f8455f;
+}
+
+.wrap{
+    margin: auto;
+    position: relative;
+    box-sizing: border-box;
+    padding-bottom: 78px;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    overflow: hidden;
+}
+
+.wrap .top-wrap{
+    display: block;
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    height: 56px;
+    font-size: 0px;
+    border-bottom: solid 1px #ededf2;
+}
+
+.wrap .top-wrap .top-back{
+    display: block;
+    position: absolute;
+    top: 18px;
+    left: 20px;
+}
+
+.wrap .top-wrap .top-back .top-back-arrow{
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.wrap .top-wrap .top-title{
+    display: block;
+    margin: auto;
+    padding-top: 12px;
+}
+
+.wrap .top-wrap .top-title .top-title-shop-name{
+    display: block;
+    margin: auto;
+    height: 16px;
+    line-height: 20px;
+    font-family: 'GmarketSansBold';
+    font-size: 16px;
+    letter-spacing: -0.15px;
+    text-align: center;
+    color: #222222;
+}
+
+.wrap .top-wrap .top-title .top-title-score{
+    display: block;
+    margin-top: 4px;
+    text-align: center;
+}
+
+.wrap .top-wrap .top-title .top-title-score .top-title-score-icon{
+    display: inline-block;
+    margin-top: 2px;
+    width: 11px;
+    height: 10px;
+    vertical-align: top;
+}
+
+.wrap .top-wrap .top-title .top-title-score .top-title-score-txt{
+    display: inline-block;
+    margin-left: 4px;
+    height: 13px;
+    line-height: 13px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #f8455f;
+    vertical-align: top;
+}
+
+.wrap .top-wrap .top-title .top-title-score .top-title-review-txt{
+    display: inline-block;
+    margin-left: 4px;
+    height: 13px;
+    line-height: 13px;
+    font-size: 13px;
+    color: #888c99;
+    vertical-align: top;
+}
+
+.wrap .bid-wrap{
+    margin: auto;
+    margin-top: 16px;
+    width: 88.9%;
+    border-radius: 23px;
+    border: solid 1px #ededf2;
+    overflow: hidden;
+}
+
+.wrap .bid-wrap .bid-head{
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 54px;
+    padding-top: 19px;
+    background-color: #f8f9fb;
+}
+
+.wrap .bid-wrap .bid-head .bid-device-name{
+    display: block;
+    margin: auto;
+    height: 18px;
+    line-height: 20px;
+    font-size: 18px;
+    font-family: 'GmarketSansBold';
+    letter-spacing: -0.2px;
+    text-align: center;
+    color: #222222;
+}
+
+.wrap .bid-wrap .bid-content{
+    display: block;
+    box-sizing: border-box;
+    padding: 12px 20px 0px 20px;
+    width: 100%;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info{
+    display: block;
+    position: relative;
+    height: 24px;
+    margin-bottom: 8px;
+}
+
+.wrap .bid-wrap .bid-content p{
+    letter-spacing: normal;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info-big{
+    display: block;
+    position: relative;
+    height: 48px;
+    margin-bottom: 8px;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-key{
+    display: inline-block;
+    padding-top: 4px;
+    width: fit-content;
+    height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    color: #222222;
+    opacity: 0.5;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info-big .bid-content-key{
+    display: inline-block;
+    padding-top: 4px;
+    width: fit-content;
+    height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    color: #222222;
+    opacity: 0.5;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-key-btn{
+    display: inline-block;
+    padding-top: 4px;
+    width: fit-content;
+    height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    vertical-align: top;
+    color: #0073f4;
+    text-decoration: underline;
+    text-underline-position: under;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-key-btn .bid-content-info-icon{
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 4px;
+    margin-top: 6px;
+    width: 12px;
+    height: 12px;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-value{
+    display: block;
+    float: right;
+    font-size: 16px;
+    letter-spacing: -0.18px;
+    text-align: right;
+    color: #222222;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-value .bid-content-value-x{
+    display: inline-block;
+    margin: 0px 2px;
+    height: 24px;
+    opacity: 0.3;
+    font-size: 18px;
+    letter-spacing: -0.54px;
+    color: #222222;
+    vertical-align: top;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-value.cancel{
+    color: rgba(34, 34, 34, 0.5);
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-value.cancel .bid-content-cancel-icon{
+    display: inline-block;
+    margin-left: -81px;
+    margin-top: 4px;
+    width: 81px;
+    height: 21px;
+    vertical-align: top;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info-big .bid-content-value-big{
+    display: block;
+    float: right;
+    font-size: 16px;
+    letter-spacing: -0.18px;
+    text-align: right;
+    color: #222222;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-info .bid-content-value-discount{
+    display: block;
+    float: right;
+    font-size: 16px;
+    text-align: right;
+    color: #222222;
+}
+
+.wrap .bid-wrap .bid-content .bid-content-divider{
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 100%;
+    height: 1px;
+    background-color: #f3f5f8;
+}
+
+.wrap .bid-wrap .bid-divider{
+    display: block;
+    box-sizing: border-box;
+    margin: auto;
+    margin-bottom: 12px;
+    width: 87.5%;
+    height: 1px;
+    border-bottom: dashed 1px #b6bbc7;
+}
+
+.wrap .bid-wrap .bid-foot{
+    display: block;
+    box-sizing: border-box;
+    padding: 0px 20px;
+    padding-bottom: 8px;
+}
+
+.wrap .bid-wrap .bid-foot .bid-foot-info{
+    display: block;
+    position: relative;
+    height: 24px;
+    margin-bottom: 8px;
+}
+
+.wrap .bid-wrap .bid-foot .bid-foot-info .bid-foot-key{
+    display: inline-block;
+    width: fit-content;
+    height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    color: #222222;
+    opacity: 0.5;
+}
+
+.wrap .bid-wrap .bid-foot .bid-foot-info .bid-foot-key-accent{
+    display: inline-block;
+    padding-top: 4px;
+    width: fit-content;
+    height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    color: #f8455f;
+}
+
+.wrap .bid-wrap .bid-foot .bid-foot-info .bid-foot-value{
+    display: block;
+    float: right;
+    font-size: 16px;
+    letter-spacing: -0.18px;
+    text-align: right;
+    color: #222222;
+}
+
+.wrap .bid-wrap .bid-foot .bid-foot-info .bid-foot-value-accent{
+    display: block;
+    float: right;
+    font-size: 14px;
+    letter-spacing: -0.16px;
+    text-align: right;
+    color: #f8455f;
+}
+
+.wrap .bid-wrap .bid-foot .bid-foot-info .bid-foot-value-accent p{
+    line-height: 30px;
+    font-size: 20px;
+    letter-spacing: -0.6px;
+}
+
+.wrap .bottom-wrap{
+    display: block;
+    position: absolute;
+    box-sizing: border-box;
+    bottom: 0px;
+    left: 0px;
+    padding: 20px 5.55%;
+    padding-bottom: 12px;
+    width: 100%;
+    font-size: 0px;
+}
+
+.wrap .bottom-wrap .report-btn{
+    display: inline-block;
+    width: 19.375%;
+    height: 46px;
+    line-height: 46px;
+    font-size: 12px;
+    letter-spacing: -0.4px;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 16px;
+    background-color: #333740;
+    vertical-align: top;
+}
+
+.wrap .bottom-wrap .report-btn .report-icon{
+    display: inline-block;
+    margin-top: 17px;
+    width: 10px;
+    height: 13px;
+    vertical-align: top;
+}
+
+.wrap .bottom-wrap .win-btn{
+    display: inline-block;
+    margin-left: 1.875%;
+    width: 78.75%;
+    height: 46px;
+    line-height: 50px;
+    font-family: 'GmarketSansBold';
+    font-size: 18px;
+    letter-spacing: -0.74px;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 16px;
+    background-color: #f8455f;
+    vertical-align: top;
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="buy_4.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="buy_4.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-back" onclick="back();">
+                        <img class="top-back-arrow"
+                            src="/common/res/icon/mybid-header-back@2x.png"
+                            srcset="/common/res/icon/mybid-header-back@2x.png 2x,
+                            /common/res/icon/mybid-header-back@3x.png 3x"/>
+                    </div>
+                    <div class="top-bar">
+                        <img class="top-bar-man"
+                            src="/common/res/icon/emoji-running@2x.png"
+                            srcset="/common/res/icon/emoji-running@2x.png 2x,
+                            /common/res/icon/emoji-running@3x.png 3x"/>
+                        <div class="top-bar-line">
+                            <div class="top-bar-gray">
+                            </div>
+                            <div class="top-bar-red">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-description">
+                        마지막이에요!
+                    </div>
+                </div>
+            </div>
+
+            <div class="title-wrap">
+                <div class="title-container">
+                    <div class="title-1">
+                        Step 4
+                    </div>
+                    <div class="title-2">
+                        상세 사항을 설정해주세요.
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-info-wrap">
+                <div class="device-info-container">
+                    <div class="device-info-main">
+                        <div class="device-info-brand">
+                            Samsung
+                        </div>
+                        <div class="device-info-name">
+                            갤럭시 S20+ 울트라
+                        </div>
+                        <img class="device-info-img"
+                            src="/common/res/img/group-6@2x.png"
+                            srcset="/common/res/img/group-6@2x.png 2x,
+                            /common/res/img/group-6@3x.png 3x"/>
+                    </div>
+
+                    <div class="device-info-divider-long">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            요구사항 한마디
+                        </div>
+                        <div class="device-info-comment">
+                            <div class="device-info-input">
+                                <textarea class="device-info-input-textarea" id="buy_comment" name="buy_comment" placeholder="판매자에게 원하는 요구사항을 알려줄 수 있어요 !"></textarea>
+                                <!-- <textarea id="payment" name="payment"></textarea> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="device-info-divider">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            <img class="device-info-title-icon"
+                                src="/common/res/icon/emoji-security.png"
+                                srcset="/common/res/icon/emoji-security@2x.png 2x,
+                                /common/res/icon/emoji-security@3x.png 3x"/>
+                            <div class="device-info-title-txt">
+                                안심번호 사용
+                            </div>
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_secret">
+                                안심번호 사용
+                            </div>
+                        </div>
+                        <div class="device-info-hint">
+                            안심번호를 사용해 거래시 안전을 높이세요.
+                        </div>
+                        <div class="device-info-list-secret">
+                            <div class="device-info-row">
+                                <div class="device-info-item select" onclick="selectSecret(this)">
+                                    <div class="device-info-item-txt">
+                                        사용하기
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectSecret(this)">
+                                    <div class="device-info-item-txt">
+                                        사용안함
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="device-info-divider">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            <img class="device-info-title-icon"
+                                src="/common/res/icon/emoji-remaintime-16.png"
+                                srcset="/common/res/icon/emoji-remaintime-16@2x.png 2x,
+                                /common/res/icon/emoji-remaintime-16@3x.png 3x"/>
+                            <div class="device-info-title-txt">
+                                경매 마감시간 설정
+                            </div>
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_time">
+                                1시간 선택됨
+                            </div>
+                        </div>
+                        <div class="device-info-hint">
+                            경매가 끝나는 시간을 설정할 수 있습니다.
+                        </div>
+                        <div class="device-info-list-time">
+                            <div class="device-info-row">
+                                <div class="device-info-item" onclick="selectTime(this)">
+                                    <div class="device-info-item-txt">
+                                        30분
+                                    </div>
+                                </div>
+                                <div class="device-info-item select" onclick="selectTime(this)">
+                                    <div class="device-info-item-txt">
+                                        1시간
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectTime(this)">
+                                    <div class="device-info-item-txt">
+                                        3시간
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="device-info-row">
+                                <div class="device-info-item" onclick="selectTime(this)">
+                                    <div class="device-info-item-txt">
+                                        6시간
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectTime(this)">
+                                    <div class="device-info-item-txt">
+                                        12시간
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectTime(this)">
+                                    <div class="device-info-item-txt">
+                                        24시간
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a class="step-next-btn" href="/web/buy/finish/">
+                <div class="step-next-txt">
+                    경매 시작하기
+                </div>
+                <div class="step-next-link">
+                    <img class="step-next-arrow"
+                        src="/common/res/icon/ic-jumpbtn@2x.png"
+                        srcset="/common/res/icon/ic-jumpbtn@2x.png 2x,
+                        /common/res/icon/ic-jumpbtn@3x.png 3x"/>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

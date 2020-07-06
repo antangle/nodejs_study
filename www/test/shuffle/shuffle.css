@@ -1,0 +1,172 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none !important;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.wrap{
+    margin: auto;
+    position: relative;
+    min-width: 360px;
+    max-width: 500px;
+    padding-bottom: 50px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    overflow: hidden;
+}
+
+.wrap .container{
+    width: 100%;
+    height: auto;
+}
+
+.title{
+    display: block;
+    margin-top: 30px;
+    margin-left: 20px;
+    font-size: 24px;
+    font-family: 'GmarketSansBold';
+}
+
+.wrap .quiz{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fb;
+    border-radius: 26px;
+    font-size: 0px;
+}
+
+.wrap .quiz .quiz-txt{
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.wrap .quiz .quiz-object{
+    display: block;
+    margin: auto;
+    margin-top: 30px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.wrap .quiz-korean .quiz .quiz-object{
+    font-size: 70px;
+}
+
+.wrap .quiz .answer{
+    display: inline-block;
+    margin-top: 30px;
+    height: 30px;
+    width: 80%;
+    font-size: 16px;
+    background-color: white;
+    border-radius: 4px;
+    vertical-align: top;
+}
+
+.wrap .quiz .answer:focus{
+    outline: none;
+}
+
+.wrap .quiz .submit{
+    display: inline-block;
+    margin-top: 30px;
+    height: 30px;
+    margin-left: 10px;
+    width: 10%;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f8455f;
+    color: white;
+    border-radius: 4px;
+    vertical-align: top;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.wrap .answer-check{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fb;
+    border-radius: 26px;
+    font-size: 20px;
+}
+
+.wrap .answer-check .answer-real{
+    display: block;
+    margin: auto;
+    font-size: 30px;
+    text-align: center;
+}
+
+.wrap .quiz-chinese .answer-check .answer-real{
+    font-size: 70px;
+}
+
+.wrap .answer-check .answer-check-txt{
+    display: block;
+    margin: auto;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.wrap .answer-check .next-quiz{
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+    width: 30%;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    background-color: #f8455f;
+     border-radius: 8px;
+    color: white;
+    text-align: center;
+}
+
+.score{
+    display: none;
+}

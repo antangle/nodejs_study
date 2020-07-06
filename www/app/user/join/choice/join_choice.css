@@ -1,0 +1,191 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none !important;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.wrap{
+    margin: auto;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    overflow: hidden;
+}
+
+.wrap .container{
+    width: 100%;
+    height: auto;
+}
+
+.wrap .top-wrap{
+    display: block;
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    height: 56px;
+    padding-top: 18px;
+    padding-left: 20px;
+}
+
+.wrap .top-wrap .top-back .top-back-arrow{
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.wrap .title-wrap{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 4px;
+    padding-left: 20px;
+}
+
+.wrap .title-wrap .title-1{
+    display: block;
+    height: 22px;
+    font-size: 22px;
+    font-family: 'GmarketSansBold';
+    font-weight: bold;
+    line-height: 24px;
+}
+
+.wrap .title-wrap .title-2{
+    display: block;
+    height: 44px;
+    line-height: 22px;
+    margin-top: 14px;
+    font-size: 16px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.15px;
+    color: #b6bbc7;
+}
+
+.wrap .join-wrap{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 50px;
+    padding: 0px 20px;
+    font-size: 0px;
+}
+
+.wrap .join-wrap .join-peach{
+    display: block;
+    box-sizing: border-box;
+    padding-top: 21px;
+    padding-left: 20px;
+    width: 100%;
+    height: 56px;
+    border-radius: 14px;
+    background-color: #f8455f;
+    font-size: 14px;
+    font-family: 'GmarketSansBold';
+    line-height: 16px;
+    letter-spacing: -0.13px;
+    color: #ffffff;
+}
+
+.wrap .join-wrap .join-social{
+    margin-top: 26px;
+}
+
+.wrap .join-wrap .join-social .join-social-title{
+    display: block;
+    margin-bottom: 10px;
+    height: 12px;
+    line-height: 15px;
+    font-size: 12px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    color: #31353e;
+}
+
+.wrap .join-wrap .join-social .join-naver{
+    display: block;
+    height: 56px;
+}
+
+.wrap .join-wrap .join-social .join-naver .naver-icon{
+    display: inline-block;
+    margin-top: 12px;
+    width: 34px;
+    height: 34px;
+    vertical-align: top;
+}
+
+.wrap .join-wrap .join-social .join-naver .naver-txt{
+    display: inline-block;
+    margin-top: 22px;
+    margin-left: 12px;
+    height: 14px;
+    line-height: 16px;
+    font-size: 14px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.13px;
+    color: #888c99;
+}
+
+.wrap .join-wrap .join-social .join-kakao{
+    display: block;
+    height: 56px;
+}
+
+.wrap .join-wrap .join-social .join-kakao .kakao-icon{
+    display: inline-block;
+    margin-top: 12px;
+    width: 34px;
+    height: 34px;
+    vertical-align: top;
+}
+
+.wrap .join-wrap .join-social .join-kakao .kakao-txt{
+    display: inline-block;
+    margin-top: 22px;
+    margin-left: 12px;
+    height: 14px;
+    line-height: 16px;
+    font-size: 14px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.13px;
+    color: #888c99;
+}

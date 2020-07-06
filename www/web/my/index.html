@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="my.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="my.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-user">
+                        <img class="top-user-icon"
+                            src="/common/res/icon/emoji-hello@2x.png"
+                            srcset="/common/res/icon/emoji-hello@2x.png 2x,
+                            /common/res/icon/emoji-hello@3x.png 3x"/>
+                        <div class="top-user-txt">
+                            <div class="top-user-title">
+                                반가워요!
+                            </div>
+                            <div class="top-user-name">
+                                이지훈님.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-recent-device">
+                        <div class="recent-device-txt">
+                            최근 본 기종
+                        </div>
+                        <div class="recent-device-divider"></div>
+                        <div class="recent-device-list">
+                            <div class="recent-device-item">
+                                <div class="galaxy-ultra"></div>
+                            </div>
+                            <div class="recent-device-item">
+                                <div class="iphone11"></div>
+                            </div>
+                            <div class="recent-device-item">
+                                <div class="galaxy-zflip"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auction-wrap">
+                <div class="auction-container">
+                    <div class="my-title">
+                        경매 정보
+                    </div>
+                    <div class="my-list auction-region">
+                        <a class="my-btn" href="/web/auction/">
+                            <img class="last-auction-icon"
+                                src="/common/res/icon/emoji-phone@2x.png"
+                                srcset="/common/res/icon/emoji-phone@2x.png 2x,
+                                /res/icon/emoji-phone@3x.png 3x"/>
+                            <div class="my-btn-txt">
+                                지난 경매 정보
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" href="/web/my/review/">
+                            <img class="buy-review-icon"
+                                src="/common/res/icon/emoji-memo@2x.png"
+                                srcset="/common/res/icon/emoji-memo@2x.png 2x,
+                                /res/icon/emoji-memo@3x.png 3x"/>
+                            <div class="my-btn-txt">
+                                구매 후기
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-wrap">
+                <div class="user-container">
+                    <div class="my-title">
+                        계정 설정
+                    </div>
+                    <div class="my-list user-region">
+                        <a class="my-btn" href="/web/my/nickname/">
+                            <img class="nick-edit-icon"
+                                src="/common/res/icon/emoji-nametag@2x.png"
+                                srcset="/common/res/icon/emoji-nametag@2x.png 2x,
+                                /res/icon/emoji-nametag@3x.png 3x"/>
+                            <div class="my-btn-txt">
+                                닉네임 변경
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" href="/web/my/location/modify/">
+                            <img class="region-edit-icon"
+                                src="/common/res/icon/emoji-location@2x.png"
+                                srcset="/common/res/icon/emoji-location@2x.png 2x,
+                                /res/icon/emoji-location@3x.png 3x"/>
+                            <div class="my-btn-txt">
+                                지역 설정
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" href="/web/my/security/">
+                            <img class="user-secret-icon"
+                                src="/common/res/icon/emoji-security@2x.png"
+                                srcset="/common/res/icon/emoji-security@2x.png 2x,
+                                /res/icon/emoji-security@3x.png 3x"/>
+                            <div class="my-btn-txt">
+                                보안
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a class="middle-banner" href="/web/buy/1/">
+                <div class="middle-banner-title">
+                    휴대폰 바꾸기 딱
+                    <br>좋은 날씨네 ~
+                </div>
+                <div class="middle-banner-btn">
+                    휴대폰 구매하러가기
+                </div>
+            </a>
+
+            <div class="setting-wrap">
+                <div class="setting-container">
+                    <div class="my-title">
+                        앱 설정
+                    </div>
+                    <div class="my-list setting-region">
+                        <a class="my-btn" href="/web/my/alarm/">
+                            <div class="my-btn-txt">
+                                알림 설정
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-wrap">
+                <div class="info-container">
+                    <div class="my-title">
+                        앱 정보
+                    </div>
+                    <div class="my-list info-region">
+                        <a class="my-btn" onclick="none()">
+                            <div class="my-btn-txt">
+                                앱 버전
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" onclick="none()">
+                            <div class="my-btn-txt">
+                                이용 약관
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" onclick="none()">
+                            <div class="my-btn-txt">
+                                공지 사항
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" onclick="none()">
+                            <div class="my-btn-txt">
+                                개인정보 처리 방침
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" onclick="none()">
+                            <div class="my-btn-txt">
+                                오픈소스 라이센스
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-wrap">
+                <div class="service-container">
+                    <div class="my-title">
+                        고객센터
+                    </div>
+                    <div class="my-list service-region">
+                        <a class="my-btn" onclick="none()">
+                            <div class="my-btn-txt">
+                                신고하기
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                        <a class="my-btn" href="/web/my/inquiry/">
+                            <div class="my-btn-txt">
+                                1:1 문의하기
+                            </div>
+                            <img class="my-btn-arrow"
+                                src="/common/res/icon/ic-jumpbtn-blue.png"
+                                srcset="/common/res/icon/ic-jumpbtn-blue@2x.png 2x,
+                                /common/res/icon/ic-jumpbtn-blue@3x.png 3x"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logout-wrap">
+                <div class="logout-container">
+                    <a class="logout-btn" onclick="none()">
+                        로그아웃
+                    </a>
+                </div>
+            </div>
+
+            <?php
+                include($_SERVER["DOCUMENT_ROOT"]."/common/php/footer/footer.php");
+            ?>
+
+        </div>
+    </div>
+</body>
+
+</html>

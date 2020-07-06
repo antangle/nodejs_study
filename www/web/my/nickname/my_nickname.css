@@ -1,0 +1,231 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+p{
+    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none !important;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.wrap{
+    margin: auto;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    overflow: hidden;
+}
+
+.wrap .container{
+    width: 100%;
+    height: auto;
+}
+
+.wrap .top-wrap{
+    display: block;
+    box-sizing: border-box;
+    position: relative;
+    padding-top: 20px;
+    width: 100%;
+    height: 56px;
+}
+
+.wrap .top-wrap .top-back .top-back-arrow{
+    display: block;
+    position: absolute;
+    left: 20px;
+    top: 18px;
+    width: 20px;
+    height: 20px;
+}
+
+.wrap .top-wrap .top-title{
+    display: block;
+    margin: auto;
+    height: 16px;
+    line-height: 19px;
+    font-family: 'GmarketSansBold';
+    font-size: 16px;
+    letter-spacing: -0.1px;
+    text-align: center;
+    color: #222222;
+}
+
+.wrap .top-wrap .top-save{
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    height: 24px;
+    font-size: 16px;
+    letter-spacing: -0.57px;
+    text-align: right;
+    color: #ff295a;
+}
+
+.wrap .nickname-wrap{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 20px;
+    padding-left: 20px;
+    font-size: 0px;
+}
+
+.wrap .nickname-wrap .nickname-change{
+    margin-top: 23px;
+}
+
+.wrap .nickname-wrap .nickname-key{
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 5.88%;
+    width: 25.88%;
+    height: 36px;
+    line-height: 18px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: -0.24px;
+    color: #4e535e;
+    vertical-align: top;
+}
+
+.wrap .nickname-wrap .nickname-value{
+    display: inline-block;
+    vertical-align: top;
+    width: 68.24%;
+}
+
+.wrap .nickname-wrap .nickname-value .now-value{
+    display: block;
+    box-sizing: border-box;
+    height: 38px;
+    line-height: 38px;
+    border-bottom: solid 1px #e7ecf5;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    color: #222222;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-input{
+    display: block;
+    width: 100%;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-input .nickname-input-textarea{
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 38px;
+    line-height: 37px;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    color: #222222;
+    background-color: transparent;
+    border: none;
+    resize: none;
+    outline: none !important;
+    border-bottom: solid 1px #e7ecf5;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-input .nickname-input-textarea::placeholder{
+    color: #b6bbc7;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-input .nickname-input-textarea:focus{
+    border-bottom: solid 1px #222222;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-description{
+    display: block;
+    margin-top: 15px;
+    height: 16px;
+    line-height: 18px;
+    font-size: 12px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    color: #b6bbc7;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-description .nickname-check{
+    display: inline-block;
+    margin-top: -2px;
+    width: 76px;
+    height: 20px;
+    line-height: 22px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.11px;
+    color: #f94f6a;
+    text-align: center;
+    border-radius: 7px;
+    border: solid 1px #f94f6a;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-caution{
+    margin-top: 32px;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-caution .caution-title{
+    display: block;
+    height: 16px;
+    line-height: 18px;
+    font-family: 'GmarketSansBold';
+    font-size: 12px;
+    letter-spacing: -0.2px;
+    color: #888c99;
+}
+
+.wrap .nickname-wrap .nickname-value .nickname-caution .caution-content{
+    display: block;
+    margin-top: 6px;
+    line-height: 18px;
+    font-family: 'GmarketSansMedium';
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    color: #888c99;
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="buy_2.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="buy_2.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-back" onclick="back();">
+                        <img class="top-back-arrow"
+                            src="/common/res/icon/mybid-header-back@2x.png"
+                            srcset="/common/res/icon/mybid-header-back@2x.png 2x,
+                            /common/res/icon/mybid-header-back@3x.png 3x"/>
+                    </div>
+                    <div class="top-bar">
+                        <img class="top-bar-man"
+                            src="/common/res/icon/emoji-running@2x.png"
+                            srcset="/common/res/icon/emoji-running@2x.png 2x,
+                            /common/res/icon/emoji-running@3x.png 3x"/>
+                        <div class="top-bar-line">
+                            <div class="top-bar-gray">
+                            </div>
+                            <div class="top-bar-red">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="title-wrap">
+                <div class="title-container">
+                    <div class="title-1">
+                        Step 2
+                    </div>
+                    <div class="title-2">
+                        색상을 고르고, 용량을 선택해주세요.
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-info-wrap">
+                <div class="device-info-container">
+                    <div class="device-info-main">
+                        <div class="device-info-brand">
+                            Samsung
+                        </div>
+                        <div class="device-info-name">
+                            갤럭시 S20+ 울트라
+                        </div>
+                        <img class="device-info-img"
+                            src="/common/res/img/group-6@2x.png"
+                            srcset="/common/res/img/group-6@2x.png 2x,
+                            /common/res/img/group-6@3x.png 3x"/>
+                    </div>
+                    
+                    <div class="device-info-divider-long">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            색상선택
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_color">
+                                코스믹그레이 선택됨
+                            </div>
+                        </div>
+                        <div class="device-info-list-color">
+                            <div class="device-info-row">
+                                <div class="device-info-item select" onclick="selectColor(this)">
+                                    <div class="device-info-item-img gray"></div>
+                                    <div class="device-info-item-txt">
+                                        코스믹 그레이
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectColor(this)">
+                                    <div class="device-info-item-img"></div>
+                                    <div class="device-info-item-txt">
+                                        클라우드 화이트
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectColor(this)">
+                                    <div class="device-info-item-img cblue"></div>
+                                    <div class="device-info-item-txt">
+                                        클라우드 블루
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="device-info-row">
+                                <div class="device-info-item" onclick="selectColor(this)">
+                                    <div class="device-info-item-img ablue"></div>
+                                    <div class="device-info-item-txt">
+                                        아우라 블루
+                                    </div>
+                                    <div class="device-info-item-txt2">
+                                        Only SKT
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectColor(this)">
+                                    <div class="device-info-item-img ared"></div>
+                                    <div class="device-info-item-txt">
+                                        아우라 레드
+                                    </div>
+                                    <div class="device-info-item-txt2">
+                                        Only KT
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectColor(this)">
+                                    <div class="device-info-item-img pink"></div>
+                                    <div class="device-info-item-txt">
+                                        클라우드 핑크
+                                    </div>
+                                    <div class="device-info-item-txt2">
+                                        Only LGU+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="device-info-divider">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            용량선택
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_volume">
+                                256기가 선택됨
+                            </div>
+                        </div>
+                        <div class="device-info-list-volume">
+                            <div class="device-info-row">
+                                <div class="device-info-item select" onclick="selectVolume(this)">
+                                    <div class="device-info-item-txt">
+                                        256GB
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectVolume(this)">
+                                    <div class="device-info-item-txt">
+                                        128GB
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectVolume(this)">
+                                    <div class="device-info-item-txt">
+                                        64GB
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a class="step-next-btn" href="/web/buy/3/">
+                <div class="step-next-txt">
+                    다음단계
+                </div>
+                <div class="step-next-link">
+                    <img class="step-next-arrow"
+                        src="/common/res/icon/ic-jumpbtn@2x.png"
+                        srcset="/common/res/icon/ic-jumpbtn@2x.png 2x,
+                        /common/res/icon/ic-jumpbtn@3x.png 3x"/>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

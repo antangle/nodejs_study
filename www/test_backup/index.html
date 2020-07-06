@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="test.css?v=200304">
+	<link rel="stylesheet" href="/common/css/common.css?v=200304">
+	
+    <!-- js -->
+	<script type="text/javascript" src="test.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="test-item">
+                <div class="test-name">
+                    test1: a/href/testurl.com
+                </div>
+                <div class="test-btn">
+                    <a class="btn-area" href="https://www.testurl.com">
+                        test1
+                    </a>
+                </div>
+                <div class="test-comment">
+                    a 태그에서 순수 href를 통해 이동하는 버튼
+                </div>
+            </div>
+
+            <div class="test-item">
+                <div class="test-name">
+                    test2: div/onclick/test2()
+                </div>
+                <div class="test-btn">
+                    <div class="btn-area" onclick="test2();">
+                        test2
+                    </div>
+                </div>
+                <div class="test-comment">
+                    div 태그에서 onclick으로 js 함수를 불러오는 버튼
+                </div>
+            </div>
+            
+            <div class="test-item">
+                <div class="test-name">
+                    test3: form/post/submit
+                </div>
+                <div class="test-btn">
+                    <form name="test3" onsubmit="return check3();" action="https://targeturl.com?mode=login" method="post">
+                        <input type="hidden" name="value" id="value" value="1">
+                        <input type="submit" class="btn-area" value="test3">
+                    </form>
+                </div>
+                <div class="test-comment">
+                    form 내부에서 check3()의 js 함수를 통과한 뒤, 통과하면
+                    <br>action의 url로 post 방식으로 submit 하는 버튼
+                </div>
+            </div>
+
+        
+            <div class="test-item">
+                <div class="test-name">
+                    test2: div/onclick/test4()
+                </div>
+                <div class="test-btn">
+                    <div class="btn-area" onclick="test4();">
+                        test4
+                    </div>
+                </div>
+                <div class="test-comment">
+                    div 태그에서 onclick으로 js 함수를 불러오는 버튼
+                    <br>[output] id:"output4"
+                </div>
+                <div class="test-output" id="output4">
+                </div>
+            </div>
+
+            <div class="test-item">
+                <div class="test-name">
+                    test2: div/onclick/test5()
+                </div>
+                <div class="test-btn">
+                    <div class="btn-area" onclick="test5();">
+                        test5
+                    </div>
+                </div>
+                <div class="test-comment">
+                    div 태그에서 onclick으로 js 함수를 불러오는 버튼
+                    <br>[output] id:"output5"
+                </div>
+                <div class="test-output" id="output5">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

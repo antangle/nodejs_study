@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="buy_3.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="buy_3.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-back" onclick="back();">
+                        <img class="top-back-arrow"
+                            src="/common/res/icon/mybid-header-back@2x.png"
+                            srcset="/common/res/icon/mybid-header-back@2x.png 2x,
+                            /common/res/icon/mybid-header-back@3x.png 3x"/>
+                    </div>
+                    <div class="top-bar">
+                        <img class="top-bar-man"
+                            src="/common/res/icon/emoji-running@2x.png"
+                            srcset="/common/res/icon/emoji-running@2x.png 2x,
+                            /common/res/icon/emoji-running@3x.png 3x"/>
+                        <div class="top-bar-line">
+                            <div class="top-bar-gray">
+                            </div>
+                            <div class="top-bar-red">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="title-wrap">
+                <div class="title-container">
+                    <div class="title-1">
+                        Step 3
+                    </div>
+                    <div class="title-2">
+                        가입유형을 선택해주세요.
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-info-wrap">
+                <div class="device-info-container">
+                    <div class="device-info-main">
+                        <div class="device-info-brand">
+                            Samsung
+                        </div>
+                        <div class="device-info-name">
+                            갤럭시 S20+ 울트라
+                        </div>
+                        <img class="device-info-img"
+                            src="/common/res/img/group-6@2x.png"
+                            srcset="/common/res/img/group-6@2x.png 2x,
+                            /common/res/img/group-6@3x.png 3x"/>
+                    </div>
+
+                    <div class="device-info-divider-long">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            현재 사용중인 통신사
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_agency">
+                                SKT선택됨
+                            </div>
+                        </div>
+                        <div class="device-info-list-agency">
+                            <div class="device-info-row">
+                                <div class="device-info-item select" onclick="selectAgency(this)">
+                                    <div class="device-info-item-txt">
+                                        SKT
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectAgency(this)">
+                                    <div class="device-info-item-txt">
+                                        KT
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectAgency(this)">
+                                    <div class="device-info-item-txt">
+                                        LGU+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="device-info-row">
+                                <div class="device-info-item" onclick="selectAgency(this)">
+                                    <div class="device-info-item-txt">
+                                        알뜰폰
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectAgency(this)">
+                                    <div class="device-info-item-txt">
+                                        없음
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="device-info-divider">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            사용 희망 통신사
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_agencies">
+                                KT, LGU+선호
+                            </div>
+                        </div>
+                        <div class="device-info-hint">
+                            중복 선택 가능
+                        </div>
+                        <div class="device-info-list-agencies">
+                            <div class="device-info-row">
+                                <div class="device-info-item" onclick="selectAgencies(this)">
+                                    <div class="device-info-item-txt">
+                                        SKT
+                                    </div>
+                                </div>
+                                <div class="device-info-item select" onclick="selectAgencies(this)">
+                                    <div class="device-info-item-txt">
+                                        KT
+                                    </div>
+                                </div>
+                                <div class="device-info-item select" onclick="selectAgencies(this)">
+                                    <div class="device-info-item-txt">
+                                        LGU+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="device-info-divider">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            희망 요금제
+                        </div>
+                        <a class="device-info-link" href="/">
+                            가능한 요금제 확인
+                        </a>
+                        <div class="device-info-payment">
+                            <div class="device-info-null">
+                                <input type="checkbox" id="payment_null"/>
+                                <label for="payment_null"></label>
+                                <div class="device-info-null-txt">
+                                    상관없음
+                                </div>
+                            </div>
+                            <div class="device-info-input">
+                                <input class="device-info-input-text" type="text" id="payment" name="payment">
+                                <div class="device-info-input-unit">
+                                    원
+                                </div>
+                            </div>
+                            <div class="device-info-input-hint">
+                                기기값 제외, 한달 기준 VAT포함 청구 가격
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="device-info-divider">
+                    </div>
+                    <div class="device-info">
+                        <div class="device-info-title">
+                            희망 기기 할부 기간
+                        </div>
+                        <div class="device-info-select">
+                            <img class="device-info-select-icon"
+                                src="/common/res/icon/emoji-checkmark@2x.png"
+                                srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                            <div class="device-info-select-txt" id="device_info_period">
+                                24개월 선택됨
+                            </div>
+                        </div>
+                        <div class="device-info-hint">
+                            연 5.9% 이자율 적용
+                        </div>
+                        <div class="device-info-list-period">
+                            <div class="device-info-row">
+                                <div class="device-info-item-big" onclick="selectPeriod(this)">
+                                    <div class="device-info-item-txt">
+                                        카드 일시불
+                                    </div>
+                                </div>
+                                <div class="device-info-item-big" onclick="selectPeriod(this)">
+                                    <img class="device-info-item-img"
+                                        src="/common/res/icon/emoji-dollar.png"
+                                        srcset="/common/res/icon/emoji-dollar@2x.png 2x,
+                                        /common/res/icon/emoji-dollar@3x.png 3x"/>
+                                    <div class="device-info-item-txt">
+                                        현금완납
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="device-info-row">
+                                <div class="device-info-item select" onclick="selectPeriod(this)">
+                                    <div class="device-info-item-txt">
+                                        24개월
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectPeriod(this)">
+                                    <div class="device-info-item-txt">
+                                        30개월
+                                    </div>
+                                </div>
+                                <div class="device-info-item" onclick="selectPeriod(this)">
+                                    <div class="device-info-item-txt">
+                                        36개월
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-info-wrap">
+                <div class="extra-info-container">
+                    <div class="extra-info-title">
+                        <div class="extra-info-title-txt">
+                            고급옵션
+                        </div>
+                        <div class="extra-info-btn close" onclick="extraInfoClicked();">
+                            <img class="extra-info-arrow"
+                                src="/common/res/icon/ic-unfold.png"
+                                srcset="/common/res/icon/ic-unfold@2x.png 2x,
+                                /common/res/icon/ic-unfold@3x.png 3x"/>
+                        </div>
+                    </div>
+
+                    <div class="extra-info-content show">
+                        <img class="extra-info-content-check"
+                            src="/common/res/icon/heavy-check-mark-2714-copy.png"
+                            srcset="/common/res/icon/heavy-check-mark-2714-copy@2x.png 2x,
+                            /common/res/icon/heavy-check-mark-2714-copy@3x.png 3x"/>
+                        <div class="extra-info-txt">
+                            고급옵션은 약정에 관련된 사항과
+                            <br>기기 할부에 대한 상세 옵션을 선택할 수 있어요.
+                            <br>고급옵션 미선택시, 추천 설정(24개월 약정)으로
+                            <br>진행됩니다.
+                        </div>
+                    </div>
+
+                    <div class="extra-info-choice hide">
+                        <div class="device-info-divider">
+                        </div>
+                        <div class="device-info">
+                            <div class="device-info-title">
+                                약정 방식 선택
+                            </div>
+                            <div class="device-info-select">
+                                <img class="device-info-select-icon"
+                                    src="/common/res/icon/emoji-checkmark@2x.png"
+                                    srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                    /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                                <div class="device-info-select-txt" id="device_info_agreement">
+                                    선택약정 선택됨
+                                </div>
+                            </div>
+                            <div class="device-info-hint">
+                                할인 금액이 높은 방식으로 자동 추천됩니다.
+                            </div>
+                            <div class="device-info-list-agreement">
+                                <div class="device-info-row">
+                                    <div class="device-info-item" onclick="selectAgreement(this)">
+                                        <div class="device-info-item-txt">
+                                            공시지원금
+                                        </div>
+                                    </div>
+                                    <div class="device-info-item select" onclick="selectAgreement(this)">
+                                        <div class="device-info-item-txt">
+                                            선택약정
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="device-info-divider">
+                        </div>
+                        <div class="device-info">
+                            <div class="device-info-title">
+                                희망 약정 기간
+                            </div>
+                            <div class="device-info-select">
+                                <img class="device-info-select-icon"
+                                    src="/common/res/icon/emoji-checkmark@2x.png"
+                                    srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                    /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                                <div class="device-info-select-txt" id="device_info_agreement_period">
+                                    24개월 선택됨
+                                </div>
+                            </div>
+                            <div class="device-info-list-agreement-period">
+                                <div class="device-info-row">
+                                    <div class="device-info-item" onclick="selectAgreePeriod(this)">
+                                        <div class="device-info-item-txt">
+                                            무약정
+                                        </div>
+                                    </div>
+                                    <div class="device-info-item" onclick="selectAgreePeriod(this)">
+                                        <div class="device-info-item-txt">
+                                            12개월
+                                        </div>
+                                    </div>
+                                    <div class="device-info-item select" onclick="selectAgreePeriod(this)">
+                                        <div class="device-info-item-txt">
+                                            24개월
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="device-info-divider">
+                        </div>
+                        <div class="device-info">
+                            <div class="device-info-title">
+                                기기 반납 여부
+                            </div>
+                            <div class="device-info-select">
+                                <img class="device-info-select-icon"
+                                    src="/common/res/icon/emoji-checkmark@2x.png"
+                                    srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                    /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                                <div class="device-info-select-txt" id="device_info_return">
+                                    반납안함 선택됨
+                                </div>
+                            </div>
+                            <div class="device-info-hint">
+                                기기 반납 선택시, 반납 할인이 적용됩니다.
+                            </div>
+                            <div class="device-info-list-return">
+                                <div class="device-info-row">
+                                    <div class="device-info-item select" onclick="selectReturn(this)">
+                                        <div class="device-info-item-txt">
+                                            반납 안함
+                                        </div>
+                                    </div>
+                                    <div class="device-info-item" onclick="selectReturn(this)">
+                                        <div class="device-info-item-txt">
+                                            2년후 반납
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="device-info-divider">
+                        </div>
+                        <div class="device-info">
+                            <div class="device-info-title">
+                                6개월 상위 요금제 사용
+                            </div>
+                            <div class="device-info-select">
+                                <img class="device-info-select-icon"
+                                    src="/common/res/icon/emoji-checkmark@2x.png"
+                                    srcset="/common/res/icon/emoji-checkmark@2x.png 2x,
+                                    /common/res/icon/emoji-checkmark@3x.png 3x"/>
+                                <div class="device-info-select-txt" id="device_info_high_agreement">
+                                    사용안함 선택됨
+                                </div>
+                            </div>
+                            <div class="device-info-hint">
+                                공시지원금 선택시, 적용 가능합니다.
+                            </div>
+                            <div class="device-info-list-high-agreement">
+                                <div class="device-info-row">
+                                    <div class="device-info-item select" onclick="selectHigh(this)">
+                                        <div class="device-info-item-txt">
+                                            사용 안함
+                                        </div>
+                                    </div>
+                                    <div class="device-info-item" onclick="selectHigh(this)">
+                                        <div class="device-info-item-txt">
+                                            사용
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="device-info-divider">
+                        </div>
+                        <div class="device-info">
+                            <div class="device-info-title">
+                                제휴카드 사용 여부
+                            </div>
+                            <a class="device-info-link" href="/">
+                                상세내용 보기
+                            </a>
+                            <div class="device-info-hint">
+                                카드에 따라 할인 금액이 상이합니다.
+                            </div>
+                            <div class="device-info-list-card">
+                                <div class="device-info-row">
+                                    <div class="device-info-item select" onclick="selectCard(this)">
+                                        <div class="device-info-item-txt">
+                                            사용 안함
+                                        </div>
+                                    </div>
+                                    <div class="device-info-item" onclick="selectCard(this)">
+                                        <div class="device-info-item-txt">
+                                            사용
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a class="step-next-btn" href="/app/buy/4/">
+                <div class="step-next-txt">
+                    다음단계
+                </div>
+                <div class="step-next-link">
+                    <img class="step-next-arrow"
+                        src="/common/res/icon/ic-jumpbtn@2x.png"
+                        srcset="/common/res/icon/ic-jumpbtn@2x.png 2x,
+                        /common/res/icon/ic-jumpbtn@3x.png 3x"/>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

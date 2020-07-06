@@ -1,0 +1,329 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.wrap{
+    margin: auto;
+    position: relative;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+}
+
+.wrap .container{
+    width: 100%;
+    height: auto;
+}
+
+.wrap .top-wrap{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 56px;
+    line-height: 56px;
+    font-size: 0px;
+}
+
+.wrap .top-wrap .top-back{
+    display: inline-block;
+    margin-left: 20px;
+    vertical-align: middle;
+}
+
+.wrap .top-wrap .top-back .top-back-arrow{
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.wrap .top-wrap .top-bar{
+    display: inline-block;
+    margin-left: 26px;
+    vertical-align: middle;
+}
+
+.wrap .top-wrap .top-bar .top-bar-man{
+    position: absolute;
+    display: block;
+    top: 7px;
+    left: 16.5%;
+    margin-left: 60px;
+    width: 20px;
+    height: 20px;
+}
+
+.wrap .top-wrap .top-bar .top-bar-red{
+    display: inline-block;
+    position: absolute;
+    top: 27px;
+    left: 66px;
+    width: 19.7%;
+    height: 4px;
+    border-radius: 18px;
+    background-color: #f8455f;
+    vertical-align: middle;
+}
+
+.wrap .top-wrap .top-bar .top-bar-gray{
+    display: inline-block;
+    position: absolute;
+    top: 27px;
+    left: 66px;
+    width: 76.1%;
+    height: 4px;
+    border-radius: 18px;
+    background-color: #d9dbe0;
+    vertical-align: middle;
+}
+
+.wrap .title-wrap{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 4px;
+    margin-bottom: 18px;
+    padding-left: 20px;
+}
+
+.wrap .title-wrap .title-1{
+    font-size: 22px;
+    font-family: 'GmarketSansBold';
+    font-weight: bold;
+}
+
+.wrap .title-wrap .title-2{
+    font-size: 14px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.13px;
+    opacity: 0.4;
+}
+
+.wrap .brand-device-wrap{
+    display: block;
+    box-sizing: border-box;
+    position: relative;
+    padding: 26px 16px 30px 16px;
+    border-radius: 32px;
+    background-color: #f8f9fb;
+}
+
+.wrap .brand-device-wrap .brand-device-back{
+    display: block;
+    margin-left: 4px;
+    width: 26px;
+    height: 26px;
+}
+
+.wrap .brand-device-wrap .brand-device-back{
+    display: block;
+    width: 26px;
+    height: 26px;
+}
+
+.wrap .brand-device-wrap .brand-device-title{
+    display: block;
+    margin-top: 14px;
+    margin-left: 4px;
+    height: 16px;
+    font-family: 'GmarketSansBold';
+    line-height: 20px;
+}
+
+.wrap .brand-device-wrap .brand-device-select{
+    display: block;
+    position: absolute;
+    top: 68px;
+    right: 20px;
+    height: 14px;
+    line-height: 14px;
+}
+
+.wrap .brand-device-wrap .brand-device-select .brand-device-select-icon{
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    vertical-align: top;
+}
+
+.wrap .brand-device-wrap .brand-device-select .brand-device-select-txt{
+    display: inline-block;
+    height: 14px;
+    line-height: 18px;
+    font-size: 14px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    text-align: right;
+    opacity: 0.2;
+    vertical-align: top;
+}
+
+.wrap .brand-device-wrap .brand-list{
+    display: block;
+    margin-top: 14px;
+    margin-left: -16px;
+    width: 106.76%;
+    height: 46px;
+    font-size: 0px;
+}
+
+.wrap .brand-device-wrap .brand-list .brand-item{
+    display: inline-block;
+    box-sizing: border-box;
+    width: 25%;
+    height: 46px;
+    line-height: 46px;
+    font-size: 14px;
+    font-family: 'GmarketSansMedium';
+    font-weight: 500;
+    text-align: center;
+    background-color: #eff1f3;
+    color: #222222;
+    vertical-align: top;
+}
+
+.wrap .brand-device-wrap .brand-list .brand-item.selected{
+    color: #f8455f;
+    border-bottom: solid 1px #f8455f;
+}
+
+.wrap .brand-device-wrap .brand-device-list{
+    margin-top: 14px;
+    font-size: 0px;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row{
+    margin-top: 6px;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row .brand-device-item{
+    display: inline-block;
+    box-sizing: border-box;
+    margin-left: 2px;
+    width: 32.8%;
+    height: 156px;
+    border-radius: 8px;
+    border: solid 1px #f8f9fb;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row .brand-device-item:first-child{
+    margin-left: 0px;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row .brand-device-item.select{
+    border: solid 1px #f8455f;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row .brand-device-item .brand-device-item-img{
+    display: block;
+    margin: auto;
+    margin-top: 6px;
+    width: 100px;
+    height: 100px;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row .brand-device-item .brand-device-item-brand{
+    display: block;
+    margin: auto;
+    margin-top: 6px;
+    height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.39px;
+    text-align: center;
+    color: #b6bbc7;
+}
+
+.wrap .brand-device-wrap .brand-device-list .brand-device-row .brand-device-item .brand-device-item-name{
+    display: block;
+    margin: auto;
+    height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.39px;
+    text-align: center;
+    color: #222222;
+}
+
+.wrap .step-next-btn{
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    margin-top: 69px;
+    padding-top: 21px;
+    width: 100%;
+    height: 60px;
+    border-radius: 18px;
+    box-shadow: 0 13px 20px 0 rgba(0, 0, 0, 0.13);
+    background-color: #f8455f;
+}
+
+.wrap .step-next-btn .step-next-txt{
+    display: block;
+    margin: auto;
+    height: 18px;
+    line-height: 22px;
+    font-family: 'GmarketSansBold';
+    font-size: 18px;
+    letter-spacing: 0.4px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.wrap .step-next-btn .step-next-link{
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding-left: 9px;
+    padding-top: 3px;
+    width: 41px;
+    height: 20px;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.wrap .step-next-btn .step-next-link .step-next-arrow{
+    display: block;
+    width: 25px;
+    height: 13px;
+}

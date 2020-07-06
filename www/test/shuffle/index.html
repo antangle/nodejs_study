@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="shuffle.css">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="shuffle.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+
+            <div class="title">
+                2020년 1학기 한문(1) 기말고사 시험 대비
+            </div>
+            
+            <div class="quiz-chinese">
+                <div class="quiz">
+                    <div class="quiz-txt">
+                        1. 다음의 훈과 음을 지닌 한자를 쓰시오. (0.4*30 = 12점)
+                    </div>
+                    <div class="quiz-object" id="target1"></div>
+                    <input class="answer" type="text" id="answer-chinese" name="answer-chinese">
+                    <div class="submit" onclick="checkChinese()">
+                        제출
+                    </div>
+                </div>
+                <div class="answer-check hide">
+                    <div class="answer-real" id="target1"></div>
+                    <div class="answer-check-txt">
+                        맞았습니다!
+                    </div>
+                    <div class="score">
+                        현재 점수 <p>10</p>/20
+                    </div>
+                    <div class="next-quiz" onclick="nextChinese()">
+                        다음문제
+                    </div>
+                </div>
+                <div class="done hide">
+                    모든 문제를 풀었습니다!
+                    <br>당신의 점수는
+                    <div class="score">
+                        10점
+                    </div>
+                    입니다.
+                </div>
+            </div>
+            
+            <div class="quiz-korean">
+                <div class="quiz">
+                    <div class="quiz-txt">
+                        2. 다음 한자의 훈과 음을 쓰시오. (0.4*40 = 16점)
+                    </div>
+                    <div class="quiz-object" id="target2"></div>
+                    <input class="answer" type="text" id="answer-korean" name="answer-korean">
+                    <div class="submit" onclick="checkKorean()">
+                        제출
+                    </div>
+                </div>
+                <div class="answer-check hide">
+                    <div class="answer-real" id="target2"></div>
+                    <div class="answer-check-txt">
+                        맞았습니다!
+                    </div>
+                    <div class="score">
+                        현재 점수 <p>10</p>/20
+                    </div>
+                    <div class="next-quiz" onclick="nextKorean()">
+                        다음문제
+                    </div>
+                </div>
+                <div class="done hide">
+                    모든 문제를 풀었습니다!
+                    <br>당신의 점수는
+                    <div class="score">
+                        10점
+                    </div>
+                    입니다.
+                </div>
+            </div>
+            
+            <div class="quiz-sound">
+                <div class="quiz">
+                    <div class="quiz-txt">
+                        3. 다음 한자의 독음을 쓰시오. (0.3*40 = 12점)
+                    </div>
+                    <div class="quiz-object"></div>
+                    <input class="answer" type="text" id="answer-sound" name="answer-sound">
+                    <div class="submit" onclick="checkSound()">
+                        제출
+                    </div>
+                </div>
+                <div class="answer-check hide">
+                    <div class="answer-real"></div>
+                    <div class="answer-check-txt">
+                        맞았습니다!
+                    </div>
+                    <div class="score">
+                        현재 점수 <p>10</p>/20
+                    </div>
+                    <div class="next-quiz" onclick="nextSound()">
+                        다음문제
+                    </div>
+                </div>
+                <div class="done hide">
+                    모든 문제를 풀었습니다!
+                    <br>당신의 점수는
+                    <div class="score">
+                        10점
+                    </div>
+                    입니다.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

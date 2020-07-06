@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="alarm.css?v=200304">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="alarm.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="title-wrap">
+                <div class="title-container">
+                    알림
+                </div>
+            </div>
+
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-item user select" onclick="userClicked();">
+                        개인
+                    </div>
+                    <div class="top-item service" onclick="serviceClicked();">
+                        서비스
+                    </div>
+                </div>
+            </div>
+
+            <div class="new-alarm-wrap">
+                <div class="new-alarm-container">
+                    <div class="new-alarm-main">
+                        <div class="new-alarm-title">
+                            새로운 알림
+                        </div>
+                        <div class="new-alarm-count">
+                            2
+                        </div>
+                        <div class="new-alarm-confirm" onclick="allCheck();">
+                            모두 확인
+                        </div>
+                    </div>
+                    <div class="new-alarm-list">
+                        <div class="alarm-item new">
+                            <img class="alarm-item-icon"
+                                src="/common/res/icon/emoji-warning-22@2x.png"
+                                srcset="/common/res/icon/emoji-warning-22@2x.png 2x,
+                                /common/res/icon/emoji-warning-22@3x.png 3x"/>
+                            <div class="alarm-item-content">
+                                <div class="alarm-item-text">
+                                    신고요청이 접수 되었습니다.
+                                </div>
+                                <div class="alarm-item-time">
+                                    3분전
+                                </div>
+                            </div>
+                            <img class="alarm-item-new"
+                                src="/common/res/icon/group@2x.png"
+                                srcset="/common/res/icon/group@2x.png 2x,
+                                /common/res/icon/group@3x.png 3x"/>
+                        </div>
+                        <div class="alarm-item new">
+                            <img class="alarm-item-icon"
+                                src="/common/res/icon/emoji-memo-22@2x.png"
+                                srcset="/common/res/icon/emoji-memo-22@2x.png 2x,
+                                /common/res/icon/emoji-memo-22@3x.png 3x"/>
+                            <div class="alarm-item-content">
+                                <div class="alarm-item-text">
+                                    아직 리뷰를 작성하지 않은 마감된
+                                    <br>경매가 있습니다.
+                                </div>
+                                <div class="alarm-item-time">
+                                    3분전
+                                </div>
+                            </div>
+                            <img class="alarm-item-new"
+                                src="/common/res/icon/group@2x.png"
+                                srcset="/common/res/icon/group@2x.png 2x,
+                                /common/res/icon/group@3x.png 3x"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="previous-alarm-wrap">
+                <div class="previous-alarm-container">
+                    <div class="previous-alarm-main">
+                        <div class="previous-alarm-title">
+                            이전 알림
+                        </div>
+                    </div>
+                    <div class="previous-alarm-list">
+                        <div class="alarm-item previous">
+                            <img class="alarm-item-icon"
+                                src="/common/res/icon/emoji-pushpin-22@2x.png"
+                                srcset="/common/res/icon/emoji-pushpin-22@2x.png 2x,
+                                /common/res/icon/emoji-pushpin-22@3x.png 3x"/>
+                            <div class="alarm-item-content">
+                                <div class="alarm-item-text">
+                                    <p>경매02</p>가 마감되었습니다.
+                                </div>
+                                <div class="alarm-item-time">
+                                    2020.03.10
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alarm-item previous">
+                            <img class="alarm-item-icon"
+                                src="/common/res/icon/emoji-remaintime-22@2x.png"
+                                srcset="/common/res/icon/emoji-remaintime-22@2x.png 2x,
+                                /common/res/icon/emoji-remaintime-22@3x.png 3x"/>
+                            <div class="alarm-item-content">
+                                <div class="alarm-item-text">
+                                    <p>경매01</p> 경매마감이 5분 남았습니다.
+                                </div>
+                                <div class="alarm-item-time">
+                                    2020.03.10
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alarm-item previous">
+                            <img class="alarm-item-icon"
+                                src="/common/res/icon/emoji-smileheart-22.png"
+                                srcset="/common/res/icon/emoji-smileheart-22@2x.png 2x,
+                                /common/res/icon/emoji-smileheart-22@3x.png 3x"/>
+                            <div class="alarm-item-content">
+                                <div class="alarm-item-text">
+                                    <p>경매 03</p> 경매에 새로운 입찰자가 들어왔습니다.두줄케이스입니다.
+                                </div>
+                                <div class="alarm-item-time">
+                                    2020.03.10
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alarm-item previous">
+                            <img class="alarm-item-icon"
+                                src="/common/res/icon/emoji-warning-22.png"
+                                srcset="/common/res/icon/emoji-warning-22@2x.png 2x,
+                                /common/res/icon/emoji-warning-22@3x.png 3x"/>
+                            <div class="alarm-item-content">
+                                <div class="alarm-item-text">
+                                    신고 요청이 접수되었습니다.
+                                </div>
+                                <div class="alarm-item-time">
+                                    2020.03.10
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,368 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+p{
+    font-family: inherit;
+    font-weight: bold;
+    display: inline;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none !important;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.wrap{
+    margin: auto;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    overflow: hidden;
+}
+
+.popup-wrap{
+    display: block;
+    box-sizing: border-box;
+    position: sticky;
+    margin: auto;
+    margin-bottom: -730px;
+    top: 0px;
+    padding-top: 183px;
+    min-width: 360px;
+    max-width: 500px;
+    width: 100%;
+    height: 730px;
+    background-color: rgba(0, 0, 0, 0.35);
+    z-index: 3;
+}
+
+.popup-wrap .popup-container{
+    display: block;
+    position: relative;
+    margin: auto;
+    width: 320px;
+    border-radius: 23px;
+    box-shadow: 0 13px 20px 0 rgba(0, 0, 0, 0.13);
+    border: solid 1px #ededf2;
+    background-color: #ffffff;
+}
+
+.popup-wrap .popup-container .cancel-btn{
+    display: block;
+    position: absolute;
+    top: -35px;
+    right: 1px;
+    width: 25px;
+    height: 25px;
+    opacity: 0.8;
+    border-radius: 14.8px;
+    background-image: url("/common/res/icon/popup-cancelbtn@2x.png");
+    background-size: 100%;
+}
+
+.popup-wrap .popup-container .popup-head{
+    display: block;
+    box-sizing: border-box;
+    margin: auto;
+    padding-top: 19px;
+    width: 100%;
+    height: 85px;
+    font-size: 0px;
+    text-align: center;
+    border-radius: 23px;
+    background-color: #f8f9fb;
+}
+
+.popup-wrap .popup-container .popup-head .shop-name{
+    display: block;
+    height: 20px;
+    line-height: 22px;
+    font-family: 'GmarketSansMedium';
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.18px;
+    text-align: center;
+    color: #222222;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info{
+    display: block;
+    margin-top: 11px;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-score{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-score-icon{
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-score-icon .full-peach{
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 2px;
+    width: 14px;
+    height: 12px;
+    background-image: url("/common/res/icon/mybid-store-reivewgrade@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-score-icon .half-peach{
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 2px;
+    width: 14px;
+    height: 12px;
+    background-image: url("/common/res/icon/mybid-store-reivewgrade@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-score-num{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #f8455f;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-divider{
+    display: inline-block;
+    margin: 4px 12px;
+    width: 1px;
+    height: 9px;
+    background-color: #d8d8d8;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-review{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    font-size: 14px;
+    letter-spacing: -0.18px;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-review .shop-info-review-txt{
+    display: inline-block;
+    margin-right: 2px;
+    color: #888c99;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-info-review .shop-info-review-num{
+    display: inline-block;
+    color: #31353e;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-report{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-report .report-icon{
+    display: inline-block;
+    margin-right: 5px;
+    width: 12px;
+    height: 16px;
+    background-image: url("/common/res/icon/emoji-warning-12@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-head .shop-info .shop-report .report-txt{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    font-size: 14px;
+    letter-spacing: -0.61px;
+    color: #222222;
+    opacity: 0.5;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content{
+    display: block;
+    padding: 0px 16px;
+    padding-top: 18px;
+    padding-bottom: 22px;
+    font-size: 0px;
+    text-align: center;
+}
+
+.popup-wrap .popup-container .popup-content .shop-icon{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-image: url("/common/res/icon/emoji-store@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .shop-intro-title-txt{
+    display: inline-block;
+    margin: 2px 6px;
+    height: 14px;
+    line-height: 16px;
+    font-family: 'GmarketSansMedium';
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.42px;
+    text-align: center;
+    color: #888c99;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .shop-intro-content{
+    display: block;
+    margin-top: 10px;
+    font-family: 'GmarketSansBold';
+    font-size: 18px;
+    line-height: 1.33;
+    letter-spacing: -0.54px;
+    text-align: center;
+    color: #222222;
+}
+
+.popup-wrap .popup-container .popup-content .popup-content-divider{
+    display: block;
+    margin-top: 22px;
+    margin-bottom: 12px;
+    width: 100%;
+    height: 1px;
+    background-color: #f3f5f8;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-txt{
+    display: block;
+    height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.53px;
+    text-align: center;
+    color: #b6bbc7;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-score{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-score .recent-review-score-icon{
+    display: inline-block;
+    margin-top: 4px;
+    margin-right: 4px;
+    width: 14px;
+    height: 12px;
+    background-image: url("/common/res/icon/mybid-store-reivewgrade-copy-2@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-score .recent-review-score-num{
+    display: inline-block;
+    height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -0.42px;
+    color: #222222;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-info-divider{
+    display: inline-block;
+    margin: 0px 8px;
+    margin-top: 6px;
+    width: 1px;
+    height: 9px;
+    background-color: #d8d8d8;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-phone{
+    display: inline-block;
+    height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -0.42px;
+    color: #222222;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-content{
+    display: block;
+    margin-top: 6px;
+    line-height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.7px;
+    text-align: center;
+    color: #888c99;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-writer{
+    display: block;
+    margin-top: 4px;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-writer .writer-name{
+    display: inline-block;
+    margin-right: 8px;
+    height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: -0.36px;
+    color: #4e535e;
+    vertical-align: top;
+}
+
+.popup-wrap .popup-container .popup-content .recent-review-writer .write-date{
+    display: inline-block;
+    height: 18px;
+    font-size: 12px;
+    color: #4e535e;
+    vertical-align: top;
+}

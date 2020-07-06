@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="shuffle_list.css">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="shuffle_list.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+
+            <div class="title">
+                2020년 1학기 한문(1) 기말고사 시험 대비
+            </div>
+            <div class="chinese">
+                <div class="button-left" onclick="beforeChinese()">
+                    <div class="l-btn"></div>
+                </div>
+                <div class="chinese-wrap">
+                    <div class="chinese-object" id="target1"></div>
+                    <div class="chinese-meaning" id="target2"></div>
+                </div>
+                <div class="button-right" onclick="nextChinese()">
+                    <div class="r-btn"></div>
+                </div>
+            </div>
+            <div class="korean">
+                <div class="button-left" onclick="beforeKorean()">
+                    <div class="l-btn"></div>
+                </div>
+                <div class="chinese-wrap">
+                    <div class="chinese-object" id="target3"></div>
+                    <div class="chinese-meaning" id="target4"></div>
+                </div>
+                <div class="button-right" onclick="nextKorean()">
+                    <div class="r-btn"></div>
+                </div>
+            </div>
+            <div class="reading">
+                <div class="button-left" onclick="beforeReading()">
+                    <div class="l-btn"></div>
+                </div>
+                <div class="chinese-wrap">
+                    <div class="chinese-object" id="target5"></div>
+                    <div class="chinese-meaning" id="target6"></div>
+                </div>
+                <div class="button-right" onclick="nextReading()">
+                    <div class="r-btn"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

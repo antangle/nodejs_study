@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ko">
+
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_start.php");
+?>	
+    <!-- css -->
+	<link rel="stylesheet" href="my_nickname.css">
+	
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="my_nickname.js?v=200304"></script>
+<?php
+	include($_SERVER["DOCUMENT_ROOT"]."/common/php/frame/head_end.php");
+?>
+
+<body>
+	<div class="wrap">
+        <div class="container">
+            <div class="top-wrap">
+                <div class="top-container">
+                    <div class="top-back" onclick="back();">
+                        <img class="top-back-arrow"
+                            src="/common/res/icon/mybid-header-back@2x.png"
+                            srcset="/common/res/icon/mybid-header-back@2x.png 2x,
+                            /common/res/icon/mybid-header-back@3x.png 3x"/>
+                    </div>
+                    <div class="top-title">
+                        닉네임 설정
+                    </div>
+                    <div class="top-save">
+                        저장
+                    </div>
+                </div>
+            </div>
+
+            <div class="nickname-wrap">
+                <div class="nickname-container">
+                    <div class="nickname-now">
+                        <div class="nickname-key">
+                            현재 닉네임
+                        </div>
+                        <div class="nickname-value">
+                            <div class="now-value">
+                                나의 현재 닉네임이다
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nickname-change">
+                        <div class="nickname-key">
+                            변경할 닉네임
+                        </div>
+                        <div class="nickname-value">
+                            <div class="nickname-input">
+                                <textarea spellcheck="false" class="nickname-input-textarea" id="nickname" name="nickname" placeholder="변경할 닉네임 입력"></textarea>
+                            </div>
+                            <div class="nickname-description">
+                                <div class="nickname-check">
+                                    중복확인
+                                </div>
+                                을 눌러주세요.
+                            </div>
+                            <div class="nickname-caution">
+                                <div class="caution-title">
+                                    변경 시, 주의사항
+                                </div>
+                                <div class="caution-content">
+                                    혐오감을 유발하거나, 음란성, 차별적인 내용 등 이용약관에 위반하는 닉네임은 사전 고지 없이 변경될 수 있습니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,763 @@
+@font-face { font-family: 'GmarketSansMedium'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Spoqa Han Sans', sans-serif;
+    word-break: keep-all;
+}
+
+a{
+    text-decoration: none;
+}
+
+li{
+    list-style : none;
+}
+
+input{
+    border:none;
+}
+
+input[type=submit]{
+    -webkit-appearance:none;
+}
+
+.hide{
+    display: none !important;
+}
+
+.accent{
+    color: red;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.wrap{
+    margin: auto;
+    padding-bottom: 48px;
+    width: 100%;
+    min-width: 360px;
+    max-width: 500px;
+    height: auto;
+    background-color: white;
+}
+
+.wrap .container{
+    width: 100%;
+    height: auto;
+}
+
+.wrap .banner-wrap{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 186px;
+    background-color: #383b42;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    font-size: 0px;
+}
+
+.wrap .my-deal-wrap{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 30px;
+    padding: 0px 20px;
+}
+
+.wrap .my-deal-wrap .my-deal-title{
+    display: block;
+    position: relative;
+    height: 20px;
+    font-size: 0px;
+}
+
+.wrap .my-deal-wrap .my-deal-title .my-deal-title-txt{
+    display: inline-block;
+    height: 20px;
+    line-height: 23px;
+    font-family: 'GmarketSansBold';
+    font-size: 20px;
+    letter-spacing: -0.82px;
+}
+
+.wrap .my-deal-wrap .my-deal-title .my-deal-title-num{
+    display: inline-block;
+    margin-left: 7px;
+    height: 20px;
+    line-height: 23px;
+    font-family: 'GmarketSansBold';
+    font-size: 20px;
+    letter-spacing: -0.82px;
+    color: #0071ec;
+}
+
+.wrap .my-deal-wrap .my-deal-title .my-deal-title-more{
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.57px;
+    color: #f8455f;
+}
+
+.wrap .my-deal-wrap .my-deal-list{
+    display: block;
+    margin-top: 14px;
+    white-space: nowrap;
+    font-size: 0px;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card{
+    display: inline-block;
+    box-sizing: border-box;
+    margin-right: 10px;
+    padding-top: 16px;
+    padding-left: 10px;
+    width: 100%;
+    height: 178px;
+    border-radius: 20px;
+    border: solid 1px #eff4fa;
+    background-color: #f8f9fb;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-img{
+    display: inline-block;
+    margin-right: 14px;
+    width: 100px;
+    height: 100px;
+    background-image: url("/common/res/img/img-ip-11@2x.png");
+    background-size: 84px 86px;
+    background-position: center;
+    background-repeat: no-repeat;
+    vertical-align: top;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-time{
+    display: block;
+    box-sizing: border-box;
+    padding: 0px 10px;
+    width: fit-content;
+    height: 22px;
+    line-height: 20px;
+    font-size: 12px;
+    letter-spacing: -0.46px;
+    color: #f8455f;
+    border-radius: 17px;
+    border: solid 1px #ff295a;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-name{
+    display: block;
+    margin-top: 8px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: -0.15px;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-option{
+    display: block;
+    height: 18px;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-option .my-deal-volume{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.46px;
+    color: #4e535e;
+    vertical-align: top;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-option .my-deal-divider{
+    display: inline-block;
+    margin: 6px 8px;
+    width: 1px;
+    height: 7px;
+    background-color: #d8d8d8;
+    vertical-align: top;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-option .my-deal-color{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.46px;
+    color: #4e535e;
+    vertical-align: top;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-agency{
+    display: block;
+    margin-top: 12px;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-payment{
+    display: block;
+    margin-top: 2px;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-agreement{
+    display: block;
+    margin-top: 2px;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-key{
+    display: inline-block;
+    width: 61px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.46px;
+    color: #888c99;
+    vertical-align: top;
+}
+
+.wrap .my-deal-wrap .my-deal-list .my-deal-card .my-deal-content .my-deal-value{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.46px;
+    color: #4e535e;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap{
+    margin-top: 30px;
+}
+
+.wrap .new-deals-wrap .new-deals-title{
+    display: block;
+    box-sizing: border-box;
+    padding-left: 20px;
+    font-size: 0px;
+}
+
+.wrap .new-deals-wrap .new-deals-title .new-deals-title-img{
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-title .new-deals-title-txt{
+    display: inline-block;
+    margin-left: 11px;
+    margin-top: 5px;
+    height: 20px;
+    line-height: 25px;
+    font-family: 'GmarketSansBold';
+    font-size: 20px;
+    letter-spacing: -0.82px;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list{
+    margin-top: 14px;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item{
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    margin-bottom: 4px;
+    padding: 20px;
+    width: 100%;
+    height: 204px;
+    border-radius: 32px;
+    background-color: #f8f9fb;
+    font-size: 0px;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-img{
+    display: inline-block;
+    margin-top: 4px;
+    margin-right: 14px;
+    width: 100px;
+    height: 100px;
+    background-image: url("/common/res/img/img-ip-11@2x.png");
+    background-size: 84px 86px;
+    background-position: center;
+    background-repeat: no-repeat;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content{
+    display: inline-block;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-name{
+    display: block;
+    height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: -0.48px;
+    color: #222222;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-location{
+    display: block;
+    position: absolute;
+    top: 24px;
+    right: 20px;
+    text-align: right;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-location .location-icon{
+    display: inline-block;
+    margin-top: 3px;
+    margin-right: 2px;
+    width: 7px;
+    height: 10px;
+    background-image: url("/common/res/icon/mybid-store-location@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-location .location-txt{
+    display: inline-block;
+    height: 15px;
+    line-height: 15px;
+    font-size: 10px;
+    letter-spacing: -0.3px;
+    color: #8c8d8e;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-1 .new-deals-item-volume{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.36px;
+    color: #8c8d8e;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-1 .new-deals-item-divider{
+    display: inline-block;
+    margin: 6px 6px;
+    width: 1px;
+    height: 7px;
+    background-color: #d8d8d8;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-1 .new-deals-item-color{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.36px;
+    color: #8c8d8e;
+    vertical-align: top;
+}
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-2{
+    margin-top: 8px;
+    width: 200px;
+    white-space: nowrap;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-2 .new-deals-item-type{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: -0.3px;
+    color: #222222;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-2 .new-deals-item-divider{
+    display: inline-block;
+    margin: 6px 6px;
+    width: 1px;
+    height: 7px;
+    background-color: #d8d8d8;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-2 .new-deals-item-agreement{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: -0.3px;
+    color: #222222;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-option-2 .new-deals-item-payment{
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: -0.3px;
+    color: #222222;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-agencies{
+    margin-top: 10px;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-agencies .agency-before{
+    display: inline-block;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-agencies .agency-arrow{
+    display: inline-block;
+    margin-top: 12px;
+    margin-left: 8px;
+    margin-right: 9px;
+    width: 16px;
+    height: 16px;
+    background-image: url("/common/res/icon/emoji-rightpointinghand@2x.png");
+    background-size: 100%;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-agencies .agencies-after{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-content .new-deals-item-agencies .agencies-after li{
+    display: inline-block;
+    vertical-align: top;
+    width: 40px;
+    height: 40px;
+    background-color: #ededf2;
+    border-radius: 40px;
+}
+
+.kt{
+    display: block;
+    margin: auto;
+    margin-top: 8px;
+    width: 24px;
+    height: 24px;
+    background-image: url("/common/res/icon/ic-kt-24@2x.png");
+    background-size: 100%;
+}
+
+.lg{
+    display: block;
+    margin: auto;
+    margin-top: 8px;
+    width: 24px;
+    height: 24px;
+    background-image: url("/common/res/icon/ic-lgu-24@2x.png");
+    background-size: 100%;
+}
+
+.sk{
+    display: block;
+    margin: auto;
+    margin-top: 8px;
+    width: 24px;
+    height: 24px;
+    background-image: url("/common/res/icon/ic-skt-24@2x.png");
+    background-size: 100%;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-time{
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    margin-top: 12px;
+    padding-left: 14px;
+    padding-top: 6px;
+    width: 100%;
+    height: 34px;
+    border-radius: 17px;
+    border: solid 1px #f8455f;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-time .new-deals-item-time-txt{
+    display: block;
+    height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #f8455f;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-time .new-deals-item-time-arrow{
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    right: 9px;
+    top: 8px;
+    padding-top: 3px;
+    padding-left: 7px;
+    width: 34px;
+    height: 16px;
+    border-radius: 9.6px;
+    background-color: #f8455f;
+}
+
+.wrap .new-deals-wrap .new-deals-list .new-deals-item .new-deals-item-time .new-deals-item-time-arrow .arrow-right{
+    display: block;
+    width: 20px;
+    height: 11px;
+}
+
+.wrap .new-deals-wrap .new-deals-see-more{
+    display: block;
+    margin-top: 15px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.3px;
+    text-align: center;
+    color: #f8455f;
+    cursor: pointer;
+}
+
+.wrap .my-review-wrap .my-review-title{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 30px;
+    padding-left: 20px;
+    font-size: 0px;
+}
+
+.wrap .my-review-wrap .my-review-title .my-review-title-img{
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    vertical-align: top;
+}
+
+.wrap .my-review-wrap .my-review-title .my-review-title-txt{
+    display: inline-block;
+    margin-left: 11px;
+    margin-top: 5px;
+    height: 20px;
+    line-height: 25px;
+    font-family: 'GmarketSansBold';
+    font-size: 20px;
+    letter-spacing: -0.82px;
+    vertical-align: top;
+}
+
+.wrap .my-review-wrap .my-review-list{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 9px;
+    padding-left: 20px;
+    width: 100%;
+    border-radius: 30px;
+    background-color: #f8f9fb;
+    overflow: hidden;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item{
+    display: block;
+    box-sizing: border-box;
+    padding: 20px 20px;
+    padding-left: 0px;
+    height: 106px;
+    border-bottom: solid 1px #d9dbe0;
+    font-size: 0px;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item:last-child{
+    border: none;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-info{
+    display: inline-block;
+    margin-top: 11px;
+    width: 34.4%;
+    vertical-align: top;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-info .my-review-item-name{
+    display: block;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: -0.48px;
+    color: #222222;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-info .my-review-item-date{
+    display: block;
+    margin-top: 2px;
+    height: 18px;
+    line-height: 18px;
+    opacity: 0.5;
+    font-size: 12px;
+    color: #222222;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-content{
+    display: inline-block;
+    width: 65.6%;
+    vertical-align: top;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-content .my-review-score-img{
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 5px;
+    width: 14px;
+    height: 12px;
+    background-image: url("/common/res/icon/mybid-store-reivewgrade@2x.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    vertical-align: top;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-content .my-review-score-given{
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: -0.42px;
+    color: #888c99;
+    vertical-align: top;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-content .my-review-score-given p{
+    display: inline;
+    font-weight: bold;
+    color: #f8455f;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-content .my-review-score-nickname{
+    display: inline-block;
+    margin-left: 7px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -0.42px;
+    color: #222222;
+}
+
+.wrap .my-review-wrap .my-review-list .my-review-item .my-review-content .my-review-txt{
+    display: block;
+    margin-top: 6px;
+    width: 100%;
+    max-height: 40px;
+    line-height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.7px;
+    color: #222222;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap:break-word; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wrap .notice-wrap .notice-title{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 30px;
+    padding-left: 20px;
+    font-size: 0px;
+}
+
+.wrap .notice-wrap .notice-title .notice-title-img{
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    vertical-align: top;
+}
+
+.wrap .notice-wrap .notice-title .notice-title-txt{
+    display: inline-block;
+    margin-left: 11px;
+    margin-top: 5px;
+    height: 20px;
+    line-height: 25px;
+    font-family: 'GmarketSansBold';
+    font-size: 20px;
+    letter-spacing: -0.82px;
+    vertical-align: top;
+}
+
+.wrap .notice-wrap .notice-list{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding-left: 20px;
+    width: 100%;
+    border-radius: 30px;
+    background-color: #f8f9fb;
+    overflow: hidden;
+}
+
+.wrap .notice-wrap .notice-list .notice-item{
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    padding-top: 19px;
+    height: 58px;
+    border-bottom: solid 1px #ededf2;
+}
+
+.wrap .notice-wrap .notice-list .notice-item:last-child{
+    border: none;
+}
+
+.wrap .notice-wrap .notice-list .notice-item .notice-item-content{
+    display: block;
+    width: 70%;
+    height: 20px;
+    line-height: 20px;
+    font-size: 16px;
+    letter-spacing: -0.48px;
+    color: #222222;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wrap .notice-wrap .notice-list .notice-item .notice-item-date{
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    height: 18px;
+    font-size: 12px;
+    text-align: right;
+    color: rgba(34, 34, 34, 0.5);
+}
+
+.wrap .notice-wrap .notice-list .notice-item .notice-item-date .new-icon{
+    display: block;
+    width: 18px;
+    height: 18px;
+    background-image: url("/common/res/icon/ic-alramnewmark@2x.png");
+    background-size: 100%;
+}
