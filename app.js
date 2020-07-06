@@ -8,7 +8,7 @@ var userDB = require('./query/user');
 var BidRouter = require('./routes/bid');
 var routeRouter = require('./routes/redirect');
 
-//view engine setup
+//view engine setupasdsad
 //app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'pug');
 
