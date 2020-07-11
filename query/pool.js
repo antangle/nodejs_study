@@ -4,11 +4,8 @@ var config = {
   user: 'postgres',
   host: '54.180.116.190',
   database: 'test', 
-  password: 'lawrence',
+  password: '',
   port: 5432,
-  max: 10,
-  idleTimeoutMillis: 20000,
-  connectionTimeoutMillis: 2000,
 };
 
 const pool = new Pool(config);
