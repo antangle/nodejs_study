@@ -92,6 +92,7 @@ const buyNextStep2 = async (req, res) =>{
     return res.json(result);
   }
 };
+
 const buyNextStep3 = async (req, res) =>{
   try{
     var querytext = `
@@ -128,9 +129,33 @@ const buyNextStep3 = async (req, res) =>{
   }
 };
 
+// not yet done!
+const buyNextStep4 = async (req, res) =>{
+  try{
+    var querytext = `
+    WITH users AS(
+      SELECT id FROM users
+      WHERE nickname = $1
+    )
+    UPDATE temp_user_bid
+    SET phone_color=$2, phone_capacity=$3 
+    FROM users
+    WHERE temp_user_bid.user_id = users.id`;
+    const {nickname, phone_color, phone_capacity} = req.body;
+    await query(querytext, [nickname, phone_color, phone_capacity]);
+    var result = {status: 'success'};
+    return res.json(result);
+  }
+  catch(err){
+    console.log('buyNextStep2 ERROR: ' + err);
+    var result = {status: 'fail'};
+    return res.json(result);
+  }
+};
 module.exports = {
   startBidding,
   buyNextStep1,
   buyNextStep2,
   buyNextStep3,
+  buyNextStep4
 }

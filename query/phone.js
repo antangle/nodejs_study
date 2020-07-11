@@ -12,7 +12,7 @@ const getSelectedPhone = async (req, res) =>{
       SELECT id FROM users
       WHERE nickname = $1
     )
-    SELECT temp.phone_name, temp.phone_company 
+    SELECT temp.phone_name, temp.phone_company
     FROM temp_user_bid AS temp, yourid
     WHERE temp.user_id = yourid.id
     `;
@@ -31,7 +31,7 @@ const getSelectedPhone = async (req, res) =>{
     return res.json(result);
   }
   catch(err){
-    console.log('getPhones ERROR: ' + err);
+    console.log('getSelectedPhone ERROR: ' + err);
     result = {status: 'fail'}
     return res.json(result)
   }
@@ -43,14 +43,13 @@ const getPhonesFromDB = async (req, res) =>{
     var querytext =`
     SELECT phone_name, phone_company 
     FROM phone 
-    ORDER BY cost ASC
     LIMIT 6`;
     var {rows} = await query(querytext, []);        
     var result = {status: 'success', data: rows}
     return res.json(result);
   }
   catch(err){
-    console.log('getPhones ERROR: ' + err);
+    console.log('getPhonesFromDB ERROR: ' + err);
     var result = {status: 'fail'}
     return res.json(result)
   }
@@ -104,14 +103,14 @@ const getColorCapacityByPhone = async(req, res) =>{
     return res.json(result);
   }
   catch(err){
-    console.log('getPhonesColor ERROR: ' + err);
+    console.log('getPhonesColorCapacity ERROR: ' + err);
     var result = {status: 'fail'}
     return res.json(result)
   }
 }
 
 module.exports = {
-  getSelectedPhone,
+  //getSelectedPhone,
   getPhonesFromDB,
   getPhonesByCompany,
   getColorCapacityByPhone,
