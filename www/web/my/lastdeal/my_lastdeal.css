@@ -181,6 +181,14 @@ body{
     color: #0073f4;
 }
 
+.wrap .last-deal-item .last-deal-card .last-deal-content .made-deal-with{
+    margin-top: 9px;
+    height: 18px;
+    font-size: 12px;
+    letter-spacing: -0.2px;
+    color: #4e535e;
+}
+
 .wrap .last-deal-item .last-deal-card .last-deal-card-divider{
     display: block;
     box-sizing: border-box;

@@ -24,6 +24,8 @@
                           if (result) {
                             $('#get_output').html(result.result);
                           }
+                     },error: function(error){
+                        console.log('error in ajax GET' + error);
                      }
                   });
             });
