@@ -11,8 +11,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const buyRouter = require('./routes/buy');
 
+const buyRouter = require('./routes/buy');
 app.use('/buy', buyRouter);
 app.use(express.static(path.join(__dirname, 'www')));
 app.use('/', (req, res) =>{
