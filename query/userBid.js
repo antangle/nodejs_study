@@ -78,11 +78,11 @@ const buyNextStep2 = async (req, res) =>{
       WHERE nickname = $1
     )
     UPDATE temp_user_bid
-    SET phone_color=$2, phone_volume=$3 
+    SET color_name=$2, phone_volume=$3 
     FROM users
     WHERE temp_user_bid.user_id = users.id`;
-    const {nickname, phone_color, phone_volume} = req.body;
-    await query(querytext, [nickname, phone_color, phone_volume]);
+    const {nickname, color_name, phone_volume} = req.body;
+    await query(querytext, [nickname, color_name, phone_volume]);
     var result = {status: 'success'};
     return res.json(result);
   }
