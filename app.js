@@ -11,12 +11,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
 const buyRouter = require('./routes/buy');
 app.use('/buy', buyRouter);
-app.use(express.static(path.join(__dirname, 'www')));
+
+//app.use(express.static(path.join(__dirname, 'www')));
 app.use('/', (req, res) =>{
-  res.sendFile(path.join(__dirname +'/www/hosting_index.html'));
+  res.send('welcome to backend');
 });
 
 // catch 404 and forward to error handler
