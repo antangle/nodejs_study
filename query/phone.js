@@ -1,5 +1,9 @@
 const Pool = require('./pool');
 const express = require('express');
+const app = express();
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit:'50mb', extended: false }));
+
 const pool = Pool.pool;
 const query = Pool.query;
 pool.on('error', function (err, client) {
@@ -64,7 +68,8 @@ const getPhonesByCompany = async(req, res) =>{
     SELECT phone_name, phone_company, img
     FROM phone 
     WHERE phone_company = $1`;
-    const {phone_company} = req.query;
+    const phone_company = req.query.phone_company;
+    console.log(phone_company)
     var {rows} = await query(querytext, [phone_company]);    
     var result = {status: 'success', data: rows}
     return res.json(result);

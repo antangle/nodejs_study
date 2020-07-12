@@ -1,6 +1,9 @@
 const Pool = require('./pool');
 const pool = Pool.pool;
 
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit:'50mb', extended: false }));
+
 pool.on('connect', () => {
   console.log('connected to the db');
 });
