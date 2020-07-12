@@ -1,6 +1,7 @@
 const Pool = require('./pool');
 const express = require('express');
 const app = express();
+
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
@@ -17,10 +18,12 @@ const getSelectedPhone = async (req, res) =>{
       SELECT id FROM users
       WHERE nickname = $1
     )
-    SELECT temp.phone_name, temp.phone_company
-    FROM temp_user_bid AS temp, yourid
+    SELECT temp.phone_name, temp.phone_company, phone.img
+    FROM temp_user_bid AS temp, yourid, phone
     WHERE temp.user_id = yourid.id
-    `;
+    AND phone.phone_name = temp.phone_name
+    `
+    ;
     var result = {}
     var {nickname} = req.query;
     var {rows} = await query(querytext, [nickname]);
@@ -48,7 +51,7 @@ const getPhonesFromDB = async (req, res) =>{
     var querytext =`
     SELECT phone_name, phone_company, img
     FROM phone 
-    ORDER BY img DESC
+    ORDER BY img ASC
     LIMIT 6
     `;
     var {rows} = await query(querytext, []);        
@@ -69,7 +72,6 @@ const getPhonesByCompany = async(req, res) =>{
     FROM phone 
     WHERE phone_company = $1`;
     const phone_company = req.query.phone_company;
-    console.log(phone_company)
     var {rows} = await query(querytext, [phone_company]);    
     var result = {status: 'success', data: rows}
     return res.json(result);

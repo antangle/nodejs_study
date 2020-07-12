@@ -9,13 +9,13 @@ const createDB = require('../query/createOrDrop')
 router.post('/start', userBidDB.startBidding);
 
 //자신이 고른 핸드폰 name, company, img(notyet!) 반환
-router.get('/phoneInfo', phoneDB.getSelectedPhone);
+router.get('/getSelectedPhone', phoneDB.getSelectedPhone);
 //data없이 그냥 썡으로 요청, phones DB내용 반환
 router.get('/getPhonesFromDB', phoneDB.getPhonesFromDB);
 //data= {phone_company: } 요청
 router.get('/getPhonesByCompany', phoneDB.getPhonesByCompany);
 //data= {nickname, phone_name, phone_company}
-router.post('/1/post', userBidDB.buyNextStep1);
+router.post('/buyNextStep1', userBidDB.buyNextStep1);
 //data= {phone_name}
 router.get('/2/get', phoneDB.getColorCapacityByPhone);
 //data= {nickname, phone_color, phone_capacity}

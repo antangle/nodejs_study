@@ -23,7 +23,6 @@ const startBidding = async (req, res) =>{
     WHERE a.user_id = id.id
     `;
     const {nickname} = req.body;
-    console.log(nickname);
     var {rows} = await query(startBiddingQuery, [nickname]);    
     if(rows[0].count >= 3){
       var result = {status: 'bidOver3'};
@@ -50,7 +49,6 @@ const startBidding = async (req, res) =>{
 
 const buyNextStep1 = async (req, res) =>{
   try{
-    console.log('atbuy1')
     const querytext = `
     WITH users AS(
       SELECT id FROM users
