@@ -15,7 +15,7 @@ const getSelectedPhone = async (req) =>{
   try{
     var result = {};
     var {nickname} = req.query;
-    var {rows} = await query(querytext.getse, [nickname]);
+    var {rows} = await query(querytext.getSelectedPhoneQuery, [nickname]);
     result = {data: rows}
     if(rows.length == 0)
       result.isSelected = 'FALSE';
@@ -38,14 +38,7 @@ const getPhonesFromDB = async (req, res) =>{
     const a = await getSelectedPhone(req).then(value =>{
       selected = value;
     });
-    var querytext =`
-    SELECT phone_name, phone_brand, img
-    FROM phone 
-    WHERE ishot = TRUE
-    ORDER BY id DESC
-    LIMIT 6
-    `;
-    var {rows} = await query(querytext, []);
+    var {rows} = await query(querytext.getPhonesFromDBQuery, []);
     var result = selected;
     
     //temp_user_bid에 내용이 있으면 TRUE
@@ -76,12 +69,9 @@ const getPhonesFromDB = async (req, res) =>{
 
 const getPhonesByCompany = async(req, res) =>{
   try{
-    var getPhonesByCompanyquery =`
-    SELECT phone_name, phone_brand, img
-    FROM phone 
-    WHERE phone_brand = $1`;
+    
     const phone_brand = req.query.phone_brand;
-    var {rows} = await query(getPhonesByCompanyquery, [phone_brand]);    
+    var {rows} = await query(querytext.getPhonesByCompanyquery, [phone_brand]);    
     var result = {status: 'success', data: rows}
     return res.json(result);
   }
@@ -99,27 +89,12 @@ const getColorCapacityByPhone = async(req, res) =>{
     const a = await getSelectedPhone(req).then(value =>{
       selected = value.data;
     });
-    var getColorQuery =`
-    WITH phone AS(
-      SELECT id FROM phone
-      WHERE phone_name = $1
-    )
-    SELECT clr.color, clr.color_code FROM phone_color clr, phone
-    WHERE phone.id = clr.phone_id
-    `;
-    var getCapacityQuery =`
-    WITH phone AS(
-      SELECT id FROM phone
-      WHERE phone_name = $1
-    )
-    SELECT cap.capacity FROM phone_capacity cap, phone
-    WHERE phone.id = cap.phone_id
-    `;
+    
     var phone_name = selected[0].phone_name
     var result = {data: selected}
-    var {rows} = await query(getColorQuery, [phone_name]);    
+    var {rows} = await query(querytext.getColorQuery, [phone_name]);    
     result.color = rows;
-    var {rows} = await query(getCapacityQuery, [phone_name]);    
+    var {rows} = await query(querytext.getCapacityQuery, [phone_name]);    
     result.capacity = rows;
     result.status = 'success'
     return res.json(result);
