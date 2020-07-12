@@ -67,16 +67,16 @@ const getPhonesFromDB = async (req, res) =>{
   }
 }
 
-const getPhonesByCompany = async(req, res) =>{
+const getPhonesByBrand = async(req, res) =>{
   try{
     
     const phone_brand = req.query.phone_brand;
-    var {rows} = await query(querytext.getPhonesByCompanyquery, [phone_brand]);    
+    var {rows} = await query(querytext.getPhonesBybrandquery, [phone_brand]);    
     var result = {status: 'success', data: rows}
     return res.json(result);
   }
   catch(err){
-    console.log('getPhonesByCompany ERROR: ' + err);
+    console.log('getPhonesBybrand ERROR: ' + err);
     var result = {status: 'fail'}
     return res.json(result)
   }
@@ -111,6 +111,6 @@ const getColorCapacityByPhone = async(req, res) =>{
 module.exports = {
   getSelectedPhone,
   getPhonesFromDB,
-  getPhonesByCompany,
+  getPhonesByBrand,
   getColorCapacityByPhone,
 }

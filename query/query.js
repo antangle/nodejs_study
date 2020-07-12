@@ -4,7 +4,7 @@ const getSelectedPhoneQuery =`
       SELECT id FROM users
       WHERE nickname = $1
     )
-    SELECT temp.phone_name, temp.phone_company, (
+    SELECT temp.phone_name, temp.phone_brand, (
       SELECT img 
       FROM phone, temp_user_bid AS temp
       WHERE phone.phone_name = temp.phone_name
@@ -35,7 +35,7 @@ const getCapacityQuery =`
     SELECT cap.capacity FROM phone_capacity cap, phone
     WHERE phone.id = cap.phone_id
 `;
-var getPhonesByCompanyquery =`
+var getPhonesBybrandquery =`
     SELECT phone_name, phone_brand, img
     FROM phone 
     WHERE phone_brand = $1
@@ -45,5 +45,5 @@ module.exports = {
     getPhonesFromDBQuery,
     getColorQuery,
     getCapacityQuery,
-    getPhonesByCompanyquery
+    getPhonesBybrandquery
 }
