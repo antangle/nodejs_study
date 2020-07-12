@@ -89,14 +89,16 @@ const getColorCapacityByPhone = async(req, res) =>{
     const a = await getSelectedPhone(req).then(value =>{
       selected = value.data;
     });
-    
-    var phone_name = selected[0].phone_name
-    var result = {data: selected}
+    console.log(selected);
+    var phone_name = selected[0].phone_name;
+    var result = {data: selected};
+    console.log(result);
     var {rows} = await query(querytext.getColorQuery, [phone_name]);    
     result.color = rows;
     var {rows} = await query(querytext.getCapacityQuery, [phone_name]);    
     result.capacity = rows;
     result.status = 'success'
+    console.log(result);
     return res.json(result);
   }
   catch(err){
