@@ -11,14 +11,6 @@ pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
 });
 
-function getUniqueObjectArray(array, key) {
-  return array.filter((item, i) => {
-    return array.findIndex((item2, j) => {
-      return item.key === item2.key;
-    }) === i;
-  });
-}
-
 const getSelectedPhone = async (req) =>{
   try{
     var querytext =`
@@ -116,6 +108,11 @@ const getPhonesByCompany = async(req, res) =>{
 
 const getColorCapacityByPhone = async(req, res) =>{
   try{
+    var selected;
+    //먼저 temp_user_bid 확인
+    const a = await getSelectedPhone(req).then(value =>{
+      selected = value.data;
+    });
     var getColorQuery =`
     WITH phone AS(
       SELECT id FROM phone
@@ -132,8 +129,8 @@ const getColorCapacityByPhone = async(req, res) =>{
     SELECT cap.capacity FROM phone_capacity cap, phone
     WHERE phone.id = cap.phone_id
     `;
-    const {phone_name} = req.query;
-    var result = {}
+    var phone_name = selected[0].phone_name
+    var result = {data: selected}
     var {rows} = await query(getColorQuery, [phone_name]);    
     result.color = rows;
     var {rows} = await query(getCapacityQuery, [phone_name]);    
