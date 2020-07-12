@@ -8,20 +8,20 @@ const createDB = require('../query/createOrDrop')
 //data: {nickname}
 router.post('/start', userBidDB.startBidding);
 
+//자신이 고른 핸드폰 name, company, img(notyet!) 반환
 router.get('/phoneInfo', phoneDB.getSelectedPhone);
-
 //data없이 그냥 썡으로 요청, phones DB내용 반환
 router.get('/1/get', phoneDB.getPhonesFromDB);
-//자신이 고른 핸드폰 name, company, img(notyet!) 반환
-
 //data= {phone_company: } 요청
-router.get('/1/brand', phoneDB.getPhonesByCompany);
+router.get('/1/brand/get', phoneDB.getPhonesByCompany);
 //data= {nickname, phone_name, phone_company}
 router.post('/1/post', userBidDB.buyNextStep1);
 //data= {phone_name}
 router.get('/2/get', phoneDB.getColorCapacityByPhone);
 //data= {nickname, phone_color, phone_capacity}
 router.post('/2/post', userBidDB.buyNextStep2);
+
+
 /*{   
     "nickname" :  "antangle", 
     "current_carrier": "SKT", 

@@ -5,6 +5,7 @@ const query = Pool.query;
 pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
 });
+
 const getSelectedPhone = async (req, res) =>{
   try{
     var querytext =`
@@ -15,11 +16,6 @@ const getSelectedPhone = async (req, res) =>{
     SELECT temp.phone_name, temp.phone_company
     FROM temp_user_bid AS temp, yourid
     WHERE temp.user_id = yourid.id
-    INNER JOIN(
-      SELECT phone.img_url AS img
-      FROM phone, yourid
-      WHERE phone.user_id = yourid.id
-    )
     `;
     var result = {}
     var {nickname} = req.query;
@@ -63,10 +59,10 @@ const getPhonesFromDB = async (req, res) =>{
 const getPhonesByCompany = async(req, res) =>{
   try{
     var querytext =`
-    SELECT phone_name 
+    SELECT phone_name
     FROM phone 
     WHERE phone_company = $1`;
-    const phone_company = req.query.phone_company;
+    const {phone_company} = req.query;
     var {rows} = await query(querytext, [phone_company]);    
     var result = {status: 'success', data: rows}
     return res.json(result);
