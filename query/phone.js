@@ -54,7 +54,7 @@ const getPhonesFromDB = async (req, res) =>{
     var querytext =`
     SELECT phone_name, phone_company, img
     FROM phone 
-    ORDER BY img ASC
+    WHERE ishot = TRUE
     LIMIT 6
     `;
     var {rows} = await query(querytext, []);        
