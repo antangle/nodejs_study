@@ -23,7 +23,7 @@ const getColorQuery =`
       SELECT id FROM phone
       WHERE phone_name = $1
     )
-    SELECT clr.color, clr.color_code FROM phone_color clr, phone
+    SELECT clr.color_name, clr.color_code FROM phone_color clr, phone
     WHERE phone.id = clr.phone_id
 `;
 const getVolumeQuery =`
