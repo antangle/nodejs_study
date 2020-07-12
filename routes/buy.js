@@ -17,8 +17,8 @@ router.get('/getPhonesByCompany', phoneDB.getPhonesByBrand);
 //data= {nickname, phone_name, phone_brand}
 router.post('/buyNextStep1', userBidDB.buyNextStep1);
 //data= {phone_name}
-router.get('/getColorCapacityByPhone', phoneDB.getColorCapacityByPhone);
-//data= {nickname, phone_color, phone_capacity}
+router.get('/getColorVolumeByPhone', phoneDB.getColorVolumeByPhone);
+//data= {nickname, phone_color, phone_volume}
 router.post('/buyNextStep2', userBidDB.buyNextStep2);
 
 

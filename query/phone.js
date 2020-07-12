@@ -82,27 +82,24 @@ const getPhonesByBrand = async(req, res) =>{
   }
 }
 
-const getColorCapacityByPhone = async(req, res) =>{
+const getColorVolumeByPhone = async(req, res) =>{
   try{
     var selected;
     //먼저 temp_user_bid 확인
     const a = await getSelectedPhone(req).then(value =>{
       selected = value.data;
     });
-    console.log(selected);
     var phone_name = selected[0].phone_name;
     var result = {data: selected};
-    console.log(result);
     var {rows} = await query(querytext.getColorQuery, [phone_name]);    
     result.color = rows;
-    var {rows} = await query(querytext.getCapacityQuery, [phone_name]);    
-    result.capacity = rows;
+    var {rows} = await query(querytext.getVolumeQuery, [phone_name]);    
+    result.volume = rows;
     result.status = 'success'
-    console.log(result);
     return res.json(result);
   }
   catch(err){
-    console.log('getPhonesColorCapacity ERROR: ' + err);
+    console.log('getPhonesColorVolume ERROR: ' + err);
     var result = {status: 'fail'}
     return res.json(result)
   }
@@ -112,5 +109,5 @@ module.exports = {
   getSelectedPhone,
   getPhonesFromDB,
   getPhonesByBrand,
-  getColorCapacityByPhone,
+  getColorVolumeByPhone,
 }
