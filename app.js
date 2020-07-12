@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 const buyRouter = require('./routes/buy');
 app.use('/buy', buyRouter);
 
-//app.use(express.static(path.join(__dirname, 'www')));
+app.use(express.static(path.join(__dirname, 'www')));
 app.use('/', (req, res) =>{
   res.send('welcome to backend');
 });
