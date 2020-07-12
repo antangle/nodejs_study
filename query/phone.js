@@ -70,6 +70,8 @@ const getPhonesFromDB = async (req, res) =>{
       if(result.data[0].phone_name === rows[i].phone_name){
         continue;
       }
+      else if(result.data.length == 6)
+        break;
       else{
         result.data.push(rows[i])
       }
