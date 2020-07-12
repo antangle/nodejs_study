@@ -1,10 +1,9 @@
-
 const getSelectedPhoneQuery =`
     WITH yourid AS(
       SELECT id FROM users
       WHERE nickname = $1
     )
-    SELECT temp.phone_name, temp.phone_brand, (
+    SELECT temp.phone_name, temp.phone_brand,(
       SELECT img 
       FROM phone, temp_user_bid AS temp
       WHERE phone.phone_name = temp.phone_name
@@ -27,23 +26,23 @@ const getColorQuery =`
     SELECT clr.color, clr.color_code FROM phone_color clr, phone
     WHERE phone.id = clr.phone_id
 `;
-const getCapacityQuery =`
+const getVolumeQuery =`
     WITH phone AS(
       SELECT id FROM phone
       WHERE phone_name = $1
     )
-    SELECT cap.capacity FROM phone_capacity cap, phone
-    WHERE phone.id = cap.phone_id
+    SELECT vol.phone_volume FROM phone_volume AS vol, phone
+    WHERE phone.id = vol.phone_id
 `;
-var getPhonesBybrandquery =`
+var getPhonesByBrandQuery =`
     SELECT phone_name, phone_brand, img
     FROM phone 
     WHERE phone_brand = $1
 `;
 module.exports = {
-    getSelectedPhoneQuery,
-    getPhonesFromDBQuery,
-    getColorQuery,
-    getCapacityQuery,
-    getPhonesBybrandquery
-}
+    getSelectedPhoneQuery: getSelectedPhoneQuery,
+    getPhonesFromDBQuery: getPhonesFromDBQuery,
+    getColorQuery: getColorQuery,
+    getVolumeQuery: getVolumeQuery,
+    getPhonesByBrandQuery: getPhonesByBrandQuery,
+};

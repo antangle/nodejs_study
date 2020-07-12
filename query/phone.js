@@ -16,11 +16,14 @@ const getSelectedPhone = async (req) =>{
     var result = {};
     var {nickname} = req.query;
     var {rows} = await query(querytext.getSelectedPhoneQuery, [nickname]);
+    console.log(rows)
     result = {data: rows}
-    if(rows.length == 0)
+    if(rows.length == 0){
       result.isSelected = 'FALSE';
-    else
+    }
+    else{
       result.isSelected = 'TRUE';
+    }
     return result;
   }
   catch(err){
@@ -69,9 +72,8 @@ const getPhonesFromDB = async (req, res) =>{
 
 const getPhonesByBrand = async(req, res) =>{
   try{
-    
     const phone_brand = req.query.phone_brand;
-    var {rows} = await query(querytext.getPhonesBybrandquery, [phone_brand]);    
+    var {rows} = await query(querytext.getPhonesByBrandQuery, [phone_brand]);    
     var result = {status: 'success', data: rows}
     return res.json(result);
   }
@@ -85,7 +87,7 @@ const getPhonesByBrand = async(req, res) =>{
 const getColorVolumeByPhone = async(req, res) =>{
   try{
     var selected;
-    //먼저 temp_user_bid 확인
+    //search for temp_user_bid
     const a = await getSelectedPhone(req).then(value =>{
       selected = value.data;
     });

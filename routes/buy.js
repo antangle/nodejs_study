@@ -13,7 +13,7 @@ router.get('/getSelectedPhone', phoneDB.getSelectedPhone);
 //data없이 그냥 썡으로 요청, phones DB내용 반환
 router.get('/getPhonesFromDB', phoneDB.getPhonesFromDB);
 //data= {phone_brand } 요청
-router.get('/getPhonesByCompany', phoneDB.getPhonesByBrand);
+router.get('/getPhonesByBrand', phoneDB.getPhonesByBrand);
 //data= {nickname, phone_name, phone_brand}
 router.post('/buyNextStep1', userBidDB.buyNextStep1);
 //data= {phone_name}
