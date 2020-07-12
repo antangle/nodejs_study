@@ -110,7 +110,7 @@ const getColorCapacityByPhone = async(req, res) =>{
 }
 
 module.exports = {
-  //getSelectedPhone,
+  getSelectedPhone,
   getPhonesFromDB,
   getPhonesByCompany,
   getColorCapacityByPhone,

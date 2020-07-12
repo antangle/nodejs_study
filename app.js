@@ -7,6 +7,8 @@ const app = express();
 //view engine
 //app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'pug');
+
+//나중에 cors option 조정
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
