@@ -56,6 +56,7 @@ const getSelectedPhone = async (req) =>{
 const getPhonesFromDB = async (req, res) =>{
   try{
     var selected;
+    //먼저 temp_user_bid 확인
     const a = await getSelectedPhone(req).then(value =>{
       selected = value;
     });
@@ -68,7 +69,8 @@ const getPhonesFromDB = async (req, res) =>{
     `;
     var {rows} = await query(querytext, []);
     var result = selected;
-    console.log(selected)
+    
+    //temp_user_bid에 내용이 있으면 TRUE
     if(selected.isSelected == 'TRUE'){
       for(i=0;i<rows.length;++i){
         if(result.data[0].phone_name === rows[i].phone_name){
@@ -119,7 +121,7 @@ const getColorCapacityByPhone = async(req, res) =>{
       SELECT id FROM phone
       WHERE phone_name = $1
     )
-    SELECT clr.color FROM phone_color clr, phone
+    SELECT clr.color, clr.color_code FROM phone_color clr, phone
     WHERE phone.id = clr.phone_id
     `;
     var getCapacityQuery =`
