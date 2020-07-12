@@ -59,6 +59,7 @@ const buyNextStep1 = async (req, res) =>{
     FROM users
     WHERE temp_user_bid.user_id = users.id`;
     const {nickname, phone_name, phone_company} = req.body;
+    console.log(nickname, phone_name, phone_company);
     await query(querytext, [nickname, phone_name, phone_company]);
     var result = {status: 'success'};
     return res.json(result);
