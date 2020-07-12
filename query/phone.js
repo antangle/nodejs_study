@@ -46,7 +46,7 @@ const getSelectedPhone = async (req, res) =>{
 const getPhonesFromDB = async (req, res) =>{
   try{
     var querytext =`
-    SELECT phone_name, phone_company, img 
+    SELECT phone_name, phone_company
     FROM phone 
     LIMIT 6`;
     var {rows} = await query(querytext, []);        
