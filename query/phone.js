@@ -94,9 +94,9 @@ const getColorVolumeByPhone = async(req, res) =>{
     var phone_name = selected[0].phone_name;
     var result = {data: selected};
     var {rows} = await query(querytext.getColorQuery, [phone_name]);    
-    result.color = rows;
+    result.phone_color = rows;
     var {rows} = await query(querytext.getVolumeQuery, [phone_name]);    
-    result.volume = rows;
+    result.phone_volume = rows;
     result.status = 'success'
     return res.json(result);
   }
