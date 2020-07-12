@@ -42,9 +42,11 @@ const getSelectedPhone = async (req, res) =>{
 const getPhonesFromDB = async (req, res) =>{
   try{
     var querytext =`
-    SELECT phone_name, phone_company
+    SELECT phone_name, phone_company, img
     FROM phone 
-    LIMIT 6`;
+    ORDER BY img DESC
+    LIMIT 6
+    `;
     var {rows} = await query(querytext, []);        
     var result = {status: 'success', data: rows}
     return res.json(result);
@@ -59,7 +61,7 @@ const getPhonesFromDB = async (req, res) =>{
 const getPhonesByCompany = async(req, res) =>{
   try{
     var querytext =`
-    SELECT phone_name
+    SELECT phone_name, phone_company, img
     FROM phone 
     WHERE phone_company = $1`;
     const {phone_company} = req.query;
@@ -92,14 +94,12 @@ const getColorCapacityByPhone = async(req, res) =>{
     SELECT cap.capacity FROM phone_capacity cap, phone
     WHERE phone.id = cap.phone_id
     `;
-    const phone_name = req.query.phone_name;
+    const {phone_name} = req.query;
     var result = {}
-    console.log(await query(getColorQuery, [phone_name]));
     var {rows} = await query(getColorQuery, [phone_name]);    
     result.color = rows;
     var {rows} = await query(getCapacityQuery, [phone_name]);    
     result.capacity = rows;
-    
     result.status = 'success'
     return res.json(result);
   }

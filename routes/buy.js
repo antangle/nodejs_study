@@ -11,9 +11,9 @@ router.post('/start', userBidDB.startBidding);
 //자신이 고른 핸드폰 name, company, img(notyet!) 반환
 router.get('/phoneInfo', phoneDB.getSelectedPhone);
 //data없이 그냥 썡으로 요청, phones DB내용 반환
-router.get('/1/get', phoneDB.getPhonesFromDB);
+router.get('/getPhonesFromDB', phoneDB.getPhonesFromDB);
 //data= {phone_company: } 요청
-router.get('/1/brand/get', phoneDB.getPhonesByCompany);
+router.get('/getPhonesByCompany', phoneDB.getPhonesByCompany);
 //data= {nickname, phone_name, phone_company}
 router.post('/1/post', userBidDB.buyNextStep1);
 //data= {phone_name}
