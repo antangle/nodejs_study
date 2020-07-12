@@ -18,16 +18,19 @@ const getSelectedPhone = async (req, res) =>{
       SELECT id FROM users
       WHERE nickname = $1
     )
-    SELECT temp.phone_name, temp.phone_company, phone.img
-    FROM temp_user_bid AS temp, yourid, phone
+    SELECT temp.phone_name, temp.phone_company, (
+      SELECT img 
+      FROM phone, temp_user_bid AS temp
+      WHERE phone.phone_name = temp.phone_name
+    )
+    FROM temp_user_bid AS temp, yourid
     WHERE temp.user_id = yourid.id
-    AND phone.phone_name = temp.phone_name
     `
     ;
     var result = {}
     var {nickname} = req.query;
     var {rows} = await query(querytext, [nickname]);
-    console.log(rows.length);
+    console.log(rows);
     if(rows.length == 0)
       result.status = "Non exsiting User";
     else if(rows[0].phone_name == null){

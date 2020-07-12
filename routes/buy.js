@@ -17,9 +17,9 @@ router.get('/getPhonesByCompany', phoneDB.getPhonesByCompany);
 //data= {nickname, phone_name, phone_company}
 router.post('/buyNextStep1', userBidDB.buyNextStep1);
 //data= {phone_name}
-router.get('/2/get', phoneDB.getColorCapacityByPhone);
+router.get('/getColorCapacityByPhone', phoneDB.getColorCapacityByPhone);
 //data= {nickname, phone_color, phone_capacity}
-router.post('/2/post', userBidDB.buyNextStep2);
+router.post('/buyNextStep2', userBidDB.buyNextStep2);
 
 
 /*{   
@@ -34,7 +34,7 @@ router.post('/2/post', userBidDB.buyNextStep2);
     "six_month_payment_plan": 0,
     "affiliate_card": 0
 }*/
-router.post('/web/buy/3', userBidDB.buyNextStep3);
-router.post('/web/buy/4', userBidDB.buyNextStep4);
+router.post('buyNextStep3', userBidDB.buyNextStep3);
+router.post('buyNextStep4', userBidDB.buyNextStep4);
 
 module.exports = router;
