@@ -55,12 +55,12 @@ const buyNextStep1 = async (req, res) =>{
       WHERE nickname = $1
     )
     UPDATE temp_user_bid
-    SET phone_name=$2, phone_company=$3 
+    SET phone_name=$2, phone_brand=$3 
     FROM users
     WHERE temp_user_bid.user_id = users.id`;
-    const {nickname, phone_name, phone_company} = req.body;
-    console.log(nickname, phone_name, phone_company);
-    await query(querytext, [nickname, phone_name, phone_company]);
+    const {nickname, phone_name, phone_brand} = req.body;
+    console.log(nickname, phone_name, phone_brand);
+    await query(querytext, [nickname, phone_name, phone_brand]);
     var result = {status: 'success'};
     return res.json(result);
   }
@@ -70,6 +70,7 @@ const buyNextStep1 = async (req, res) =>{
     return res.json(result);
   }
 };
+
 const buyNextStep2 = async (req, res) =>{
   try{
     var querytext = `

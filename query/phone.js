@@ -1,7 +1,7 @@
 const Pool = require('./pool');
 const express = require('express');
+const querytext = require('./query')
 const app = express();
-
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
@@ -13,23 +13,9 @@ pool.on('error', function (err, client) {
 
 const getSelectedPhone = async (req) =>{
   try{
-    var querytext =`
-    WITH yourid AS(
-      SELECT id FROM users
-      WHERE nickname = $1
-    )
-    SELECT temp.phone_name, temp.phone_company, (
-      SELECT img 
-      FROM phone, temp_user_bid AS temp
-      WHERE phone.phone_name = temp.phone_name
-    )
-    FROM temp_user_bid AS temp, yourid
-    WHERE temp.user_id = yourid.id
-    `
-    ;
-    var result = {}
+    var result = {};
     var {nickname} = req.query;
-    var {rows} = await query(querytext, [nickname]);
+    var {rows} = await query(querytext.getse, [nickname]);
     result = {data: rows}
     if(rows.length == 0)
       result.isSelected = 'FALSE';
@@ -53,7 +39,7 @@ const getPhonesFromDB = async (req, res) =>{
       selected = value;
     });
     var querytext =`
-    SELECT phone_name, phone_company, img
+    SELECT phone_name, phone_brand, img
     FROM phone 
     WHERE ishot = TRUE
     ORDER BY id DESC
@@ -90,12 +76,12 @@ const getPhonesFromDB = async (req, res) =>{
 
 const getPhonesByCompany = async(req, res) =>{
   try{
-    var querytext =`
-    SELECT phone_name, phone_company, img
+    var getPhonesByCompanyquery =`
+    SELECT phone_name, phone_brand, img
     FROM phone 
-    WHERE phone_company = $1`;
-    const phone_company = req.query.phone_company;
-    var {rows} = await query(querytext, [phone_company]);    
+    WHERE phone_brand = $1`;
+    const phone_brand = req.query.phone_brand;
+    var {rows} = await query(getPhonesByCompanyquery, [phone_brand]);    
     var result = {status: 'success', data: rows}
     return res.json(result);
   }

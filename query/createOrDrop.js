@@ -11,7 +11,7 @@ const createPhoneTable = () => {
   const phoneCreateQuery = `CREATE TABLE IF NOT EXISTS phone
   (id SERIAL PRIMARY KEY,
   phone_name VARCHAR(50), 
-  phone_company VARCHAR(50),
+  phone_brand VARCHAR(50),
   phone_cost INT
   )`;
 
@@ -28,7 +28,7 @@ const createUserBidTable = () => {
     (id SERIAL PRIMARY KEY,
     user_id INT, 
     phone_name VARCHAR(50), 
-    phone_company VARCHAR(50),
+    phone_brand VARCHAR(50),
     phone_color VARCHAR(50),
     phone_storage INT,
     current_carrier VARCHAR(10),
@@ -58,7 +58,7 @@ const createTempUserBidTable = () => {
   (id SERIAL PRIMARY KEY,
   user_id INT UNIQUE, 
   phone_name VARCHAR(50), 
-  phone_company VARCHAR(50),
+  phone_brand VARCHAR(50),
   phone_color VARCHAR(50),
   phone_storage INT,
   current_carrier VARCHAR(10),
@@ -157,7 +157,7 @@ const insertDummyUsers = () => {
 const insertDummyPhone = () => {
   const insertPhoneQuery = `
   INSERT INTO phone(
-    phone_name, phone_company, phone_cost) 
+    phone_name, phone_brand, phone_cost) 
   VALUES
   ('Iphone8', 'Apple',350000),
   ('Galaxy Note9', 'Samsung',300000),
