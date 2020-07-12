@@ -36,9 +36,13 @@ const getSelectedPhone = async (req) =>{
     `
     ;
     var result = {}
-    var nickname = 'jihun';
+    var {nickname} = req.query;
     var {rows} = await query(querytext, [nickname]);
-    result = {status: 'success', data: rows}
+    result = {data: rows}
+    if(rows.length == 0)
+      result.isselected = 'FALSE';
+    else
+      result.isselected = 'TRUE';
     return result;
   }
   catch(err){
@@ -53,7 +57,7 @@ const getPhonesFromDB = async (req, res) =>{
   try{
     var selected;
     const a = await getSelectedPhone(req).then(value =>{
-      selected = value.data;
+      selected = value;
     });
     var querytext =`
     SELECT phone_name, phone_company, img
@@ -63,19 +67,23 @@ const getPhonesFromDB = async (req, res) =>{
     LIMIT 6
     `;
     var {rows} = await query(querytext, []);
-    var result = {status: 'success'}
-    result.data = selected
-    console.log(rows)
-    for(i=0;i<rows.length;++i){
-      if(result.data[0].phone_name === rows[i].phone_name){
-        continue;
-      }
-      else if(result.data.length == 6)
-        break;
-      else{
-        result.data.push(rows[i])
+    var result = selected;
+    console.log(selected)
+    if(selected.isselected == 'TRUE'){
+      for(i=0;i<rows.length;++i){
+        if(result.data[0].phone_name === rows[i].phone_name){
+          continue;
+        }
+        else if(result.data.length == 6)
+          break;
+        else{
+          result.data.push(rows[i])
+        }
       }
     }
+    else
+      result.data = rows;
+    result.status = 'success';
     return res.json(result);
   }
     
