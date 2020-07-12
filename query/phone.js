@@ -40,9 +40,9 @@ const getSelectedPhone = async (req) =>{
     var {rows} = await query(querytext, [nickname]);
     result = {data: rows}
     if(rows.length == 0)
-      result.isselected = 'FALSE';
+      result.isSelected = 'FALSE';
     else
-      result.isselected = 'TRUE';
+      result.isSelected = 'TRUE';
     return result;
   }
   catch(err){
@@ -69,7 +69,7 @@ const getPhonesFromDB = async (req, res) =>{
     var {rows} = await query(querytext, []);
     var result = selected;
     console.log(selected)
-    if(selected.isselected == 'TRUE'){
+    if(selected.isSelected == 'TRUE'){
       for(i=0;i<rows.length;++i){
         if(result.data[0].phone_name === rows[i].phone_name){
           continue;
