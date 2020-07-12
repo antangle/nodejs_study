@@ -15,6 +15,11 @@ const getSelectedPhone = async (req, res) =>{
     SELECT temp.phone_name, temp.phone_company
     FROM temp_user_bid AS temp, yourid
     WHERE temp.user_id = yourid.id
+    INNER JOIN(
+      SELECT phone.img_url AS img
+      FROM phone, yourid
+      WHERE phone.user_id = yourid.id
+    )
     `;
     var result = {}
     var {nickname} = req.query;
@@ -41,7 +46,7 @@ const getSelectedPhone = async (req, res) =>{
 const getPhonesFromDB = async (req, res) =>{
   try{
     var querytext =`
-    SELECT phone_name, phone_company 
+    SELECT phone_name, phone_company, img 
     FROM phone 
     LIMIT 6`;
     var {rows} = await query(querytext, []);        

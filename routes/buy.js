@@ -4,10 +4,12 @@ const phoneDB = require('../query/phone');
 const userBidDB = require('../query/userBid');
 const createDB = require('../query/createOrDrop')
 
-router.get('/phoneInfo', phoneDB.getSelectedPhone);
 
 //data: {nickname}
 router.post('/start', userBidDB.startBidding);
+
+router.get('/phoneInfo', phoneDB.getSelectedPhone);
+
 //data없이 그냥 썡으로 요청, phones DB내용 반환
 router.get('/1/get', phoneDB.getPhonesFromDB);
 //자신이 고른 핸드폰 name, company, img(notyet!) 반환
