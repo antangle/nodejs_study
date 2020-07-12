@@ -11,7 +11,15 @@ pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
 });
 
-const getSelectedPhone = async (req, res) =>{
+function getUniqueObjectArray(array, key) {
+  return array.filter((item, i) => {
+    return array.findIndex((item2, j) => {
+      return item.key === item2.key;
+    }) === i;
+  });
+}
+
+const getSelectedPhone = async (req) =>{
   try{
     var querytext =`
     WITH yourid AS(
@@ -28,39 +36,47 @@ const getSelectedPhone = async (req, res) =>{
     `
     ;
     var result = {}
-    var {nickname} = req.query;
+    var nickname = 'jihun';
     var {rows} = await query(querytext, [nickname]);
-    console.log(rows);
-    if(rows.length == 0)
-      result.status = "Non exsiting User";
-    else if(rows[0].phone_name == null){
-      result.status = "Not Selected Yet"
-    }
-    else{
-      result = {status: 'success', data: rows}
-    }
-    return res.json(result);
+    result = {status: 'success', data: rows}
+    return result;
   }
   catch(err){
     console.log('getSelectedPhone ERROR: ' + err);
     result = {status: 'fail'}
-    return res.json(result)
+    return result;
   }
 }
 
 //ORDER BY RELEASE DATE not yet coded
 const getPhonesFromDB = async (req, res) =>{
   try{
+    var selected;
+    const a = await getSelectedPhone(req).then(value =>{
+      selected = value.data;
+    });
     var querytext =`
     SELECT phone_name, phone_company, img
     FROM phone 
     WHERE ishot = TRUE
+    ORDER BY id DESC
     LIMIT 6
     `;
-    var {rows} = await query(querytext, []);        
-    var result = {status: 'success', data: rows}
+    var {rows} = await query(querytext, []);
+    var result = {status: 'success'}
+    result.data = selected
+    console.log(rows)
+    for(i=0;i<rows.length;++i){
+      if(result.data[0].phone_name === rows[i].phone_name){
+        continue;
+      }
+      else{
+        result.data.push(rows[i])
+      }
+    }
     return res.json(result);
   }
+    
   catch(err){
     console.log('getPhonesFromDB ERROR: ' + err);
     var result = {status: 'fail'}
