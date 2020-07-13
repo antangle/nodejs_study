@@ -30,6 +30,7 @@ router.get('/', async (req, res)=>{
 
 router.post('/', async (req, res)=>{
     try{
+        console.log('here')
         var {name, phone_num, email, is_auth} = req.body
         
         if(is_auth === undefined){
@@ -50,6 +51,7 @@ router.post('/', async (req, res)=>{
         WHERE NOT EXISTS (SELECT 1 FROM cte)
         `;
         var {rows} = await query(querytext, [name, phone_num, email, is_auth]) 
+        console.log(rows);
         var isoverlap = rows[0].conflict;
         if(isoverlap == null){
             var result = {status: 'success'};
