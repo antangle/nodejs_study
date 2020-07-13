@@ -3,8 +3,8 @@ const {Pool} = require('pg');
 var config = {
   user: 'postgres',
   host: 'localhost',
-  database: 'test', 
-  password: 'lawrence',
+  database: 'aptioncompany', 
+  password: 'doqtus3069',
   port: 5432,
   max: 10,
   idleTimeoutMillis: 20000,
