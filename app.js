@@ -4,22 +4,21 @@ const logger = require('morgan');
 const cors = require('cors');
 const app = express();
 
-//view engine
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
-//나중에 cors option 조정
+//later configure cors option
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const buyRouter = require('./routes/buy');
+const landingRouter = require('./routes/landing');
 app.use('/buy', buyRouter);
-
-app.use(express.static(path.join(__dirname, 'www')));
+app.use('/landing', landingRouter);
 app.use('/', (req, res) =>{
-  res.send('welcome to backend');
+  res.render('index');
 });
 
 // catch 404 and forward to error handler
@@ -33,7 +32,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500)
-  .send('error');
+  res.send('error');
 })
 
 const port = 9000;
