@@ -18,7 +18,7 @@ const landingRouter = require('./routes/landing');
 app.use('/buy', buyRouter);
 app.use('/landing', landingRouter);
 app.use('/', (req, res) =>{
-  res.render('index');
+  res.send('Welcome to Backend');
 });
 
 // catch 404 and forward to error handler
