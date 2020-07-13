@@ -30,36 +30,29 @@ router.get('/', async (req, res)=>{
 
 router.post('/', async (req, res)=>{
     try{
-        console.log('here')
         var {name, phone_num, email, is_auth} = req.body
         
-        if(is_auth === undefined){
+        if(is_auth != true || is_auth != false){
             is_auth = false;
         };
         
         querytext = `
-        WITH cte AS(
         INSERT INTO landing_user_list(name, phone_num, email, is_auth)
         VALUES($1, $2, $3, $4)
-        ON CONFLICT (phone_num) DO NOTHING
-        RETURNING phone_num
-        )
-        SELECT NULL AS conflict 
-        WHERE EXISTS(SELECT 1 FROM cte)
-        UNION ALL
-        SELECT $2 AS conflict
-        WHERE NOT EXISTS (SELECT 1 FROM cte)
+        ON CONFLICT (phone_num) DO UPDATE
+        SET name=$1, email=$3, is_auth=$4, status='overlap'
+        WHERE excluded.phone_num = landing_user_list.phone_num
+        RETURNING status
         `;
         var {rows} = await query(querytext, [name, phone_num, email, is_auth]) 
-        console.log(rows);
-        var isoverlap = rows[0].conflict;
+        var isoverlap = rows[0].status;
         if(isoverlap == null){
             var result = {status: 'success'};
         }
         else{
             var result = {status: 'overlap'};
-        }    
-        return res.json(result);
+        }
+        return res.json(result);    
     }
     catch(err){
         console.log('PostLandingUserList ERROR: ' + err);

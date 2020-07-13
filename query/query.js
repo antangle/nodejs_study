@@ -39,6 +39,20 @@ var getPhonesByBrandQuery =`
     FROM phone 
     WHERE phone_brand = $1
 `;
+
+const querytext = `
+WITH cte AS(
+INSERT INTO landing_user_list(name, phone_num, email, is_auth)
+VALUES($1, $2, $3, $4)
+ON CONFLICT (phone_num) DO NOTHING
+RETURNING phone_num
+)
+SELECT NULL AS conflict
+WHERE EXISTS(SELECT 1 FROM cte)
+UNION ALL
+SELECT $2 AS conflict
+WHERE NOT EXISTS (SELECT 1 FROM cte)
+`
 module.exports = {
     getSelectedPhoneQuery: getSelectedPhoneQuery,
     getPhonesFromDBQuery: getPhonesFromDBQuery,
