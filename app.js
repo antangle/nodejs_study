@@ -8,7 +8,6 @@ const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
 const swaggerOptions ={
   swaggerDefinition:{
     info: {
@@ -18,15 +17,16 @@ const swaggerOptions ={
       contact: {
         name: 'antangle'
       },
-      servers: ["api.aptioncompany.com:9000"]
+      servers: ["http://api.aptioncompany.com:9000"]
     },
-    host: "api.aptioncompany.com:9000",
+    host: "localhost:9000",
     basepath: "/",
   },
   apis: ['swagger.yaml']
 }
+
 const swaggerDoc = swaggerJsDoc(swaggerOptions);
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 //later configure cors option
 app.use(cors());
