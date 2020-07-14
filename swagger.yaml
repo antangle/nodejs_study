@@ -3,7 +3,7 @@ info:
   description: "hello world"
   version: "1.0.0"
   title: "my api-doc"
-host: "localhost:9000"
+host: "api.aptioncompany.com:9000"
 basePath: "/"
 tags:
 - name: "buy"
