@@ -30,10 +30,14 @@ const startBidding = async (req, res) =>{
     }
     else{
     const Insertquery =`
+    WITH yourid AS(
+      SELECT id FROM users
+      WHERE nickname = $1
+    )  
     INSERT INTO temp_user_bid(user_id)
-    SELECT id FROM users
-    WHERE nickname = $1
-    ON CONFLICT DO NOTHING
+    SELECT id FROM yourid
+    ON CONFLICT (user_id) DO
+    UPDATE SET user_id = (SELECT id FROM yourid)
     `;
     await query(Insertquery, [nickname]);
     var result = {status: 'success'};

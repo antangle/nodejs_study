@@ -1,11 +1,32 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
 const cors = require('cors');
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+const swaggerOptions ={
+  swaggerDefinition:{
+    info: {
+      title: 'My First API info',
+      version: '3.0.0',
+      description: 'API info',
+      contact: {
+        name: 'antangle'
+      },
+      servers: ["api.aptioncompany.com/:9000"]
+    },
+    host: "localhost:9000",
+    basepath: "/",
+  },
+  apis: ['swagger.yaml']
+}
+const swaggerDoc = swaggerJsDoc(swaggerOptions);
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 //later configure cors option
 app.use(cors());

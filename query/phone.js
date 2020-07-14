@@ -1,5 +1,5 @@
-const Pool = require('./pool');
 const express = require('express');
+const Pool = require('./pool');
 const querytext = require('./query')
 const app = express();
 app.use(express.json({limit: '50mb'}));
@@ -91,7 +91,11 @@ const getColorVolumeByPhone = async(req, res) =>{
     const a = await getSelectedPhone(req).then(value =>{
       selected = value.data;
     });
-    var phone_name = selected[0].phone_name;
+    var phone_name
+    if(selected === undefined)
+      phone_name = "LG-G6";
+    else
+      phone_name = selected[0].phone_name;
     var result = {data: selected};
     var {rows} = await query(querytext.getColorQuery, [phone_name]);    
     result.phone_color = rows;

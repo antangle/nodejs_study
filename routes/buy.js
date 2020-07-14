@@ -4,12 +4,61 @@ const phoneDB = require('../query/phone');
 const userBidDB = require('../query/userBid');
 const createDB = require('../query/createOrDrop')
 
+/**
+ * @swagger
+ * tags:
+ *   name: buy
+ *   description: buy management
+ * definitions:
+ *   buy:
+ *     type: object
+ *     required:
+ *       - content
+ *     properties:
+ *       nickname:
+ *         type: string
+ *         description: ObjectID
+ *       phone_name:
+ *         type: string
+ *         description: 할일 내용
+ *       phone_data:
+ *         type: string
+ *         description: 완료 여부
+ */
+
+/**
+ * @swagger
+ * /buy/getSelectedPhone:
+ *   get:
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: nickname
+ *         description: user nickname
+ *         in: path
+ *         required: true
+ *         type: string
+ *     tags: [Todo]
+ *     responses:
+ *       200:
+ *         description: todo list
+ *         schema:
+ *           type: object
+ *           properties:
+ *             todos:
+ *               type: array
+ *               items:
+ *                  $ref: '#/definitions/buy'                  
+ */
+
+ 
 
 //data: {nickname}
 router.post('/start', userBidDB.startBidding);
 
-//자신이 고른 핸드폰 name, company, img(notyet!) 반환
+//자신이 고른 핸드폰 name, company, img 반환
 router.get('/getSelectedPhone', phoneDB.getSelectedPhone);
+
 //data없이 그냥 썡으로 요청, phones DB내용 반환
 router.get('/getPhonesFromDB', phoneDB.getPhonesFromDB);
 //data= {phone_brand } 요청
@@ -34,7 +83,7 @@ router.post('/buyNextStep2', userBidDB.buyNextStep2);
     "six_month_payment_plan": 0,
     "affiliate_card": 0
 }*/
-router.post('buyNextStep3', userBidDB.buyNextStep3);
-router.post('buyNextStep4', userBidDB.buyNextStep4);
+router.post('/buyNextStep3', userBidDB.buyNextStep3);
+router.post('/buyNextStep4', userBidDB.buyNextStep4);
 
 module.exports = router;
