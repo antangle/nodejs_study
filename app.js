@@ -17,7 +17,7 @@ const swaggerOptions ={
       contact: {
         name: 'antangle'
       },
-      servers: ["http://api.aptioncompany.com:9000"]
+      servers: ["http://localhost:9000"]
     },
     host: "localhost:9000",
     basepath: "/",
