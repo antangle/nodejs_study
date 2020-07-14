@@ -4,24 +4,20 @@ const phoneDB = require('../query/phone');
 const userBidDB = require('../query/userBid');
 const createDB = require('../query/createOrDrop')
 
-//data: {nickname}
 router.post('/start', userBidDB.startBidding);
 
-//자신이 고른 핸드폰 name, company, img 반환
 router.get('/getSelectedPhone', phoneDB.getSelectedPhone);
 
-//data없이 그냥 썡으로 요청, phones DB내용 반환
+//buy step:1
 router.get('/getPhonesFromDB', phoneDB.getPhonesFromDB);
-//data= {phone_brand } 요청
 router.get('/getPhonesByBrand', phoneDB.getPhonesByBrand);
-//data= {nickname, phone_name, phone_brand}
 router.post('/buyNextStep1', userBidDB.buyNextStep1);
-//data= {phone_name}
+
+//buy step:2
 router.get('/getColorVolumeByPhone', phoneDB.getColorVolumeByPhone);
-//data= {nickname, phone_color, phone_volume}
 router.post('/buyNextStep2', userBidDB.buyNextStep2);
 
-
+//buy step:3
 /*{   
     "nickname" :  "antangle", 
     "current_carrier": "SKT", 
@@ -35,6 +31,8 @@ router.post('/buyNextStep2', userBidDB.buyNextStep2);
     "affiliate_card": 0
 }*/
 router.post('/buyNextStep3', userBidDB.buyNextStep3);
-router.post('/buyNextStep4', userBidDB.buyNextStep4);
 
+//buy step:4
+router.post('/buyNextStep4', userBidDB.buyNextStep4);
+router.put('/finalizeBid')
 module.exports = router;

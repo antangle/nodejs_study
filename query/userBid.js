@@ -84,7 +84,9 @@ const buyNextStep2 = async (req, res) =>{
     UPDATE temp_user_bid
     SET color_name=$2, phone_volume=$3 
     FROM users
-    WHERE temp_user_bid.user_id = users.id`;
+    WHERE temp_user_bid.user_id = users.id
+    RETURNING *
+    `;
     const {nickname, color_name, phone_volume} = req.body;
     await query(querytext, [nickname, color_name, phone_volume]);
     var result = {status: 'success'};
@@ -133,29 +135,72 @@ const buyNextStep3 = async (req, res) =>{
   }
 };
 
-// not yet done!
 const buyNextStep4 = async (req, res) =>{
   try{
     var querytext = `
-    WITH users AS(
+    WITH yourid AS(
       SELECT id FROM users
       WHERE nickname = $1
     )
     UPDATE temp_user_bid
-    SET phone_color=$2, phone_volume=$3 
-    FROM users
-    WHERE temp_user_bid.user_id = users.id`;
-    const {nickname, phone_color, phone_volume} = req.body;
-    await query(querytext, [nickname, phone_color, phone_volume]);
+    SET requirements=$2, safe_number=$3, bid_time =$4 
+    FROM yourid
+    WHERE temp_user_bid.user_id = yourid.id`;
+    const {nickname, requirements, safe_number, bid_time} = req.body;
+    await query(querytext, [nickname, requirements, safe_number, bid_time]);
+    //why cant i select * except 1???
+    var finalizeBidQuery =`
+    WITH yourid AS(
+      SELECT id FROM users
+      WHERE nickname = $1
+    )
+      INSERT into user_bid(user_id,
+      phone_name,
+            phone_brand,
+            color_name,
+            phone_volume,
+            current_carrier,
+            want_carrier,
+            want_plan,
+            want_payment_period,
+            contract, 
+            want_contract_period,
+            return_phone,
+            six_month_payment_plan,
+            affiliate_card,
+            requirements,
+            safe_number,
+            bid_time)
+      SELECT user_id,
+        phone_name,
+          phone_brand,
+            color_name,
+            phone_volume,
+            current_carrier,
+            want_carrier,
+            want_plan,
+            want_payment_period,
+            contract, 
+            want_contract_period,
+            return_phone,
+            six_month_payment_plan,
+            affiliate_card,
+            requirements,
+            safe_number,
+            bid_time
+      from temp_user_bid, yourid
+      where temp_user_bid.user_id = yourid.id`;
+    await query(finalizeBidQuery, [nickname]);
     var result = {status: 'success'};
     return res.json(result);
   }
   catch(err){
-    console.log('buyNextStep2 ERROR: ' + err);
+    console.log('buyNextStep4 ERROR: ' + err);
     var result = {status: 'fail'};
     return res.json(result);
   }
 };
+
 module.exports = {
   startBidding,
   buyNextStep1,
@@ -163,3 +208,24 @@ module.exports = {
   buyNextStep3,
   buyNextStep4
 }
+
+/*
+    SELECT (
+      user_id,     
+      phone_name,
+      phone_brand,
+      color_name,
+      phone_volume,
+      current_carrier,
+      want_carrier,
+      want_plan,
+      want_payment_period,
+      contract, 
+      want_contract_period,
+      return_phone,
+      six_month_payment_plan,
+      affiliate_card,
+      requirements,
+      safe_number,
+      bid_time) 
+*/

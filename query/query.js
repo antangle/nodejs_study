@@ -34,7 +34,7 @@ const getVolumeQuery =`
     SELECT vol.phone_volume FROM phone_volume AS vol, phone
     WHERE phone.id = vol.phone_id
 `;
-var getPhonesByBrandQuery =`
+const getPhonesByBrandQuery =`
     SELECT phone_name, phone_brand, img
     FROM phone 
     WHERE phone_brand = $1
