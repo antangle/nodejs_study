@@ -1,5 +1,5 @@
 const express = require('express');
-const Pool = require('./pool');
+const Pool = require('../connect/pool');
 const querytext = require('./query')
 const app = express();
 app.use(express.json({limit: '50mb'}));
@@ -73,13 +73,14 @@ const getPhonesFromDB = async (req, res) =>{
 const getPhonesByBrand = async(req, res) =>{
   try{
     const phone_brand = req.query.phone_brand;
-    var {rows} = await query(querytext.getPhonesByBrandQuery, [phone_brand]);    
+    var {rows} = await query(querytext.getPhonesByBrandQuery, [phone_brand]);
     var result = {status: 'success', data: rows}
-    return res.json(result);
   }
   catch(err){
     console.log('getPhonesBybrand ERROR: ' + err);
     var result = {status: 'fail'}
+  }
+  finally{
     return res.json(result)
   }
 }
@@ -88,7 +89,7 @@ const getColorVolumeByPhone = async(req, res) =>{
   try{
     var selected;
     //search for temp_user_bid
-    const a = await getSelectedPhone(req).then(value =>{
+    await getSelectedPhone(req).then(value =>{
       selected = value.data;
     });
     var phone_name
@@ -102,12 +103,13 @@ const getColorVolumeByPhone = async(req, res) =>{
     var {rows} = await query(querytext.getVolumeQuery, [phone_name]);    
     result.phone_volume = rows;
     result.status = 'success'
-    return res.json(result);
   }
   catch(err){
     console.log('getPhonesColorVolume ERROR: ' + err);
     var result = {status: 'fail'}
-    return res.json(result)
+  }
+  finally{
+    return res.json(result);
   }
 }
 

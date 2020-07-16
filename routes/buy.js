@@ -1,12 +1,11 @@
 var express = require('express');
 var router = express.Router();
-const phoneDB = require('../query/phone');
-const userBidDB = require('../query/userBid');
-const createDB = require('../query/createOrDrop')
+const phoneDB = require('./buy/get');
+const userBidDB = require('./buy/post');
 
 router.post('/start', userBidDB.startBidding);
 
-router.get('/getSelectedPhone', phoneDB.getSelectedPhone);
+//router.get('/getSelectedPhone', phoneDB.getSelectedPhone);
 
 //buy step:1
 router.get('/getPhonesFromDB', phoneDB.getPhonesFromDB);
@@ -34,5 +33,5 @@ router.post('/buyNextStep3', userBidDB.buyNextStep3);
 
 //buy step:4
 router.post('/buyNextStep4', userBidDB.buyNextStep4);
-router.put('/finalizeBid')
+
 module.exports = router;

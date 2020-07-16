@@ -1,17 +1,20 @@
 const {Pool} = require('pg');
+const path = require('path')
+const dotenv = require('dotenv');
+dotenv.config({path: path.join(__dirname, '../../.env')});
 
-var config = {
-  user: 'postgres',
-  host: 'localhost',
-  database: 'aptioncompany', 
-  password: 'doqtus3069',
-  port: 5432,
+var db_config = {
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB, 
+  password: process.env.DB_PWD,
+  port: process.env.DB_PORT,
   max: 10,
   idleTimeoutMillis: 20000,
   connectionTimeoutMillis: 2000,
 };
 
-const pool = new Pool(config);
+const pool = new Pool(db_config);
 
 async function query (queryText, params) {
     const client = await pool.connect();

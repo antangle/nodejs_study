@@ -1,4 +1,4 @@
-const Pool = require('./pool');
+const Pool = require('../connect/pool');
 const pool = Pool.pool;
 
 

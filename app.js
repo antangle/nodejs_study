@@ -1,32 +1,24 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
-const swaggerJsDoc = require('swagger-jsdoc')
-const swaggerUi = require('swagger-ui-express')
 const cors = require('cors');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const app = express();
+const swagger = require('./swagger/swagger');
+const dotenv = require('dotenv');
+dotenv.config();
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-const swaggerOptions ={
-  swaggerDefinition:{
-    info: {
-      title: 'My First API info',
-      version: '3.0.0',
-      description: 'API info',
-      contact: {
-        name: 'antangle'
-      },
-      servers: ["http://api.aptioncompany.com:9000"]
-    },
-    host: "api.aptioncompany.com:9000",
-    basepath: "/",
-  },
-  apis: ['swagger.yaml']
-}
+const buyRouter = require('./routes/buy');
+const userRouter = require('./routes/user');
+const landingRouter = require('./routes/landing');
+const config = require('./config');
+const port = process.env.port || 9000;
+const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
-const swaggerDoc = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'pug');
+app.set('jwt-secret', config.secret);
 
 //later configure cors option
 app.use(cors());
@@ -34,10 +26,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const buyRouter = require('./routes/buy');
-const landingRouter = require('./routes/landing');
 app.use('/buy', buyRouter);
+app.use('/user', userRouter);
 app.use('/landing', landingRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use('/', (req, res) =>{
   res.send('Welcome to Backend');
 });
@@ -53,10 +45,9 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500)
-  res.send('error');
+  res.send(err);
 })
 
-const port = 9000;
 app.listen(port, ()=> {
   console.log(`app running on port ${port}`)
 });
