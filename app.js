@@ -5,7 +5,7 @@ const cors = require('cors');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
-const swagger = require('./swagger/swagger');
+const swagger = require('./swagger/swagger.js');
 
 
 const buyRouter = require('./routes/buy');

@@ -12,7 +12,7 @@ const swaggerOptions ={
       host: "api.aptioncompany.com:9000",
       basepath: "/",
     },
-    apis: ['swagger.yaml']
+    apis: ['./swagger/swagger.yaml']
   }
 
   module.exports ={
