@@ -14,7 +14,6 @@ const swaggerOptions ={
     },
     apis: ['./swagger/swagger.yaml']
   }
-
   module.exports ={
       swaggerOptions
   }

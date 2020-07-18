@@ -46,7 +46,7 @@ paths:
       parameters:
       - name: "brand_id"
         in: "query"
-        description: "1: Samsung, 2: Apple, 3:LG, 4:Xiaomi"
+        description: "1: Samsung, 2: Apple, 3:LG, 4:Others"
         required: false
         type: "integer"
         collectionFormat: "multi"
@@ -55,156 +55,18 @@ paths:
           description: "successful operation"
         "400":
           description: "Invalid status value"
-  /buy/buyNextStep1:
+  /buy/postSaveStep1:
     post:
       tags:
       - "buy"
-      summary: "Updates a buy at step1 with data"
-      description: ""
-      operationId: "buyNextStep1"
+      summary: "save data from step 1"
+      description: "step=1, state=1, update(or insert) user_id, device_id"
+      operationId: "postSaveStep1"
       consumes:
       - "application/json"
       produces:
       - "application/json"
-      parameters:
-      - name: "nickname"
-        in: "query"
-        type: "string"
-        description: "Updated phone_name at step1"
-        required: true
-      - name: "phone_name"
-        in: "query"
-        description: "Updated phone_name at step1"
-        required: true
-        type: "string"
-      - name: "phone_brand"
-        in: "query"
-        description: "Updated phone_brand at step1"
-        required: true
-        type: "string"
       responses:
-        "405":
-          description: "Invalid input"
-  /buy/getColorVolumeByPhone:
-    get:
-      tags:
-      - "buy"
-      summary: "Finds color, volume with nickname"
-      description: "at step2"
-      operationId: "getColorVolumeByPhone"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "nickname"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: "successful operation"
-        "201":
-          description: "success"
-        "400":
-          description: "Invalid status value"
-  /buy/buyNextStep2:
-    post:
-      tags:
-      - "buy"
-      summary: "Updates a buy at step2 with data"
-      description: ""
-      operationId: "buyNextStep2"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "nickname"
-        in: "query"
-        type: "string"
-        description: "nickname used for searching temp_bid at step2"
-        required: true
-      - name: "color_name"
-        in: "query"
-        description: "Updated color_name at step2"
-        required: true
-        type: "string"
-      - name: "phone_volume"
-        in: "query"
-        description: "Updated phone_volume at step2"
-        required: true
-        type: "string"
-      responses:
-        "201":
-          description: "success"
-        "405":
-          description: "Invalid input"
-  /buy/buyNextStep3:
-    post:
-      tags:
-      - "buy"
-      summary: "Updates a buy at step3 with data"
-      description: ""
-      operationId: "buyNextStep3"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "nickname"
-        in: "query"
-        type: "string"
-        description: "nickname used for searching temp_bid at step3"
-        required: true
-      - name: "current_carrier"
-        in: "query"
-        description: "Updated current_carrier at step3"
-        required: true
-        type: "string"
-      - name: "want_carrier"
-        in: "query"
-        description: "Updated want_carrier at step3"
-        required: true
-        type: "string"
-      - name: "want_plan"
-        in: "query"
-        description: "Updated want_plan at step3"
-        required: true
-        type: "string"
-      - name: "want_payment_period"
-        in: "query"
-        description: "Updated want_payment_period at step3"
-        required: true
-        type: "string"
-      - name: "contract"
-        in: "query"
-        description: "Updated contract at step3"
-        required: true
-        type: "string"
-      - name: "want_contract_period"
-        in: "query"
-        description: "Updated want_contract_period at step3"
-        required: true
-        type: "string"
-      - name: "return_phone"
-        in: "query"
-        description: "Updated return_phone at step3"
-        required: true
-        type: "string"
-      - name: "six_month_payment_plan"
-        in: "query"
-        description: "Updated six_month_payment_plan at step3"
-        required: true
-        type: "string"
-      - name: "affiliate_card"
-        in: "query"
-        description: "Updated affiliate_card at step3"
-        required: true
-        type: "string"  
-      responses:
-        "201":
-          description: "success"
         "405":
           description: "Invalid input"
   /landing:

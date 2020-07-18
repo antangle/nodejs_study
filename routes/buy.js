@@ -2,16 +2,18 @@ var express = require('express');
 var router = express.Router();
 const buy = require('./buy/step1');
 
+const const_null = -2;
+
 router.get('/test', async(req,res) =>{
     var result ={};
     try{
-        const data = await buy.Step1GetDeviceByBrand(1);
-        console.log(data);
-        result = data
+        var {user_id, device_id} = req.query;
+        result = await buy.getAuctionTempWithUser(user_id); 
+        if(result.result != 1)
+            throw(result.result);
     }
     catch(err){
-        console.log('router getStep1Latest ERROR: ' + err);
-        result.result = 'fail';
+        console.log('router test ERROR: ' + err);
     }
     finally{
         return res.json(result);
@@ -23,13 +25,16 @@ router.get('/getStep1Latest', async(req,res) =>{
     try{
         var {user_id} = req.query;
         result = await buy.getAuctionTempWithUser(user_id);
+        if(result.result != 1)
+            throw(result.result);
         var latestDevices = await buy.getStep1Latest6();
+        if(latestDevices.result != 1)
+            throw latestDevices.result;
         result.device_array = latestDevices.device_array;
         result.result = 1;
     }
     catch(err){
         console.log('router getStep1Latest ERROR: ' + err);
-        result.result = -101;
     }
     finally{
         return res.json(result);
@@ -41,18 +46,47 @@ router.get('/getStep1WithBrand', async(req, res) => {
     try{
         var {user_id, brand_id} = req.query;
         result = await buy.getAuctionTempWithUser(user_id);
+        if(result.result != 1)
+            throw(result.result);
         result = await buy.Step1GetDeviceByBrand(brand_id);
+        if(result.result != 1)
+            throw(result.result);
         result.result = 1;
     }
     catch(err){
         console.log('router getStep1WithBrand ERROR: ' + err);
-        result.result = -102;
     }
     finally{
         return res.json(result);
     }
 });
 
+router.post('/postSaveStep1', async(req, res) =>{
+    var result ={};
+    try{
+        var {user_id, device_id} = req.body;
+        var {temp_device_id} = await buy.getAuctionTempWithUser(user_id); 
+        console.log(temp_device_id)
+        if (temp_device_id == const_null){
+            const isError = await buy.postStep1Insert(user_id, device_id);
+            if(isError.result != 1)
+                throw(isError.result);
+            result.result = 1;
+        }
+        else{
+            const isError = await buy.postStep1Update(user_id, device_id);
+            if(isError.result != 1)
+                throw(isError.result);
+            result.result = 1;
+        }
+    }
+    catch(err){
+        console.log('router getStep1WithBrand ERROR: ' + err);
+    }
+    finally{
+        return res.json(result);
+    }
+});
 /*
 //101. step:1
 router.get('/getStep1Latest', async (req, res)=>{
