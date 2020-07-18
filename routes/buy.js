@@ -5,7 +5,7 @@ const buy = require('./buy/step1');
 router.get('/test', async(req,res) =>{
     var result ={};
     try{
-        const data = await buy.getStep1Latest6();
+        const data = await buy.Step1GetDeviceByBrand(1);
         console.log(data);
         result = data
     }
@@ -30,6 +30,23 @@ router.get('/getStep1Latest', async(req,res) =>{
     catch(err){
         console.log('router getStep1Latest ERROR: ' + err);
         result.result = -101;
+    }
+    finally{
+        return res.json(result);
+    }
+});
+
+router.get('/getStep1WithBrand', async(req, res) => {
+    var result ={};
+    try{
+        var {user_id, brand_id} = req.query;
+        result = await buy.getAuctionTempWithUser(user_id);
+        result = await buy.Step1GetDeviceByBrand(brand_id);
+        result.result = 1;
+    }
+    catch(err){
+        console.log('router getStep1WithBrand ERROR: ' + err);
+        result.result = -102;
     }
     finally{
         return res.json(result);

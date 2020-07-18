@@ -124,27 +124,30 @@ const postResetNewAuction = async(user_id)=>{
   }
 };
 
-const getDeviceByBrand = async(brand_id)=>{
+const Step1GetDeviceByBrand = async(brand_id)=>{
   var result = {};
   try{
     const querytext = `
-    SELECT device.id AS device_id, 
-    device.name AS device_name, 
-    brand.name AS brand_name, image.url_2X
+    SELECT device.name AS device_name, 
+    device.id AS device_id,
+    device.property,
+    device.generation,
+    brand.name AS brand_name, image.url_2x
     FROM device
     INNER JOIN brand
     ON device.brand_id = brand.id
     AND brand.id = $1
     INNER JOIN image
     ON device.image_id = image.id
+    ORDER BY birth
     `;
-    var {rows} = await query(qurytext, [brand_id]);
+    var {rows} = await query(querytext, [brand_id]);
     result.data = rows;
-    result.status = 'success';
+    result.status = 1;
   }
   catch(err){
-    console.log('getDeviceByBrand ERROR: ' + err);
-    result.status = 'fail'
+    console.log('ERROR: -1021' + err);
+    result.status = -1021;
   }
   finally{
     return result;
@@ -175,5 +178,6 @@ const postBuyStep1 = async(user_id, device_id) =>{
 module.exports = {
   getAuctionTempWithUser,
   getStep1Latest6,
-  
+  Step1GetDeviceByBrand,
+
 };
