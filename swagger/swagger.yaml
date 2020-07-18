@@ -13,26 +13,26 @@ tags:
 schemes:
 - "http"
 paths:
-  /buy/getPhonesByBrand:
+  /buy/getStep1Latest:
     get:
       tags:
       - "buy"
-      summary: "Finds phones by brand"
-      description: "at buy/1/brand"
-      operationId: "getPhonesByBrand"
+      summary: "get 6 phones at /web/buy/1"
+      description: "if you already did a selection, you also get the selected output"
+      operationId: "getStep1Latest"
       produces:
       - "application/json"
       parameters:
-      - name: "phone_brand"
+      - name: "user_id"
         in: "query"
-        description: ""
+        description: "지금은 그냥 user_id = 1 로 생각하셈"
         required: true
-        type: "string"
+        type: "int"
         collectionFormat: "multi"
       responses:
-        "200":
+        "1":
           description: "successful operation"
-        "400":
+        "101":
           description: "Invalid status value"
   /buy/getPhonesFromDB:
     get:
