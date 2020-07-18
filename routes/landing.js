@@ -46,6 +46,7 @@ router.post('/', async (req, res)=>{
         RETURNING status
         `;
         var {rows} = await query(querytext, [name, phone_num, email, is_auth]);
+        console.logs(rows);
         var isoverlap = rows[0].status;
         if(isoverlap == null){
             var result = {status: 'success'};
