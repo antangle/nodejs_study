@@ -9,7 +9,7 @@ tags:
 - name: "buy"
   description: "Everything about your buys"
 - name: "landingPage"
-  description: "Access to buystore orders"
+  description: "landingPage"
 schemes:
 - "http"
 paths:
@@ -27,10 +27,10 @@ paths:
         in: "query"
         description: "지금은 그냥 user_id = 1 로 생각하셈"
         required: true
-        type: "int"
+        type: "integer"
         collectionFormat: "multi"
       responses:
-        "1":
+        "200":
           description: "successful operation"
         "101":
           description: "Invalid status value"
