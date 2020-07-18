@@ -6,8 +6,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 const swagger = require('./swagger/swagger');
-const dotenv = require('dotenv');
-dotenv.config();
+
 
 const buyRouter = require('./routes/buy');
 const userRouter = require('./routes/user');
