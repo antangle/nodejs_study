@@ -48,7 +48,7 @@ router.get('/getStep1WithBrand', async(req, res) => {
         result = await buy.getAuctionTempWithUser(user_id);
         if(result.result != 1)
             throw(result.result);
-        result = await buy.Step1GetDeviceByBrand(brand_id);
+        result = await buy.getStep1DeviceByBrand(brand_id);
         if(result.result != 1)
             throw(result.result);
         result.result = 1;
@@ -66,7 +66,8 @@ router.post('/postSaveStep1', async(req, res) =>{
     try{
         var {user_id, device_id} = req.body;
         var {temp_device_id} = await buy.getAuctionTempWithUser(user_id); 
-        console.log(temp_device_id)
+
+        console.log(user_id, temp_device_id)
         if (temp_device_id == const_null){
             const isError = await buy.postStep1Insert(user_id, device_id);
             if(isError.result != 1)
@@ -81,7 +82,7 @@ router.post('/postSaveStep1', async(req, res) =>{
         }
     }
     catch(err){
-        console.log('router getStep1WithBrand ERROR: ' + err);
+        console.log('router postSaveStep1 ERROR: ' + err);
     }
     finally{
         return res.json(result);

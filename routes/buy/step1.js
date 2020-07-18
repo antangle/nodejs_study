@@ -87,7 +87,7 @@ const getStep1Latest6 = async()=>{
   }
 };
 
-const Step1GetDeviceByBrand = async(brand_id)=>{
+const getStep1DeviceByBrand = async(brand_id)=>{
   var result = {};
   try{
     let querytext;
@@ -169,7 +169,7 @@ const postStep1Update = async(user_id, device_id)=>{
       agency_hope = DEFAULT,
       period = DEFAULT,
       contract_list = DEFAULT,
-      state = 1
+      state = 1,
       step = 1
       WHERE user_id = $1
       `
@@ -189,7 +189,7 @@ const postStep1Update = async(user_id, device_id)=>{
 module.exports = {
   getAuctionTempWithUser,
   getStep1Latest6,
-  Step1GetDeviceByBrand,
+  getStep1DeviceByBrand,
   postStep1Insert,
   postStep1Update,
 };
