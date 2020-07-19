@@ -107,7 +107,7 @@ paths:
     post:
       tags:
       - "buy"
-      summary: "save data from step 1"
+      summary: "save data from step 2"
       description: "Update device_detail_id(info about color, volume etc)"
       operationId: "postSaveStep2"
       consumes:
@@ -126,6 +126,72 @@ paths:
         description: "give the selected device_detail's id"
         required: true
         type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "405":
+          description: "Invalid input"
+  /buy/getStep3Info:
+    get:
+      tags:
+      - "buy"
+      summary: "Finds selected device and color contraint(agency) with user_id"
+      description: "at buy/3\n아직 요금제(payment)에 관해선 안정해놔서 안나옴!"
+      operationId: "getStep3Info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰)"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid status value"
+  /buy/postSaveStep3:
+    post:
+      tags:
+      - "buy"
+      summary: "save data from step 3"
+      description: "Update auction(with info on step3 and device_detail_id, user_id)"
+      operationId: "postSaveStep3"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: "give current user_id"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "agency_use"
+        in: "query"
+        description: "현재 통신사"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "agency_hope"
+        in: "query"
+        description: "사용희망 통신사"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "period"
+        in: "query"
+        description: "할부기간"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "contract_list"
+        in: "query"
+        description: "고급옵션: '1,1,2,2,1,2,1' 이런식으로 줄것"
+        required: true
+        type: "string"
         collectionFormat: "multi"
       responses:
         "405":
