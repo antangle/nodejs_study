@@ -29,6 +29,7 @@ const getAuctionTempWithUser = async(user_id)=>{
       "state": rows[0].state, 
       "temp_device_id":rows[0].device_id
     }
+    // when the user already selected the device, print out device info
     if(result.temp_device_id != -2){
     const querytext2 = `
     SELECT device.name AS device_name,
@@ -56,7 +57,7 @@ const getAuctionTempWithUser = async(user_id)=>{
     return result;
   }
 };
-
+//get 6 latest devices 
 const getStep1Latest6 = async()=>{
   var result = {};
   try{
@@ -69,6 +70,7 @@ const getStep1Latest6 = async()=>{
     FROM device
     INNER JOIN brand
     ON device.brand_id = brand.id
+    AND device.state = 1
     AND device.latest = 1
     INNER JOIN image
     ON device.image_id = image.id
@@ -91,6 +93,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
   var result = {};
   try{
     let querytext;
+    //SKT, Apple, LG
     if(brand_id != 4){
       querytext = `
       SELECT device.name AS device_name, 
@@ -102,11 +105,13 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       INNER JOIN brand
       ON device.brand_id = brand.id
       AND brand.id = $1
+      AND device.state = 1
       INNER JOIN image
       ON device.image_id = image.id
       ORDER BY birth
       `;
     }
+    //other than SKT, Apple, LG
     else{
       querytext = `
       SELECT device.name AS device_name, 
@@ -118,6 +123,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       INNER JOIN brand
       ON device.brand_id = brand.id
       AND brand.id >= $1
+      AND device.state = 1
       INNER JOIN image
       ON device.image_id = image.id
       ORDER BY birth
@@ -135,8 +141,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
     return result;
   }
 }
-
-
+//save step1 info for beginners
 const postStep1Insert = async(user_id, device_id)=>{
   var result = {};
   try{
@@ -156,7 +161,7 @@ const postStep1Insert = async(user_id, device_id)=>{
     return result;
   }
 };
-
+//update step1 info & init other records
 const postStep1Update = async(user_id, device_id)=>{
   var result = {};
   try{
@@ -172,8 +177,8 @@ const postStep1Update = async(user_id, device_id)=>{
       state = 1,
       step = 1
       WHERE user_id = $1
-      `
-    await query(querytext, [user_id, device_id])
+      `;
+    await query(querytext, [user_id, device_id]);
     result.result = 1;
   }
   catch(err){
@@ -184,7 +189,29 @@ const postStep1Update = async(user_id, device_id)=>{
     return result;
   }
 };
-
+//step:2
+const getStep2ColorVolume = async(device_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+    SELECT id, color_name, color_hex, agency, volume
+    FROM device_detail
+    WHERE device_id = $1
+    AND state = 1
+    ORDER BY color_hex, volume
+      `;
+    var {rows} = await query(querytext, [device_id]);
+    result = rows;
+    result.result = 1;
+  }
+  catch(err){
+    console.log('ERROR: -1111, ' + err);
+    result.result = -1111
+  }
+  finally{
+    return result;
+  }
+};
 
 module.exports = {
   getAuctionTempWithUser,
@@ -192,4 +219,6 @@ module.exports = {
   getStep1DeviceByBrand,
   postStep1Insert,
   postStep1Update,
+  getStep2ColorVolume,
+
 };

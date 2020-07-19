@@ -82,6 +82,27 @@ paths:
       responses:
         "405":
           description: "Invalid input"
+  /buy/getStep2ColorVolume:
+    get:
+      tags:
+      - "buy"
+      summary: "Finds device color and volume with user_id"
+      description: "at buy/2"
+      operationId: "getStep2ColorVolume"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰) volume은 그냥 int형으로!\n 지금은 device_id = 1,2만 다르고 다른건 다 device_id=1꺼 복붙해놓음"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid status value"
   /landing:
     get:
       tags:
