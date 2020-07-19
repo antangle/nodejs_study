@@ -212,7 +212,26 @@ const getStep2ColorVolume = async(device_id)=>{
     return result;
   }
 };
-
+const postStep2Update = async(user_id, device_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+      UPDATE auction_temp
+      SET device_detail_id = $2,
+      step = 2
+      WHERE user_id = $1
+      `;
+    await query(querytext, [user_id, device_id]);
+    result.result = 1;
+  }
+  catch(err){
+    console.log('ERROR: -1121' + err);
+    result.result = -1032;
+  }
+  finally{
+    return result;
+  }
+};
 module.exports = {
   getAuctionTempWithUser,
   getStep1Latest6,
@@ -220,5 +239,5 @@ module.exports = {
   postStep1Insert,
   postStep1Update,
   getStep2ColorVolume,
-
+  postStep2Update,
 };

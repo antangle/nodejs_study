@@ -103,6 +103,33 @@ paths:
           description: "successful operation"
         "400":
           description: "Invalid status value"
+  /buy/postSaveStep2:
+    post:
+      tags:
+      - "buy"
+      summary: "save data from step 1"
+      description: "Update device_detail_id(info about color, volume etc)"
+      operationId: "postSaveStep2"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: "give current user_id"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "device_detail_id"
+        in: "query"
+        description: "give the selected device_detail's id"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "405":
+          description: "Invalid input"
   /landing:
     get:
       tags:

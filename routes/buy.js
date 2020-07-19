@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const buy = require('./buy/step1');
+const buy = require('./buy/step');
 
 //a constant which mean NULL in int
 const const_null = -2;
@@ -97,16 +97,52 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
     try{
         var {user_id} = req.query;
         result = await buy.getAuctionTempWithUser(user_id);
-        if(result.state == -1)
+        if(result.state == -1 || result.state == -2){
+            result.result = -1001;
+            console.log('this user\'s temp_auction record is either NULL or DEAD');
             throw(-1001)
-        var device_id = result.temp_device_id;
+        }
+        if(temp_device_id == -2){
+            result.result = -1002;
+            console.log('this user hasen\'t selected a device yet');
+            throw(-1002)    
+        }
+            var device_id = result.temp_device_id;
         result.data = await buy.getStep2ColorVolume(device_id);
         if(result.result != const_success)
             throw(result.result);
         result.result = const_success;
     }
     catch(err){
-        console.log('router 111 ERROR: ' + err);
+        console.log('router ERROR: 111 ' + err);
+    }
+    finally{
+        return res.json(result);
+    }
+});
+
+router.post('/postSaveStep2', async (req, res) =>{
+    var result ={};
+    try{
+        var {user_id, device_detail_id} = req.body;
+        var {state, temp_device_id} = await buy.getAuctionTempWithUser(user_id);
+        if(state == -1 || state == -2){
+            result.result = -1001;
+            console.log('this user\'s temp_auction record is either NULL or DEAD');
+            throw(-1001)
+        }
+        if(temp_device_id == -2){
+            result.result = -1002;
+            console.log('this user hasen\'t selected a device yet');
+            throw(-1002)    
+        }
+        const isError = await buy.postStep2Update(user_id, device_detail_id);
+        if(isError.result != const_success)
+            throw(isError.result);
+        result.result = 1;
+    }
+    catch(err){
+        console.log('router ERROR: 112' + err);
     }
     finally{
         return res.json(result);
