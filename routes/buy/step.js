@@ -15,8 +15,6 @@ const const_success = 1
 pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
 });
-
-
 //auction step: 1
 const getAuctionTempWithUser = async(user_id)=>{
   try{
@@ -63,7 +61,6 @@ const getAuctionTempWithUser = async(user_id)=>{
     return result;
   }
 };
-
 //get 6 latest devices 
 const getStep1Latest6 = async()=>{
   var result = {};
@@ -95,13 +92,12 @@ const getStep1Latest6 = async()=>{
     return result;
   }
 };
-
 const getStep1DeviceByBrand = async(brand_id)=>{
   var result = {};
   try{
     let querytext;
     //SKT, Apple, LG
-    if(brand_id != 4){
+    if(brand_id <= 3){
       querytext = `
       SELECT device.name AS device_name, 
       device.id AS device_id,
@@ -214,7 +210,6 @@ const getStep2ColorVolume = async(device_id)=>{
     return result;
   }
 };
-
 const postStep2Update = async(user_id, device_id, check)=>{
   var result = {};
   try{
@@ -314,7 +309,6 @@ const countAuctions = async(user_id) =>{
       WHERE user_id = $1
       `;
     var {rows} = await query(querytext, [user_id]);
-    console.log(rows);
     result.count = rows[0].count;
     result.result = const_success;
   }
@@ -348,11 +342,11 @@ const postStep3Update = async(check, postInput)=>{
           contract_list,
           create_time,
           finish_time,
-          win_state,
+          now_order,
           state)
         VALUES(
           $1, $2, $3, $4, $5,
-          $6, $7, current_timestamp, current_timestamp + interval '1 hour', 1 ,1)`;
+          $6, $7, current_timestamp, current_timestamp + interval '1 hour's, 0 ,1)`;
       const inputarray = [postInput.user_id, 
         check.device_detail_id, check.temp_device_id,
         postInput.agency_use, postInput.agency_hope, 
@@ -381,8 +375,7 @@ const killAuctionTempState = async(user_id)=>{
       `;
     await query(querytext, [user_id]);
     result.result = const_success;
-    }
-  
+  }
   catch(err){
     result.result = -1225;
     console.log(`ERROR: ${result.result}/` + err);
@@ -391,7 +384,60 @@ const killAuctionTempState = async(user_id)=>{
     return result;
   }
 };
-
+const finishAuctionTempDeviceInfo = async(user_id)=>{
+  try{
+    var result = {};
+    const querytext = `
+    SELECT
+    COALESCE(
+      (SELECT device_id FROM auction_temp 
+      WHERE user_id = $1), -2) AS device_id, 
+    COALESCE(
+      (SELECT state FROM auction_temp
+      WHERE user_id = $1), -2) AS state,
+    COALESCE(
+      (SELECT device_detail_id FROM auction_temp
+      WHERE user_id = $1), -2) AS device_detail_id
+      `;
+    var {rows} = await query(querytext, [user_id]);
+    result = {
+      "state": rows[0].state, 
+      "temp_device_id":rows[0].device_id,
+      "device_detail_id":rows[0].device_detail_id
+    }
+    //error handling when state, device_id, device_detail_id is null
+    if(result.state != -1){
+      var errMessage = 'state is not -1'
+      throw(errMessage)
+    }
+    const querytext2 = `
+    SELECT device.name AS device_name,
+      device.id AS device_id,
+      device.property,
+      device.generation,
+      brand.name AS brand_name, image.url_2x,
+      device_detail.agency
+      FROM device
+      INNER JOIN brand
+      ON device.brand_id = brand.id
+      AND device.id = $1
+      INNER JOIN image
+      ON device.image_id = image.id
+      INNER JOIN device_detail
+      ON device_detail.id = $2
+    `;
+    var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
+    result.selected_device_array = rows;
+    result.result = const_success;
+  }
+  catch(err){
+    result.result = -1213;
+    console.log(`ERROR: ${result.result}/` + err);
+  }
+  finally{
+    return result;
+  }
+};
 module.exports = {
   getAuctionTempWithUser,
   getStep1Latest6,
@@ -403,6 +449,7 @@ module.exports = {
   getAuctionTempWithUserStep3,
   postStep3Update,
   killAuctionTempState,
-  countAuctions
+  countAuctions,
+  finishAuctionTempDeviceInfo
 };
  

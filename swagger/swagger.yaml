@@ -142,13 +142,13 @@ paths:
       parameters:
       - name: "user_id"
         in: "query"
-        description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰)"
+        description: ""
         required: true
         type: "integer"
         collectionFormat: "multi"
       responses:
         "200":
-          description: "successful operation"
+          description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰)"
         "400":
           description: "Invalid status value"
   /buy/postSaveStep3:
@@ -196,6 +196,27 @@ paths:
       responses:
         "405":
           description: "Invalid input"
+  /buy/finish:
+    get:
+      tags:
+      - "buy"
+      summary: "경매 끝난 device 정보 호출"
+      description: ""
+      operationId: "finish"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰)"
+        "400":
+          description: "Invalid status value"
   /landing:
     get:
       tags:

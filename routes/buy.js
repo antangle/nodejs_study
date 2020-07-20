@@ -133,7 +133,6 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
         return res.json(result);
     }
 });
-
 router.post('/postSaveStep2', async (req, res) =>{
     var result ={};
     try{
@@ -169,7 +168,6 @@ router.get('/getStep3Info', async(req,res) =>{
         return res.json(result);
     }
 });
-
 router.post('/postSaveStep3', async (req, res) =>{
     var result ={};
     try{
@@ -201,4 +199,21 @@ router.post('/postSaveStep3', async (req, res) =>{
     }
 });
 
+router.get('/finish', async(req,res) =>{
+    var result ={};
+    try{
+        var {user_id} = req.query;
+        result = await buy.finishAuctionTempDeviceInfo(user_id);
+        if(result.result != const_SUCCESS){
+            throw(result.result);
+        }
+        result.result = const_SUCCESS;
+    }
+    catch(err){
+        console.log('router ERROR: 131/' + err);
+    }
+    finally{
+        return res.json(result);
+    }
+});
 module.exports = router;
