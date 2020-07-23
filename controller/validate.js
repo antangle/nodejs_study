@@ -21,9 +21,9 @@ const helper ={
     return /\S+@\S+\.\S+/.test(email);
   },
   
-  generateToken(id, login_id) {
+  generateToken(id) {
     try{
-    const token = jwt.sign({user_id: id, login_id: login_id},
+    const token = jwt.sign({id: id},
       process.env.JWT_SECRET, { expiresIn: '1d' })
       return token;
     }

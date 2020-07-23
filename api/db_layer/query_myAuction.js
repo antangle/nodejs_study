@@ -1,0 +1,369 @@
+const Pool = require('../connect/pool');
+const define = require('../../definition/define');
+
+const pool = Pool.pool;
+const query = Pool.query;
+
+pool.on('error', function (err, client) {
+    console.error('idle client error', err.message, err.stack);
+});
+
+const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
+    var result = {};
+    try{
+      const querytext = `
+      SELECT device.name, detail.color_name, detail.volume, image.url_2x
+      FROM device_detail AS detail
+      INNER JOIN device
+      ON detail.id = $1
+      AND detail.device_id = device.id
+      INNER JOIN image
+      ON device.image_id = image.id
+    `;
+      var {rows} = await query(querytext, [device_detail_id]);
+      result = {rows};
+      result.result = define.const_SUCCESS;
+    }
+    catch(err){
+      result.result = -2001;
+      console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+      return result;
+    }
+};
+const get201AuctionInfo = async(user_id, win_state)=>{
+    var result = {};
+    try{
+      const querytext = `
+      SELECT id as auction_id, device_detail_id, payment_id, 
+      agency_use, agency_hope, finish_time,
+      now_discount_price, state, win_deal_id
+      FROM auction
+      WHERE user_id = $1
+      AND win_state = $2
+      ORDER BY finish_time
+    `;
+      var {rows, rowCount} = await query(querytext, [user_id, win_state]);
+      result = {auction: rows, rowCount: rowCount};
+      result.result = define.const_SUCCESS;
+    }
+    catch(err){
+      result.result = -2011;
+      console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+      return result;
+    }
+};
+const get203AuctionDeals = async(auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT deal.id AS deal_id, deal.store_id, 
+            store.name AS store_name, store.score,
+            deal.discount_price, deal.create_time AS deal_create_time,
+            auction.finish_time AS auction_finish_time, 
+            auction.now_order, deal.order AS deal_order,
+            detail.cost_price, detail.discount_official, deal.month_price
+            FROM deal
+            INNER JOIN store
+            ON store.id = deal.store_id
+            AND deal.auction_id = $1
+            INNER JOIN auction
+            ON deal.auction_id = auction.id
+            INNER JOIN device_detail AS detail
+            ON deal.device_detail_id = detail.id
+        `;
+        var {rows} = await query(querytext, [auction_id]);
+        result = {auction: rows, result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2031;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+const get204AuctionDealsFinish = async(auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT deal.id AS deal_id, deal.store_id, 
+            store.name AS store_name, store.score,
+            deal.discount_price, deal.create_time AS deal_create_time,
+            auction.finish_time AS auction_finish_time, 
+            auction.now_order, deal.order AS deal_order
+            FROM deal
+            INNER JOIN store
+            ON store.id = deal.store_id
+            AND deal.auction_id = $1
+            INNER JOIN auction
+            ON deal.auction_id = auction.id
+            ORDER BY deal.discount_price DESC
+            LIMIT 5
+        `;
+        var {rows} = await query(querytext, [auction_id]);
+        result = {auction: rows, result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2041;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+const get205DealDetail = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT deal.id AS deal_id, store.name AS store_name, 
+            detail.id AS device_detail_id, 
+            detail.cost_price, device.name AS device_name,
+            deal.contract_list, deal.discount_official, deal.discount_price,
+            deal.payment_id, deal.discount_payment, deal.month_price,
+            deal.gift, deal.create_time AS deal_create_time
+            FROM deal
+            INNER JOIN store
+            ON store.id = deal.store_id
+            AND deal.id = $1
+            INNER JOIN device
+            ON device.id = deal.device_id
+            INNER JOIN device_detail AS detail
+            ON detail.id = deal.device_detail_id
+        `;
+        var {rows} = await query(querytext, [deal_id]);
+        result = {deal: rows, result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2051;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+
+const Update208DealConfirmation = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE auction 
+            SET win_deal_id = $1
+            WHERE auction.id IN
+            (SELECT auction_id FROM deal WHERE id = $1)
+            RETURNING win_deal_id
+        `;
+        var {rows} = await query(querytext, [deal_id]);
+        result = {result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2081;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+}
+
+const get209ConfirmedAuction = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT deal.id AS deal_id, store.name AS store_name, 
+            device.name AS device_name,
+            auction.agency_use, auction.agency_hope,
+            deal.discount_price, deal.month_price,
+            deal.gift
+            FROM deal
+            INNER JOIN store
+            ON store.id = deal.store_id
+            AND deal.id = $1
+            INNER JOIN device
+            ON device.id = deal.device_id
+            INNER JOIN auction
+            ON auction.id = deal.auction_id
+        `;
+        var {rows} = await query(querytext, [deal_id]);
+        result = {deal: rows, result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2091;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+
+const get210InfoForReview = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT deal.id AS deal_id, 
+            store_id, detail.volume, 
+            detail.color_name, device.name
+            FROM deal
+            INNER JOIN device_detail AS detail
+            ON deal.device_detail_id = detail.id
+            AND deal.id = $1
+            INNER JOIN device
+            ON deal.device_id = device.id
+        `;
+        var {rows} = await query(querytext, [deal_id]);
+        result = {info: rows, result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2101;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+
+const insert210Review = async(jsondata)=>{
+    var result = {};
+    try{
+        const querytext = `
+            WITH cte AS(
+                SELECT score 
+                FROM score 
+                WHERE deal_id = $3)
+            INSERT INTO score(user_id, 
+                store_id, score, 
+                comment, deal_id, create_date)
+            SELECT user_id, store_id, $1, $2, $3, now()
+            FROM deal
+            WHERE deal.id = $3
+            AND EXISTS(SELECT 1 FROM deal WHERE deal.id = $3)
+            ON CONFLICT (deal_id) DO UPDATE 
+            SET score = $1,
+            comment = $2            
+            RETURNING (select cte.score from cte)
+        `;
+        var {score, comment, deal_id} = jsondata;
+        var {rows} = await query(querytext, [score, comment, deal_id]);
+        var isScoreNull;
+        if(!rows[0].score){
+            isScoreNull = true;
+        }
+        result = {isScoreNull: isScoreNull,scoreGap: score - rows[0].score,result: define.const_SUCCESS};
+    }
+    catch(err){
+        result.result = -2102;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+
+
+const update210StoreAfterReview = async(jsondata)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store
+            SET score_sum = score_sum + $1,
+            score_weight = score_weight + $2,
+            score = (score_sum+$1)*10/($2+ score_weight)
+            WHERE store.id IN(
+                SELECT store_id FROM deal
+                WHERE deal.id = $3
+            )`;
+        var {scoreGap, weight, deal_id} = jsondata;
+        await query(querytext, [scoreGap, weight, deal_id]);
+        result.result = define.const_SUCCESS;
+    }
+    catch(err){
+        result.result = -2103;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+const get211StoreDetails = async(store_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT store.id AS store_id, store.score AS avg_score, 
+            store.score_weight AS review_count,
+            store.comment AS store_comment, 
+            score.score AS my_score, 
+            score.comment AS my_comment,
+            device.name AS device_name
+            FROM store
+            INNER JOIN score
+            ON score.store_id = $1
+            AND score.store_id = store.id
+            INNER JOIN deal
+            ON deal.id = score.deal_id
+            INNER JOIN device
+            ON deal.device_id = device.id
+            `;
+        var {rows} = await query(querytext, [store_id]);
+        //later on, gotta decide which review to look upon
+        result ={result: define.const_SUCCESS, store: rows[0]};
+    }
+    catch(err){
+        result.result = -2103;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+const get212AllStoreReviews = async(store_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT store.id AS store_id, store.score AS avg_score, 
+            store.score_weight AS review_count,
+            store.comment AS store_comment, 
+            score.score AS my_score, 
+            score.comment AS my_comment,
+            device.name AS device_name,
+            detail.color_name,
+            detail.volume
+            FROM store
+            INNER JOIN score
+            ON score.store_id = $1
+            AND score.store_id = store.id
+            INNER JOIN deal
+            ON deal.id = score.deal_id
+            INNER JOIN device_detail AS detail
+            ON deal.device_detail_id = detail.id
+            INNER JOIN device
+            ON deal.device_id = device.id
+            `;
+        var {rows} = await query(querytext, [store_id]);
+        //later on, gotta decide which review to look upon
+        result ={result: define.const_SUCCESS, review: rows};
+    }
+    catch(err){
+        result.result = -2103;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+        return result;
+    }
+};
+module.exports = {
+    getDeviceInfoWithDetail_Id,
+    get201AuctionInfo,
+    get203AuctionDeals,
+    get204AuctionDealsFinish,
+    get205DealDetail,
+    Update208DealConfirmation,
+    get209ConfirmedAuction,
+    insert210Review,
+    get210InfoForReview,
+    update210StoreAfterReview,
+    get211StoreDetails,
+    get212AllStoreReviews
+};
+   

@@ -11,10 +11,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const {verifyToken} = require('./middleware/verify');
-const buyRouter = require('./routes/buy');
-const userRouter = require('./routes/user');
-const myInfoRouter = require('./routes/myInfo')
-const landingRouter = require('./routes/landing');
+const buyRouter = require('./api/buy');
+const userRouter = require('./api/user');
+const storeRouter = require('./api/store');
+const myAuctionRouter = require('./api/myAuction')
+const landingRouter = require('./api/landing');
 const port = process.env.port || 9000;
 const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
@@ -29,7 +30,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/user', userRouter);
-app.use('/myInfo', myInfoRouter);
+app.use('/store', storeRouter);
+app.use('/myAuction', myAuctionRouter);
 app.use('/landing', landingRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use('/buy', buyRouter);

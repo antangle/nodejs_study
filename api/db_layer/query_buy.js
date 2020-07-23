@@ -1,16 +1,8 @@
-const express = require('express');
 const Pool = require('../connect/pool');
-const app = express();
-
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit:'50mb', extended: false }));
+const define = require('../../definition/define')
 
 const pool = Pool.pool;
 const query = Pool.query;
-//a constant which mean NULL in int
-const const_null = -2;
-//a constant which mean 'const_success' in int
-const const_success = 1
 
 pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
@@ -34,7 +26,7 @@ const getAuctionTempWithUser = async(user_id)=>{
       "temp_device_id":rows[0].device_id
     }
     // when the user already selected the device, print out device info
-    if(result.temp_device_id != const_null){
+    if(result.temp_device_id != define.const_NULL){
     const querytext2 = `
     SELECT device.name AS device_name,
       device.id AS device_id,
@@ -51,7 +43,7 @@ const getAuctionTempWithUser = async(user_id)=>{
     var {rows} = await query(querytext2, [result.temp_device_id]);
     result.selected_device_array = rows;
     }
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1011;
@@ -81,7 +73,7 @@ const getStep1Latest6 = async()=>{
     LIMIT 6
       `;
     var {rows} = await query(querytext, []);
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
     result.device_array = rows;
   }
   catch(err){
@@ -134,7 +126,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
     }
     var {rows} = await query(querytext, [brand_id]);
     result.data = rows;
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1021;
@@ -154,7 +146,7 @@ const postStep1Insert = async(user_id, device_id)=>{
     ON CONFLICT(user_id) DO NOTHING
     `;
     await query(querytext, [user_id, device_id]);
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1031;
@@ -177,7 +169,7 @@ const postStep1Update = async(user_id, device_id)=>{
       WHERE user_id = $1
       `;
     await query(querytext, [user_id, device_id]);
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){  
     result.result = -1032;
@@ -200,7 +192,7 @@ const getStep2ColorVolume = async(device_id)=>{
       `;
     var {rows} = await query(querytext, [device_id]);
     result = rows;
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1113
@@ -213,11 +205,11 @@ const getStep2ColorVolume = async(device_id)=>{
 const postStep2Update = async(user_id, device_id, check)=>{
   var result = {};
   try{
-    if(check.state == -1 || check.state == const_null){
+    if(check.state == -1 || check.state == define.const_NULL){
       result.result = -1121;
       console.log('this user\'s temp_auction record is either NULL or DEAD');
     }
-    else if(check.temp_device_id == const_null){
+    else if(check.temp_device_id == define.const_NULL){
       result.result = -1122;
       console.log('this user hasen\'t selected a device yet');   
     }
@@ -229,7 +221,7 @@ const postStep2Update = async(user_id, device_id, check)=>{
         WHERE user_id = $1
         `;
       await query(querytext, [user_id, device_id]);
-      result.result = const_success;
+      result.result = define.const_SUCCESS;
     }
   }
   catch(err){
@@ -263,11 +255,11 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
       "device_detail_id":rows[0].device_detail_id
     }
     //error handling when state, device_id, device_detail_id is null
-    if(result.state == -1 || result.state == const_null){
+    if(result.state == -1 || result.state == define.const_NULL){
       result.result = -1211;
       console.log('this user\'s temp_auction record is either NULL or DEAD');
     }
-    else if(result.temp_device_id == const_null || result.device_detail_id == const_null){
+    else if(result.temp_device_id == define.const_NULL || result.device_detail_id == define.const_NULL){
       result.result = -1212;
       console.log('this user hasen\'t selected from step 1 or 2 yet');   
     }
@@ -290,7 +282,7 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
     `;
     var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
     result.selected_device_array = rows;
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
     }
   }
   catch(err){
@@ -310,7 +302,7 @@ const countAuctions = async(user_id) =>{
       `;
     var {rows} = await query(querytext, [user_id]);
     result.count = rows[0].count;
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1223;
@@ -323,11 +315,11 @@ const countAuctions = async(user_id) =>{
 const postStep3Update = async(check, postInput)=>{
   var result = {};
   try{
-    if(check.state == -1 || check.state == const_null){
+    if(check.state == -1 || check.state == define.const_NULL){
       result.result = -1221;
       console.log('this user\'s temp_auction record is either NULL or DEAD');
     }
-    else if(check.temp_device_id == const_null || check.device_detail_id == const_null){
+    else if(check.temp_device_id == define.const_NULL || check.device_detail_id == define.const_NULL){
       result.result = -1222;
       console.log('this user hasen\'t selected a device yet');
     }
@@ -343,17 +335,19 @@ const postStep3Update = async(check, postInput)=>{
           create_time,
           finish_time,
           now_order,
-          state)
+          state,
+          win_state)
         VALUES(
           $1, $2, $3, $4, $5,
-          $6, $7, current_timestamp, current_timestamp + interval '1 hour's, 0 ,1)`;
+          $6, $7, current_timestamp, current_timestamp + interval '1 hour', 0 ,1, 1)`;
       const inputarray = [postInput.user_id, 
         check.device_detail_id, check.temp_device_id,
         postInput.agency_use, postInput.agency_hope, 
         postInput.period, postInput.contract_list, 
       ]
-      await query(querytext, inputarray);
-      result.result = const_success;
+      await query(querytext, inputarray
+        );
+      result.result = define.const_SUCCESS;
     }
   }
   catch(err){
@@ -374,7 +368,7 @@ const killAuctionTempState = async(user_id)=>{
       WHERE user_id = $1
       `;
     await query(querytext, [user_id]);
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1225;
@@ -428,7 +422,7 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
     `;
     var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
     result.selected_device_array = rows;
-    result.result = const_success;
+    result.result = define.const_SUCCESS;
   }
   catch(err){
     result.result = -1213;
@@ -438,6 +432,7 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
     return result;
   }
 };
+
 module.exports = {
   getAuctionTempWithUser,
   getStep1Latest6,
