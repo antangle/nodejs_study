@@ -33,7 +33,7 @@ paths:
       - name: "user_id"
         in: "query"
         description: "지금은 그냥 user_id = 1 로 생각하셈"
-        required: true
+        required: false
         type: "integer"
         collectionFormat: "multi"
       responses:

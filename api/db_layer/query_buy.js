@@ -103,7 +103,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       AND device.state = 1
       INNER JOIN image
       ON device.image_id = image.id
-      ORDER BY birth
+      ORDER BY device.birth DESC
       `;
     }
     //other than SKT, Apple, LG
