@@ -58,7 +58,8 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
     var {rows} = await query(querytext, [user_id]);
     result = {
       "state": rows[0].state, 
-      "temp_device_id": rows[0].device_id
+      "temp_device_id": rows[0].device_id,
+      "result" :1
     }
 
     // when the user already selected the device, print out device info
@@ -194,7 +195,8 @@ const checkIsFirstAuction = async(user_id)=>{
     var {rows} = await query(querytext, [user_id]);
     result = {
       "state": rows[0].state, 
-      "temp_device_id": rows[0].device_id
+      "temp_device_id": rows[0].device_id,
+      "result" :1
     }
   }
   catch(err){

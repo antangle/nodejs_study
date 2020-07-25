@@ -85,8 +85,6 @@ router.post('/postSaveStep1', async(req, res) =>{
     try{
         var {user_id, device_id} = req.body;
         var {state, temp_device_id} = await buy.checkIsFirstAuction(user_id);
-        console.log(temp_device_id) 
-        console.log(state, temp_device_id)
         if(state === define.const_DEAD || temp_device_id !== define.const_NULL){
             const postInfo = await buy.postStep1Update(user_id, device_id);
             if(postInfo.result != define.const_SUCCESS)
@@ -116,14 +114,15 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
     var result ={};
     try{
         var {user_id} = req.query;
-        result = await buy.getAuctionTempWithUser(user_id);
-        if(result.state == define.const_DEAD || result.state == define.const_NULL || temp_device_id == define.const_NULL){
+        result = await buy.checkIsFirstAuction(user_id);
+        if(result.state === define.const_DEAD || result.temp_device_id === define.const_NULL){
             result.result = -1111;
             console.log('this user\'s state or device_id is either NULL or DEAD');
             throw(result.result)
         }
-            var device_id = result.temp_device_id;
+        var device_id = result.temp_device_id;
         result.data = await buy.getStep2ColorVolume(device_id);
+        console.log(result);
         if(result.result != define.const_SUCCESS)
             throw(result.result);
     }
