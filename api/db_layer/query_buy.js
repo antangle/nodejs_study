@@ -133,7 +133,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       device.property,
       device.generation,
       brand.name AS brand_name, image.url_2x,
-      device.birth
+      EXTRACT(YEAR FROM device.birth) AS birth
       FROM device
       INNER JOIN brand
       ON device.brand_id = brand.id
@@ -152,7 +152,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       device.property,
       device.generation,
       brand.name AS brand_name, image.url_2x,
-      device.birth
+      EXTRACT(YEAR FROM device.birth) AS birth
       FROM device
       INNER JOIN brand
       ON device.brand_id = brand.id
