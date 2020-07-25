@@ -6,6 +6,21 @@ const app = express();
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
+router.get('/getHomepageDevice', async (req, res) =>{
+    var result ={};
+    try{
+        result = await buy.get100LatestDeviceHomepage(); 
+        if(result.result != define.const_SUCCESS)
+            throw(result.result);
+    }
+    catch(err){
+        console.log('router ERROR: 100/' + err);
+        result.result = -100;
+    }
+    finally{
+        return res.json(result);
+    }
+});
 
 router.get('/countAuction', async (req, res) =>{
     var result ={};
@@ -27,8 +42,8 @@ router.get('/countAuction', async (req, res) =>{
 router.get('/getStep1Latest', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
-        result = await buy.getAuctionTempWithUser(user_id);
+        var {user_id, device_id} = req.query;
+        result = await buy.getAuctionTempWithUser(user_id, device_id);
         if(result.result != define.const_SUCCESS)
             throw(result.result);
         var latestDevices = await buy.getStep1Latest6();
@@ -48,8 +63,8 @@ router.get('/getStep1Latest', async(req,res) =>{
 router.get('/getStep1WithBrand', async(req, res) => {
     var result ={};
     try{
-        var {user_id, brand_id} = req.query;
-        result = await buy.getAuctionTempWithUser(user_id);
+        var {user_id, device_id, brand_id} = req.query;
+        result = await buy.getAuctionTempWithUser(user_id, device_id);
         if(result.result != define.const_SUCCESS)
             throw(result.result);
         result = await buy.getStep1DeviceByBrand(brand_id);
@@ -69,18 +84,18 @@ router.post('/postSaveStep1', async(req, res) =>{
     var result ={};
     try{
         var {user_id, device_id} = req.body;
-        var {temp_device_id} = await buy.getAuctionTempWithUser(user_id); 
+        var {temp_device_id} = await buy.getAuctionTempWithUser(user_id, device_id); 
 
         if (temp_device_id == define.const_NULL){
-            const isError = await buy.postStep1Insert(user_id, device_id);
-            if(isError.result != define.const_SUCCESS)
-                throw(isError.result);
+            const postInfo = await buy.postStep1Insert(user_id, device_id);
+            if(postInfo.result != define.const_SUCCESS)
+                throw(postInfo.result);
             result.result = define.const_SUCCESS;
         }
         else{
-            const isError = await buy.postStep1Update(user_id, device_id);
-            if(isError.result != define.const_SUCCESS)
-                throw(isError.result);
+            const postInfo = await buy.postStep1Update(user_id, device_id);
+            if(postInfo.result != define.const_SUCCESS)
+                throw(postInfo.result);
             result.result = define.const_SUCCESS;
         }
     }

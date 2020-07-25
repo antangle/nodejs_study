@@ -7,8 +7,43 @@ const query = Pool.query;
 pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
 });
+
+//homepage latest device.
+const get100LatestDeviceHomepage = async() =>{
+  var result = {};
+  try{
+  const querytext = `
+    SELECT device.name AS device_name, 
+    device.id AS device_id,
+    device.property,
+    device.generation,
+    device.comment,
+    brand.name AS brand_name, image.url_2x
+    FROM device
+    INNER JOIN brand
+    ON device.brand_id = brand.id
+    AND device.state = 1
+    AND device.latest = 1
+    INNER JOIN image
+    ON device.image_id = image.id
+    ORDER BY birth
+    LIMIT 4
+    `;
+    var {rows} = await query(querytext, []);
+    result.result = define.const_SUCCESS;
+    result.device_array = rows;
+  }
+  catch(err){
+    result.result = -1012
+    console.log(`ERROR: ${result.result}/` + err);
+  }
+  finally{
+    return result;
+  }
+}
+
 //auction step: 1
-const getAuctionTempWithUser = async(user_id)=>{
+const getAuctionTempWithUser = async(user_id, device_id)=>{
   try{
     var result = {};
     const querytext = `
@@ -26,7 +61,8 @@ const getAuctionTempWithUser = async(user_id)=>{
       "temp_device_id":rows[0].device_id
     }
     // when the user already selected the device, print out device info
-    if(result.temp_device_id != define.const_NULL){
+    if(result.temp_device_id != define.const_NULL || device_id != null){
+    var temp_device_id = device_id || result.temp_device_id;
     const querytext2 = `
     SELECT device.name AS device_name,
       device.id AS device_id,
@@ -40,7 +76,7 @@ const getAuctionTempWithUser = async(user_id)=>{
       INNER JOIN image
       ON device.image_id = image.id
     `;
-    var {rows} = await query(querytext2, [result.temp_device_id]);
+    var {rows} = await query(querytext2, [temp_device_id]);
     result.selected_device_array = rows;
     }
     result.result = define.const_SUCCESS;
@@ -166,7 +202,7 @@ const postStep1Update = async(user_id, device_id)=>{
       device_id = $2,
       state = 1,
       step = 1
-      WHERE user_id = $1
+      WHERE user_id = $1 
       `;
     await query(querytext, [user_id, device_id]);
     result.result = define.const_SUCCESS;
@@ -179,6 +215,11 @@ const postStep1Update = async(user_id, device_id)=>{
     return result;
   }
 };
+
+const stepLoad = async() =>{
+  
+};
+
 //step:2
 const getStep2ColorVolume = async(device_id)=>{
   var result = {};
@@ -434,6 +475,7 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
 };
 
 module.exports = {
+  get100LatestDeviceHomepage,
   getAuctionTempWithUser,
   getStep1Latest6,
   getStep1DeviceByBrand,

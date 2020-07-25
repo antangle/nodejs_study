@@ -88,7 +88,7 @@ const postS004StoreInfo = async(postArray)=>{
             phone_1 = $5,
             address = $6,
             state = 1,
-            create_time = current_timestamp
+            create_time = current_date
             WHERE store.id = $7
             `;
         await query(querytext, postArray);
@@ -221,7 +221,7 @@ const post006Nickname = async(nick, user_id)=>{
         const querytext = `
             UPDATE users SET 
             nick = $1,
-            create_time = current_timestamp,
+            create_time = current_date,
             state = 1
             WHERE id = $2
             RETURNING id
