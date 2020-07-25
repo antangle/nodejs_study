@@ -379,7 +379,7 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
   }
 };
 
-const getStep3PaymentInfo = async(agency) =>{
+const getStep3PaymentInfo = async(agency, generation) =>{
   var result = {};
   try{
     const querytext = `
@@ -389,8 +389,9 @@ const getStep3PaymentInfo = async(agency) =>{
       data_share, data_speed
       FROM payment
       WHERE agency = $1
+      AND generation = $2
       `;
-    var {rows} = await query(querytext, [agency]);
+    var {rows} = await query(querytext, [agency, generation]);
     result = {payment: rows, result: 1}
   }
   catch(err){

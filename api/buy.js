@@ -173,8 +173,8 @@ router.get('/getStep3Info', async(req,res) =>{
 router.get('/getStep3PaymentInfo', async(req,res) =>{
     var result ={};
     try{
-        var {agency} = req.query;
-        result = await buy.getStep3PaymentInfo(agency);
+        var {agency, generation} = req.query;
+        result = await buy.getStep3PaymentInfo(agency, generation);
         if(result.result != define.const_SUCCESS){
             throw(result.result);
         }
