@@ -61,23 +61,23 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
       "temp_device_id":rows[0].device_id
     }
     // when the user already selected the device, print out device info
-    if(result.temp_device_id != define.const_NULL || device_id != null){
-    var temp_device_id = device_id || result.temp_device_id;
-    const querytext2 = `
-    SELECT device.name AS device_name,
-      device.id AS device_id,
-      device.property,
-      device.generation,
-      brand.name AS brand_name, image.url_2x
-      FROM device
-      INNER JOIN brand
-      ON device.brand_id = brand.id
-      AND device.id = $1
-      INNER JOIN image
-      ON device.image_id = image.id
-    `;
-    var {rows} = await query(querytext2, [temp_device_id]);
-    result.selected_device_array = rows;
+    if(result.temp_device_id != define.const_NULL || device_id != undefined){
+      var temp_device_id = device_id || result.temp_device_id;
+      const querytext2 = `
+        SELECT device.name AS device_name,
+        device.id AS device_id,
+        device.property,
+        device.generation,
+        brand.name AS brand_name, image.url_2x
+        FROM device
+        INNER JOIN brand
+        ON device.brand_id = brand.id
+        AND device.id = $1
+        INNER JOIN image
+        ON device.image_id = image.id
+      `;
+      var {rows} = await query(querytext2, [temp_device_id]);
+      result.selected_device_array = rows;
     }
     result.result = define.const_SUCCESS;
   }
