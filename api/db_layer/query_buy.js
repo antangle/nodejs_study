@@ -56,13 +56,16 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
       WHERE user_id = $1), -2) AS state
       `;
     var {rows} = await query(querytext, [user_id]);
+    console.log(rows);
     result = {
       "state": rows[0].state, 
-      "temp_device_id":rows[0].device_id
+      "temp_device_id": rows[0].device_id
     }
+
     // when the user already selected the device, print out device info
     if(result.temp_device_id != define.const_NULL || device_id != undefined){
       var temp_device_id = device_id || result.temp_device_id;
+      console.log(temp_device_id);
       const querytext2 = `
         SELECT device.name AS device_name,
         device.id AS device_id,
@@ -77,7 +80,7 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
         ON device.image_id = image.id
       `;
       var {rows} = await query(querytext2, [temp_device_id]);
-      result.selected_device_array = rows;
+      result.selected_device_array = rows;      
     }
     result.result = define.const_SUCCESS;
   }
