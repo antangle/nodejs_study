@@ -132,7 +132,8 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       device.id AS device_id,
       device.property,
       device.generation,
-      brand.name AS brand_name, image.url_2x
+      brand.name AS brand_name, image.url_2x,
+      device.birth
       FROM device
       INNER JOIN brand
       ON device.brand_id = brand.id
@@ -150,7 +151,8 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       device.id AS device_id,
       device.property,
       device.generation,
-      brand.name AS brand_name, image.url_2x
+      brand.name AS brand_name, image.url_2x,
+      device.birth
       FROM device
       INNER JOIN brand
       ON device.brand_id = brand.id
@@ -158,6 +160,7 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       AND device.state = 1
       INNER JOIN image
       ON device.image_id = image.id
+      ORDER BY device.birth DESC
       ORDER BY birth
       `
     }
