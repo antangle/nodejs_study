@@ -84,19 +84,23 @@ router.post('/postSaveStep1', async(req, res) =>{
     var result ={};
     try{
         var {user_id, device_id} = req.body;
-        var {temp_device_id} = await buy.getAuctionTempWithUser(user_id, device_id); 
-
-        if (temp_device_id == define.const_NULL){
+        var {state, temp_device_id} = await buy.checkIsFirstAuction(user_id);
+        console.log(temp_device_id) 
+        console.log(state, temp_device_id)
+        if(state === define.const_DEAD || temp_device_id !== define.const_NULL){
+            const postInfo = await buy.postStep1Update(user_id, device_id);
+            if(postInfo.result != define.const_SUCCESS)
+                throw(postInfo.result);
+            result.result = define.const_SUCCESS;
+        }
+        if (temp_device_id === define.const_NULL){
             const postInfo = await buy.postStep1Insert(user_id, device_id);
             if(postInfo.result != define.const_SUCCESS)
                 throw(postInfo.result);
             result.result = define.const_SUCCESS;
         }
         else{
-            const postInfo = await buy.postStep1Update(user_id, device_id);
-            if(postInfo.result != define.const_SUCCESS)
-                throw(postInfo.result);
-            result.result = define.const_SUCCESS;
+            console.log('unidentified ERROR 103');
         }
     }
     catch(err){

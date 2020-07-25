@@ -165,8 +165,10 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       `
     }
     var {rows} = await query(querytext, [brand_id]);
-    result.data = rows;
-    result.result = define.const_SUCCESS;
+    if(!rows){
+      result.data = rows;
+      result.result = define.const_SUCCESS;
+    }
   }
   catch(err){
     result.result = -1021;
@@ -176,6 +178,33 @@ const getStep1DeviceByBrand = async(brand_id)=>{
     return result;
   }
 }
+
+const checkIsFirstAuction = async(user_id)=>{
+  try{
+    var result = {};
+    const querytext = `
+    SELECT
+    COALESCE(
+      (SELECT device_id FROM auction_temp 
+      WHERE user_id = $1), -2) AS device_id, 
+    COALESCE(
+      (SELECT state FROM auction_temp
+      WHERE user_id = $1), -2) AS state
+      `;
+    var {rows} = await query(querytext, [user_id]);
+    result = {
+      "state": rows[0].state, 
+      "temp_device_id": rows[0].device_id
+    }
+  }
+  catch(err){
+    result.result = -1031;
+    console.log(`ERROR: ${result.result}/` + err);
+  }
+  finally{
+    return result;
+  }
+};
 //save step1 info for beginners
 const postStep1Insert = async(user_id, device_id)=>{
   var result = {};
@@ -183,13 +212,17 @@ const postStep1Insert = async(user_id, device_id)=>{
     const querytext = `
     INSERT INTO auction_temp(user_id, device_id, state, step)
     VALUES($1, $2, 1, 1)
-    ON CONFLICT(user_id) DO NOTHING
+    ON CONFLICT(user_id) DO 
+    UPDATE SET user_id = $1,
+    device_id = $2,
+    state = 1,
+    step = 1
     `;
     await query(querytext, [user_id, device_id]);
     result.result = define.const_SUCCESS;
   }
   catch(err){
-    result.result = -1031;
+    result.result = -1041;
     console.log(`ERROR: ${result.result}/` + err);
   }
   finally{
@@ -483,6 +516,7 @@ module.exports = {
   getAuctionTempWithUser,
   getStep1Latest6,
   getStep1DeviceByBrand,
+  checkIsFirstAuction,
   postStep1Insert,
   postStep1Update,
   getStep2ColorVolume,
