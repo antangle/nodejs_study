@@ -114,7 +114,7 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
     var result ={};
     try{
         var {user_id} = req.query;
-        result = await buy.checkIsFirstAuction(user_id);
+        result = await buy.getAuctionTempWithUser(user_id);
         if(result.state === define.const_DEAD || result.temp_device_id === define.const_NULL){
             result.result = -1111;
             console.log('this user\'s state or device_id is either NULL or DEAD');
