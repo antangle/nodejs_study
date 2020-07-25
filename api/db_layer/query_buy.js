@@ -318,8 +318,8 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
     const querytext = `
     SELECT
     COALESCE(
-      (SELECT device_id FROM auction_temp 
-      WHERE user_id = $1), -2) AS device_id, 
+      (SELECT device_id FROM auction_temp
+      WHERE user_id = $1), -2) AS device_id,
     COALESCE(
       (SELECT state FROM auction_temp
       WHERE user_id = $1), -2) AS state,
@@ -331,7 +331,8 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
     result = {
       "state": rows[0].state, 
       "temp_device_id":rows[0].device_id,
-      "device_detail_id":rows[0].device_detail_id
+      "device_detail_id":rows[0].device_detail_id,
+      "result": 1
     }
     //error handling when state, device_id, device_detail_id is null
     if(result.state == -1 || result.state == define.const_NULL){
@@ -342,21 +343,21 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
       result.result = -1212;
       console.log('this user hasen\'t selected from step 1 or 2 yet');   
     }
-    else {
+    else{
     const querytext2 = `
     SELECT device.name AS device_name,
       device.id AS device_id,
       device.property,
       device.generation,
       brand.name AS brand_name, image.url_2x,
-      device_detail.agency
+      detail.agency
       FROM device
       INNER JOIN brand
       ON device.brand_id = brand.id
       AND device.id = $1
       INNER JOIN image
       ON device.image_id = image.id
-      INNER JOIN device_detail
+      INNER JOIN device_detail AS detail
       ON device_detail.id = $2
     `;
     var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
@@ -372,6 +373,30 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
     return result;
   }
 };
+
+const getStep3PaymentInfo = async(agency) =>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT id AS payment_id, name AS payment_name,
+      price, call,
+      data, data_condition,
+      data_share, data_speed
+      FROM payment
+      WHERE agency = $1
+      `;
+    var {rows} = await query(querytext, [agency]);
+    result = {payment: rows, result: 1}
+  }
+  catch(err){
+    result.result = -1221;
+    console.log(`ERROR: ${result.result}/` + err);
+  }
+  finally{
+    return result;
+  }
+};
+
 const countAuctions = async(user_id) =>{
   var result = {};
   try{
@@ -384,7 +409,7 @@ const countAuctions = async(user_id) =>{
     result.result = define.const_SUCCESS;
   }
   catch(err){
-    result.result = -1223;
+    result.result = -1233;
     console.log(`ERROR: ${result.result}/` + err);
   }
   finally{
@@ -395,11 +420,11 @@ const postStep3Update = async(check, postInput)=>{
   var result = {};
   try{
     if(check.state == -1 || check.state == define.const_NULL){
-      result.result = -1221;
+      result.result = -1231;
       console.log('this user\'s temp_auction record is either NULL or DEAD');
     }
     else if(check.temp_device_id == define.const_NULL || check.device_detail_id == define.const_NULL){
-      result.result = -1222;
+      result.result = -1232;
       console.log('this user hasen\'t selected a device yet');
     }
     else{
@@ -430,7 +455,7 @@ const postStep3Update = async(check, postInput)=>{
     }
   }
   catch(err){
-    result.result = -1224;
+    result.result = -1234;
     console.log(`ERROR: ${result.result}/` + err);
   }
   finally{
@@ -450,7 +475,7 @@ const killAuctionTempState = async(user_id)=>{
     result.result = define.const_SUCCESS;
   }
   catch(err){
-    result.result = -1225;
+    result.result = -1235;
     console.log(`ERROR: ${result.result}/` + err);
   }
   finally{
@@ -476,7 +501,8 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
     result = {
       "state": rows[0].state, 
       "temp_device_id":rows[0].device_id,
-      "device_detail_id":rows[0].device_detail_id
+      "device_detail_id":rows[0].device_detail_id,
+      "result": 1
     }
     //error handling when state, device_id, device_detail_id is null
     if(result.state != -1){
@@ -504,7 +530,7 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
     result.result = define.const_SUCCESS;
   }
   catch(err){
-    result.result = -1213;
+    result.result = -1311;
     console.log(`ERROR: ${result.result}/` + err);
   }
   finally{
@@ -523,6 +549,7 @@ module.exports = {
   getStep2ColorVolume,
   postStep2Update,
   getAuctionTempWithUserStep3,
+  getStep3PaymentInfo,
   postStep3Update,
   killAuctionTempState,
   countAuctions,

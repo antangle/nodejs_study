@@ -170,6 +170,24 @@ router.get('/getStep3Info', async(req,res) =>{
         return res.json(result);
     }
 });
+router.get('/getStep3PaymentInfo', async(req,res) =>{
+    var result ={};
+    try{
+        var {agency} = req.query;
+        result = await buy.getStep3PaymentInfo(agency);
+        if(result.result != define.const_SUCCESS){
+            throw(result.result);
+        }
+    }
+    catch(err){
+        console.log('router ERROR: 122/' + err);
+        result.result = -122;
+    }
+    finally{
+        return res.json(result);
+    }
+});
+
 router.post('/postSaveStep3', async (req, res) =>{
     var result ={};
     try{
@@ -181,7 +199,7 @@ router.post('/postSaveStep3', async (req, res) =>{
         if(count.result != define.const_SUCCESS)
             throw(count.result);
         else if(count.count >= 3){
-            result.result = -1223
+            result.result = -1233
             throw(result.result)
         }
         result = await buy.postStep3Update(check, postInput);
@@ -193,8 +211,8 @@ router.post('/postSaveStep3', async (req, res) =>{
             throw(kill.result);
     }
     catch(err){
-        console.log('router ERROR: 122/' + err);
-        result.result = -122;
+        console.log('router ERROR: 123/' + err);
+        result.result = -123;
     }
     finally{
         return res.json(result);
