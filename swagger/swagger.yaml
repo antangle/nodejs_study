@@ -153,6 +153,12 @@ paths:
         required: true
         type: "integer"
         collectionFormat: "multi"
+      - name: "generation"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
       responses:
         "200":
           description: "agency(1:SKT ,2:KT, 3:LG)"
