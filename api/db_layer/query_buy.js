@@ -386,7 +386,7 @@ const getStep3PaymentInfo = async(agency, generation) =>{
       SELECT id AS payment_id, name AS payment_name,
       price, call,
       data, data_condition,
-      data_share, data_speed
+      data_share, data_speed, limitation
       FROM payment
       WHERE agency = $1
       AND generation = $2
