@@ -121,8 +121,9 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
             throw(result.result)
         }
         var device_id = result.temp_device_id;
-        result.data = await buy.getStep2ColorVolume(device_id);
-        console.log(result);
+        var data = await buy.getStep2ColorVolume(device_id);
+        result.rowCount = data.rowCount;
+        result.data = data.data;
         if(result.result != define.const_SUCCESS)
             throw(result.result);
     }

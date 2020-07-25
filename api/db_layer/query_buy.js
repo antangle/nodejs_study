@@ -270,9 +270,8 @@ const getStep2ColorVolume = async(device_id)=>{
     AND state = 1
     ORDER BY color_hex, volume
       `;
-    var {rows} = await query(querytext, [device_id]);
-    result = rows;
-    result.result = define.const_SUCCESS;
+    var {rows, rowCount} = await query(querytext, [device_id]);
+    result = {result: define.const_SUCCESS, data: rows, rowCount: rowCount}
   }
   catch(err){
     result.result = -1113
