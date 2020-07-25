@@ -137,12 +137,33 @@ paths:
       responses:
         "405":
           description: "Invalid input"
+  /buy/getStep3PaymentInfo:
+    get:
+      tags:
+      - "buy"
+      summary: ""
+      description: ""
+      operationId: "getStep3PaymentInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "agency"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "agency(1:SKT ,2:KT, 3:LG)"
+        "400":
+          description: "Invalid status value"
   /buy/getStep3Info:
     get:
       tags:
       - "buy"
       summary: "Finds selected device and color contraint(agency) with user_id"
-      description: "at buy/3\n아직 요금제(payment)에 관해선 안정해놔서 안나옴!"
+      description: ""
       operationId: "getStep3Info"
       produces:
       - "application/json"
