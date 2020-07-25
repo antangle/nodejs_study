@@ -344,25 +344,30 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
       console.log('this user hasen\'t selected from step 1 or 2 yet');   
     }
     else{
-    const querytext2 = `
-    SELECT device.name AS device_name,
-      device.id AS device_id,
-      device.property,
-      device.generation,
-      brand.name AS brand_name, image.url_2x,
-      detail.agency
-      FROM device
-      INNER JOIN brand
-      ON device.brand_id = brand.id
-      AND device.id = $1
-      INNER JOIN image
-      ON device.image_id = image.id
-      INNER JOIN device_detail AS detail
-      ON device_detail.id = $2
-    `;
-    var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
-    result.selected_device_array = rows;
-    result.result = define.const_SUCCESS;
+      const querytext2 = `
+        SELECT device.name AS device_name,
+          device.id AS device_id,
+          device.property,
+          device.generation,
+          brand.name AS brand_name, image.url_2x,
+          detail.agency
+        FROM device
+        INNER JOIN brand
+          ON device.brand_id = brand.id
+          AND device.id = $1
+        INNER JOIN image
+          ON device.image_id = image.id
+        INNER JOIN device_detail AS detail
+          ON detail.id = $2
+      `;
+      var {rows, rowCount} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
+      if(rowCount !== 0){
+        result.selected_device_array = rows;
+        result.result = define.const_SUCCESS;
+      }
+      else{
+        console.log('no possible values for page: step3::121')
+      }
     }
   }
   catch(err){
