@@ -36,13 +36,17 @@ const get201AuctionInfo = async(user_id, win_state)=>{
     var result = {};
     try{
       const querytext = `
-      SELECT id as auction_id, device_detail_id, payment_id, 
-      agency_use, agency_hope, finish_time,
-      now_discount_price, state, win_deal_id
-      FROM auction
-      WHERE user_id = $1
-      AND win_state = $2
-      ORDER BY finish_time
+      SELECT auc.id as auction_id, auc.device_detail_id, 
+      auc.payment_id, auc.agency_use, 
+      auc.agency_hope, auc.finish_time,
+      auc.now_discount_price, auc.state, 
+      auc.win_deal_id, payment.alias
+      FROM auction AS auc
+      INNER JOIN payment
+      ON auc.user_id = $1
+      AND auc.win_state = $2
+      AND payment.id = auc.payment_id
+      ORDER BY auc.finish_time
     `;
       var {rows, rowCount} = await query(querytext, [user_id, win_state]);
       result = {auction: rows, rowCount: rowCount};
@@ -127,8 +131,11 @@ const get205DealDetail = async(deal_id)=>{
             detail.id AS device_detail_id, 
             detail.cost_price, device.name AS device_name,
             deal.contract_list, deal.discount_official, deal.discount_price,
-            deal.payment_id, deal.discount_payment, deal.month_price,
-            deal.gift, deal.create_time AS deal_create_time
+            deal.discount_payment, deal.month_price,
+            deal.gift, deal.create_time AS deal_create_time,
+            payment.price, payment.alias, payment.data,
+            payment.call, payment.text, payment.limitation,
+            payment.generation
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
@@ -137,6 +144,8 @@ const get205DealDetail = async(deal_id)=>{
             ON device.id = deal.device_id
             INNER JOIN device_detail AS detail
             ON detail.id = deal.device_detail_id
+            INNER JOIN payment
+            ON payment.id = deal.payment_id
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};

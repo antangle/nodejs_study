@@ -164,7 +164,6 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       `
     }
     var {rows, rowCount} = await query(querytext, [brand_id]);
-    console.log(rows);
     if(rowCount === 0){
       throw('no data with that brand_id')
     }
@@ -283,6 +282,8 @@ const getStep2ColorVolume = async(device_id)=>{
     return result;
   }
 };
+
+//check returning device_id, state
 const postStep2Update = async(user_id, device_id, check)=>{
   var result = {};
   try{
@@ -392,6 +393,7 @@ const getStep3PaymentInfo = async(agency, generation) =>{
       FROM payment
       WHERE agency = $1
       AND generation = $2
+      ORDER BY limitation ASC, price DESC
       `;
     var {rows} = await query(querytext, [agency, generation]);
     result = {payment: rows, result: 1}

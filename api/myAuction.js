@@ -10,16 +10,16 @@ const auction = require('./db_layer/query_myAuction');
 router.get('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
     var array =[]
+    var {user_id} = req.query;
     try{
         // 1 means ongoing auctions
         var win_state = 1;
-        var {user_id} = req.query;
         result = await auction.get201AuctionInfo(user_id, win_state)
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         for(var i=0; i<result.rowCount; ++i){
             var data = await auction.getDeviceInfoWithDetail_Id(result.auction[i].device_detail_id);
-            if(data.result != define.const_SUCCESS)
+            if(data.result !== define.const_SUCCESS)
                 throw(data.result);
             array.push(data.rows[0]);
         }
@@ -42,11 +42,11 @@ router.get('/get202MyAuctionOff', async (req, res) =>{
         var win_state = 2;
         var {user_id} = req.query;
         result = await auction.get201AuctionInfo(user_id, win_state)
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         for(var i=0; i<result.rowCount; ++i){
             var data = await auction.getDeviceInfoWithDetail_Id(result.auction[i].device_detail_id);
-            if(data.result != define.const_SUCCESS)
+            if(data.result !== define.const_SUCCESS)
                 throw(data.result);
             array.push(data.rows[0]);
         }
@@ -66,7 +66,7 @@ router.get('/get203MyAuctionDetails', async (req, res) =>{
     try{
         var {auction_id} = req.query;
         result = await auction.get203AuctionDeals(auction_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -83,7 +83,7 @@ router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
     try{
         var {auction_id} = req.query;
         result = await auction.get204AuctionDealsFinish(auction_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -100,10 +100,10 @@ router.get('/get205DealDetails', async (req, res) =>{
     try{
         var {deal_id} = req.query;
         result = await auction.get205DealDetail(deal_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         var data = await auction.getDeviceInfoWithDetail_Id(result.deal[0].device_detail_id);
-        if(data.result != define.const_SUCCESS)
+        if(data.result !== define.const_SUCCESS)
             throw(data.result);
         result.selected_device_data = data.rows;
     }
@@ -121,7 +121,7 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
     try{
         var {deal_id} = req.body;
         result = await auction.Update208DealConfirmation(deal_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -138,7 +138,7 @@ router.get('/get209ConfirmedAuction', async (req, res) =>{
     try{
         var {deal_id} = req.query;
         result = await auction.get209ConfirmedAuction(deal_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -155,7 +155,7 @@ router.get('/get210InfoForReview', async (req, res) =>{
     try{
         var {deal_id} = req.query;
         result = await auction.get210InfoForReview(deal_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -172,7 +172,7 @@ router.post('/post210DealReview', async(req,res) =>{
     try{
         var jsondata = req.body;
         result = await auction.insert210Review(jsondata);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         jsondata.scoreGap = result.scoreGap;
         if(result.isScoreNull == true){
@@ -181,13 +181,13 @@ router.post('/post210DealReview', async(req,res) =>{
             jsondata.weight = 1;
             //scoreGap, weight, deal_id is in jsondata
             var store = await auction.update210StoreAfterReview(jsondata);
-            if(store.result != define.const_SUCCESS)
+            if(store.result !== define.const_SUCCESS)
                 throw(store.result);
         }
         else{
             jsondata.weight = 0;
             var store = await auction.update210StoreAfterReview(jsondata);
-            if(store.result != define.const_SUCCESS)
+            if(store.result !== define.const_SUCCESS)
                 throw(store.result);
         }
     }
@@ -205,7 +205,7 @@ router.get('/get211StoreDetails', async(req,res) =>{
     try{
         var {store_id} = req.query;
         result = await auction.get211StoreDetails(store_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -222,7 +222,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     try{
         var {store_id} = req.query;
         result = await auction.get212AllStoreReviews(store_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
