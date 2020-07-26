@@ -139,6 +139,7 @@ router.post('/postSaveStep2', async (req, res) =>{
     var result ={};
     try{
         var {user_id, device_detail_id} = req.body;
+        //check if auction_temp has that user_id
         var check = await buy.getAuctionTempWithUser(user_id);
         result = await buy.postStep2Update(user_id, device_detail_id, check);
         if(result.result !== define.const_SUCCESS)
@@ -198,10 +199,12 @@ router.post('/postSaveStep3', async (req, res) =>{
         count = await buy.countAuctions(postInput.user_id);
         if(count.result != define.const_SUCCESS)
             throw(count.result);
-        else if(count.count >= 3){
+        if(count.count >= 3){
             result.result = -1233
             throw(result.result)
         }
+        //check returning device_id, state, device_detail_id
+        //postInput has all the info of step 3
         result = await buy.postStep3Update(check, postInput);
         result.count = Number(count.count) + 1;
         if(result.result !== define.const_SUCCESS)

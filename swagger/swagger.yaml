@@ -162,8 +162,8 @@ paths:
     get:
       tags:
       - "buy"
-      summary: ""
-      description: ""
+      summary: "요금제 정보 가져오기"
+      description: "agency(1:SKT ,2:KT, 3:LG), generation(4: 4G, 5:5G)"
       operationId: "getStep3PaymentInfo"
       produces:
       - "application/json"
@@ -182,7 +182,7 @@ paths:
         collectionFormat: "multi"
       responses:
         "200":
-          description: "agency(1:SKT ,2:KT, 3:LG)"
+          description: ""
         "400":
           description: "Invalid status value"
   /buy/getStep3Info:
@@ -233,6 +233,12 @@ paths:
       - name: "agency_hope"
         in: "query"
         description: "사용희망 통신사"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "payment_id"
+        in: "query"
+        description: "요금제 id"
         required: true
         type: "integer"
         collectionFormat: "multi"
