@@ -91,6 +91,7 @@ const postS004StoreInfo = async(postArray)=>{
             create_time = current_date
             WHERE store.id = $7
             `;
+            console.log(postArray)
         await query(querytext, postArray);
         result ={result: define.const_SUCCESS};
     }

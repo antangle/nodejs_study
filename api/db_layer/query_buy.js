@@ -61,9 +61,8 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
       "temp_device_id": rows[0].device_id,
       "result" :1
     }
-
     // when the user already selected the device, print out device info
-    if(result.temp_device_id != define.const_NULL || device_id != undefined){
+    if(result.temp_device_id !== define.const_NULL || device_id !== undefined){
       var temp_device_id = device_id || result.temp_device_id;
       const querytext2 = `
         SELECT device.name AS device_name,
@@ -162,14 +161,17 @@ const getStep1DeviceByBrand = async(brand_id)=>{
       INNER JOIN image
       ON device.image_id = image.id
       ORDER BY device.birth DESC
-      ORDER BY birth
       `
     }
-    var {rows} = await query(querytext, [brand_id]);
-    if(!rows){
-      result.data = rows;
-      result.result = define.const_SUCCESS;
+    var {rows, rowCount} = await query(querytext, [brand_id]);
+    console.log(rows);
+    if(rowCount === 0){
+      throw('no data with that brand_id')
     }
+    result.data = rows;
+    result.result = define.const_SUCCESS;
+    
+    
   }
   catch(err){
     result.result = -1021;
@@ -434,10 +436,12 @@ const postStep3Update = async(check, postInput)=>{
       console.log('this user hasen\'t selected a device yet');
     }
     else{
+      console.log('hi')
       const querytext = `
         INSERT INTO auction(user_id,
           device_detail_id,
           device_id,
+          payment_id,
           agency_use,
           agency_hope,
           period,
@@ -449,9 +453,10 @@ const postStep3Update = async(check, postInput)=>{
           win_state)
         VALUES(
           $1, $2, $3, $4, $5,
-          $6, $7, current_timestamp, current_timestamp + interval '1 hour', 0 ,1, 1)`;
-      const inputarray = [postInput.user_id, 
-        check.device_detail_id, check.temp_device_id,
+          $6, $7, $8, current_timestamp, current_timestamp + interval '1 hour', 0 ,1, 1)`;
+      const inputarray = [
+        postInput.user_id, check.device_detail_id, 
+        check.temp_device_id, postInput.payment_id,
         postInput.agency_use, postInput.agency_hope, 
         postInput.period, postInput.contract_list, 
       ]

@@ -10,7 +10,7 @@ router.get('/getHomepageDevice', async (req, res) =>{
     var result ={};
     try{
         result = await buy.get100LatestDeviceHomepage(); 
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -27,7 +27,7 @@ router.get('/countAuction', async (req, res) =>{
     try{
         var {user_id} = req.query;
         result = await buy.countAuctions(user_id); 
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -44,7 +44,7 @@ router.get('/getStep1Latest', async(req,res) =>{
     try{
         var {user_id, device_id} = req.query;
         result = await buy.getAuctionTempWithUser(user_id, device_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         var latestDevices = await buy.getStep1Latest6();
         if(latestDevices.result != define.const_SUCCESS)
@@ -65,10 +65,10 @@ router.get('/getStep1WithBrand', async(req, res) => {
     try{
         var {user_id, device_id, brand_id} = req.query;
         result = await buy.getAuctionTempWithUser(user_id, device_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         result = await buy.getStep1DeviceByBrand(brand_id);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -124,7 +124,7 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
         var data = await buy.getStep2ColorVolume(device_id);
         result.rowCount = data.rowCount;
         result.data = data.data;
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
     }
     catch(err){
@@ -141,7 +141,7 @@ router.post('/postSaveStep2', async (req, res) =>{
         var {user_id, device_detail_id} = req.body;
         var check = await buy.getAuctionTempWithUser(user_id);
         result = await buy.postStep2Update(user_id, device_detail_id, check);
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(isError.result);
     }
     catch(err){
@@ -152,13 +152,13 @@ router.post('/postSaveStep2', async (req, res) =>{
         return res.json(result);
     }
 });
-//step:3 
+//step:3
 router.get('/getStep3Info', async(req,res) =>{
     var result ={};
     try{
         var {user_id} = req.query;
         result = await buy.getAuctionTempWithUserStep3(user_id);
-        if(result.result != define.const_SUCCESS){
+        if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
     }
@@ -175,7 +175,7 @@ router.get('/getStep3PaymentInfo', async(req,res) =>{
     try{
         var {agency, generation} = req.query;
         result = await buy.getStep3PaymentInfo(agency, generation);
-        if(result.result != define.const_SUCCESS){
+        if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
     }
@@ -191,7 +191,7 @@ router.get('/getStep3PaymentInfo', async(req,res) =>{
 router.post('/postSaveStep3', async (req, res) =>{
     var result ={};
     try{
-        var postInput = req.body;        
+        var postInput = req.body;
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
         if(check.result != define.const_SUCCESS)
             throw(check.result);
@@ -204,7 +204,7 @@ router.post('/postSaveStep3', async (req, res) =>{
         }
         result = await buy.postStep3Update(check, postInput);
         result.count = Number(count.count) + 1;
-        if(result.result != define.const_SUCCESS)
+        if(result.result !== define.const_SUCCESS)
             throw(result.result);
         var kill = await buy.killAuctionTempState(postInput.user_id);
         if(kill.result != define.const_SUCCESS)
@@ -224,7 +224,7 @@ router.get('/finish', async(req,res) =>{
     try{
         var {user_id} = req.query;
         result = await buy.finishAuctionTempDeviceInfo(user_id);
-        if(result.result != define.const_SUCCESS){
+        if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
     }

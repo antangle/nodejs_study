@@ -95,7 +95,7 @@ router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
     }
 });
 
-router.get('/get205FinishedDealDetails', async (req, res) =>{
+router.get('/get205DealDetails', async (req, res) =>{
     var result ={};
     try{
         var {deal_id} = req.query;
@@ -179,6 +179,7 @@ router.post('/post210DealReview', async(req,res) =>{
             //isScoreNull true -> the review is new or deal doesnt exist
             //doesnt matter when deal does not exist.
             jsondata.weight = 1;
+            //scoreGap, weight, deal_id is in jsondata
             var store = await auction.update210StoreAfterReview(jsondata);
             if(store.result != define.const_SUCCESS)
                 throw(store.result);

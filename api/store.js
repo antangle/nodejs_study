@@ -10,6 +10,10 @@ const store = require('./db_layer/query_login')
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 app.use(express.json({limit: '50mb'}));
 
+router.get('/test' ,verifyToken, async(req, res) =>{
+    res.send('hi 지훈 you are verified')
+})
+
 router.post('/login', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;

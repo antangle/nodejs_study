@@ -20,6 +20,27 @@ tags:
 schemes:
 - "http"
 paths:
+  /buy/countAuction:
+    get:
+      tags:
+      - "buy"
+      summary: "count auction number"
+      description: ""
+      operationId: "countAuction"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: "지금은 그냥 user_id = 1 로 생각하셈"
+        required: false
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+        "101":
+          description: "Invalid status value"
   /buy/getStep1Latest:
     get:
       tags:
@@ -381,13 +402,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get205FinishedDealDetails:
+  /myAuction/get205DealDetails:
     get:
       tags:
       - "myAuction"
       summary: "나의경매-상세 낙찰 후"
       description: "205, 206, 207page 모두 경메 상세내용 볼때 이거사용\n205->210(리뷰 페이지) 갈때 front 에서 deal_id 넘겨야함.\n206->208(경매낙찰 팝업) 뜰때 front에서 (deal_id, store_name) 넘김\n207->208(경매낙찰 팝업) 뜰때 front에서 (deal_id, store_name) 넘김"
-      operationId: "get205FinishedDealDetails"
+      operationId: "get205DealDetails"
       produces:
       - "application/json"
       parameters:

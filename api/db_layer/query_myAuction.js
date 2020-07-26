@@ -94,13 +94,17 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             store.name AS store_name, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time, 
-            auction.now_order, deal.order AS deal_order
+            auction.now_order, deal.order AS deal_order,
+            detail.cost_price, detail.discount_official, 
+            deal.month_price
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
             AND deal.auction_id = $1
             INNER JOIN auction
             ON deal.auction_id = auction.id
+            INNER JOIN device_detail AS detail
+            ON deal.device_detail_id = detail.id
             ORDER BY deal.discount_price DESC
             LIMIT 5
         `;
@@ -151,13 +155,14 @@ const Update208DealConfirmation = async(deal_id)=>{
     try{
         const querytext = `
             UPDATE auction 
-            SET win_deal_id = $1
+            SET win_deal_id = $1,
+            win_state = 2
             WHERE auction.id IN
             (SELECT auction_id FROM deal WHERE id = $1)
             RETURNING win_deal_id
         `;
         var {rows} = await query(querytext, [deal_id]);
-        result = {result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS, win_deal_id: rows[0].win_deal_id};
     }
     catch(err){
         result.result = -2081;
@@ -173,18 +178,17 @@ const get209ConfirmedAuction = async(deal_id)=>{
     try{
         const querytext = `
             SELECT deal.id AS deal_id, store.name AS store_name, 
-            device.name AS device_name,
-            auction.agency_use, auction.agency_hope,
+            device.name AS device_name, deal.agency,
             deal.discount_price, deal.month_price,
-            deal.gift
+            deal.gift, payment.alias
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
             AND deal.id = $1
             INNER JOIN device
             ON device.id = deal.device_id
-            INNER JOIN auction
-            ON auction.id = deal.auction_id
+            INNER JOIN payment
+            ON payment.id = deal.payment_id
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
@@ -306,6 +310,7 @@ const get211StoreDetails = async(store_id)=>{
             ON deal.device_id = device.id
             `;
         var {rows} = await query(querytext, [store_id]);
+        console.log(rows);
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, store: rows[0]};
     }
