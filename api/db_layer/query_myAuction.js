@@ -42,6 +42,7 @@ const update201AuctionState = async(user_id)=>{
         AND finish_time < current_timestamp 
     `;
       var {rowCount} = await query(querytext, [user_id]);
+      console.log(rowCount)
       if(rowCount !== 0){
           throw('something wrong with -2012: Extra Values')
       }
