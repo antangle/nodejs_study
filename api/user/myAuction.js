@@ -41,6 +41,7 @@ router.post('/get201StateUpdate', async (req, res) =>{
     try{
         const currentTime = Date.now()
         const finishTime = new Date(finish_time).valueOf()
+        console.log(currentTime, finishTime);
         if(finishTime < currentTime){
             result= {result: define.const_SUCCESS, state: 2}
         }
