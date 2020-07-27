@@ -14,9 +14,7 @@ router.get('/get201MyAuctionOn', async (req, res) =>{
     var {user_id} = req.query;
     try{
         await auction.update201AuctionState(user_id);
-        // 1 means ongoing auctions
-        var win_state = 1;
-        result = await auction.get201AuctionInfo(user_id, win_state)
+        result = await auction.get201AuctionInfo(user_id)
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
         for(var i=0; i<result.rowCount; ++i){
@@ -62,10 +60,8 @@ router.get('/get202MyAuctionOff', async (req, res) =>{
     var result ={};
     var array =[]
     try{
-        // 2 means confirmed auctions
-        var win_state = 2;
         var {user_id} = req.query;
-        result = await auction.get201AuctionInfo(user_id, win_state)
+        result = await auction.get202AuctionInfo(user_id)
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
         for(var i=0; i<result.rowCount; ++i){

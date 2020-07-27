@@ -6,9 +6,7 @@ const query = Pool.query;
 
 pool.on('error', function (err, client) {
     console.error('idle client error', err.message, err.stack);
-    
 });
-
 const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
     var result = {};
     try{
@@ -22,6 +20,7 @@ const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
       ON device.image_id = image.id
     `;
       var {rows} = await query(querytext, [device_detail_id]);
+      console.log(rows);
       result = {rows};
       result.result = define.const_SUCCESS;
     }
@@ -59,8 +58,7 @@ const update201AuctionState = async(user_id)=>{
       return result;
     }
 };
-
-const get201AuctionInfo = async(user_id, win_state)=>{
+const get201AuctionInfo = async(user_id)=>{
     var result = {};
     try{
       const querytext = `
@@ -72,17 +70,51 @@ const get201AuctionInfo = async(user_id, win_state)=>{
       FROM auction AS auc
       INNER JOIN payment
       ON auc.user_id = $1
-      AND auc.win_state = $2
+      AND auc.win_state = 1
       AND payment.id = auc.payment_id
       ORDER BY auc.finish_time
     `;
-      var {rows, rowCount} = await query(querytext, [user_id, win_state]);
+      var {rows, rowCount} = await query(querytext, [user_id]);
       
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
     }
     catch(err){
       result.result = -2011;
+      console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+      return result;
+    }
+};
+const get202AuctionInfo = async(user_id)=>{
+    var result = {};
+    try{
+      const querytext = `
+      SELECT auc.id as auction_id, auc.device_detail_id, 
+      auc.payment_id, auc.agency_use,
+      auc.agency_hope, auc.finish_time,
+      auc.now_discount_price, auc.state, auc.win_state,
+      auc.win_deal_id, payment.alias, store.phone, store.phone_1
+      FROM auction AS auc
+      INNER JOIN payment
+      ON auc.user_id = $1
+      AND payment.id = auc.payment_id
+      AND(auc.win_state = 2 OR auc.state = -1)
+      INNER JOIN deal
+      ON deal.id = auc.win_deal_id
+      LEFT JOIN store
+      ON store.id = deal.store_id
+      AND auc.win_time + interval '1 day' > current_timestamp
+      ORDER BY auc.finish_time
+    `;
+      var {rows, rowCount} = await query(querytext, [user_id]);
+      
+      result = {auction: rows, rowCount: rowCount};
+      result.result = define.const_SUCCESS;
+    }
+    catch(err){
+      result.result = -2021;
       console.log(`ERROR: ${result.result}/` + err);
     }
     finally{
@@ -406,6 +438,7 @@ module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
     get201AuctionInfo,
+    get202AuctionInfo,
     get203AuctionDeals,
     get204AuctionDealsFinish,
     get205DealDetail,
