@@ -34,7 +34,7 @@ paths:
         in: "query"
         description: "지금은 그냥 user_id = 1 로 생각하셈"
         required: false
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -55,7 +55,7 @@ paths:
         in: "query"
         description: "지금은 그냥 user_id = 1 로 생각하셈"
         required: false
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -99,7 +99,7 @@ paths:
         in: "query"
         description: "give current user_id"
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       - name: "device_id"
         in: "query"
@@ -124,7 +124,7 @@ paths:
         in: "query"
         description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰) volume은 그냥 int형으로!\n 지금은 device_id = 1,2만 다르고 다른건 다 device_id=1꺼 복붙해놓음"
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -147,7 +147,7 @@ paths:
         in: "query"
         description: "give current user_id"
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       - name: "device_detail_id"
         in: "query"
@@ -185,6 +185,39 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
+  /api/buy/getStep3OfficialInfo:
+    get:
+      tags:
+      - "buy"
+      summary: "공시지원금 정보 가져오기"
+      description: "returns discount_official"
+      operationId: "getStep3OfficialInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "payment_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "device_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "volume"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
   /api/buy/getStep3Info:
     get:
       tags:
@@ -199,7 +232,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -222,7 +255,7 @@ paths:
         in: "query"
         description: "give current user_id"
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       - name: "agency_use"
         in: "query"
@@ -271,7 +304,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -338,7 +371,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -359,7 +392,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -739,7 +772,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
       - name: "sido_code"
         in: "query"
         description: "시/도"

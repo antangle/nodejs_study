@@ -407,6 +407,32 @@ const getStep3PaymentInfo = async(agency, generation) =>{
   }
 };
 
+const getSelectedPayment = async(device_id, payment_id, volume)=>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT discount_official
+      FROM official
+      WHERE device_id = $1
+      AND payment_id = $2
+      AND device_volume = $3
+      AND state = 1
+      `;
+    var {rows, rowCount} = await query(querytext, [device_id, payment_id, volume]);
+    if(rowCount === 0){
+      throw('query rowCount returns no value in -1222')
+    }
+    result = {discount_official: rows[0].discount_official, result: 1}
+  }
+  catch(err){
+    result.result = -1222;
+    console.log(`ERROR: ${result.result}/` + err);
+  }
+  finally{
+    return result;
+  }
+}
+
 const countAuctions = async(user_id) =>{
   var result = {};
   try{
@@ -438,7 +464,6 @@ const postStep3Update = async(check, postInput)=>{
       console.log('this user hasen\'t selected a device yet');
     }
     else{
-      console.log('hi')
       const querytext = `
         INSERT INTO auction(user_id,
           device_detail_id,
@@ -455,15 +480,21 @@ const postStep3Update = async(check, postInput)=>{
           win_state)
         VALUES(
           $1, $2, $3, $4, $5,
-          $6, $7, $8, current_timestamp, current_timestamp + interval '1 hour', 0 ,1, 1)`;
+          $6, $7, $8, 
+          current_timestamp, 
+          current_timestamp + interval '1 hour', 
+          0 ,1, 1)
+        RETURNING user_id`;
       const inputarray = [
         postInput.user_id, check.device_detail_id, 
         check.temp_device_id, postInput.payment_id,
         postInput.agency_use, postInput.agency_hope, 
-        postInput.period, postInput.contract_list, 
+        postInput.period, postInput.contract_list
       ]
-      await query(querytext, inputarray
-        );
+      var {rows, rowCount} = await query(querytext, inputarray);
+      if(rowCount === 0){
+        throw('PostStep3 query error');
+      }
       result.result = define.const_SUCCESS;
     }
   }
@@ -563,6 +594,7 @@ module.exports = {
   postStep2Update,
   getAuctionTempWithUserStep3,
   getStep3PaymentInfo,
+  getSelectedPayment,
   postStep3Update,
   killAuctionTempState,
   countAuctions,

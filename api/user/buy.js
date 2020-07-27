@@ -98,9 +98,6 @@ router.post('/postSaveStep1', async(req, res) =>{
                 throw(postInfo.result);
             result.result = define.const_SUCCESS;
         }
-        else{
-            console.log('unidentified ERROR 103');
-        }
     }
     catch(err){
         console.log('router ERROR: 103/' + err);
@@ -177,6 +174,24 @@ router.get('/getStep3PaymentInfo', async(req,res) =>{
     try{
         var {agency, generation} = req.query;
         result = await buy.getStep3PaymentInfo(agency, generation);
+        if(result.result !== define.const_SUCCESS){
+            throw(result.result);
+        }
+    }
+    catch(err){
+        console.log('router ERROR: 122/' + err);
+        result.result = -122;
+    }
+    finally{
+        return res.json(result);
+    }
+});
+
+router.get('/getStep3OfficialInfo', async(req,res) =>{
+    var result ={};
+    try{
+        var {device_id, payment_id, volume} = req.query;
+        result = await buy.getSelectedPayment(device_id, payment_id, volume);
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
