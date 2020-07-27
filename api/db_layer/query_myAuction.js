@@ -101,7 +101,7 @@ const get202AuctionInfo = async(user_id)=>{
       ON auc.user_id = $1
       AND payment.id = auc.payment_id
       AND(auc.win_state = 2 OR auc.state = -1)
-      INNER JOIN deal
+      LEFT JOIN deal
       ON deal.id = auc.win_deal_id
       LEFT JOIN store
       ON store.id = deal.store_id
