@@ -6,6 +6,7 @@ const query = Pool.query;
 
 pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
+  
 });
 
 //store login query(s001~s007)

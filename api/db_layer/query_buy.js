@@ -6,6 +6,7 @@ const query = Pool.query;
 
 pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
+  
 });
 
 //homepage latest device.
@@ -559,15 +560,16 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
       device.property,
       device.generation,
       brand.name AS brand_name, image.url_2x,
-      device_detail.agency
+      detail.color_hex, detail.color_name, 
+      detail.volume, detail.agency
       FROM device
       INNER JOIN brand
       ON device.brand_id = brand.id
       AND device.id = $1
       INNER JOIN image
       ON device.image_id = image.id
-      INNER JOIN device_detail
-      ON device_detail.id = $2
+      INNER JOIN device_detail AS detail
+      ON detail.id = $2
     `;
     var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
     result.selected_device_array = rows;

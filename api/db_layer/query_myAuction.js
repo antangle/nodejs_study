@@ -6,6 +6,7 @@ const query = Pool.query;
 
 pool.on('error', function (err, client) {
     console.error('idle client error', err.message, err.stack);
+    
 });
 
 const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
@@ -69,7 +70,8 @@ const get203AuctionDeals = async(auction_id)=>{
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time, 
             auction.now_order, deal.order AS deal_order,
-            detail.cost_price, detail.discount_official, deal.month_price
+            detail.cost_price, deal.discount_official, deal.month_price,
+            deal.discount_payment
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
@@ -99,7 +101,7 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time, 
             auction.now_order, deal.order AS deal_order,
-            detail.cost_price, detail.discount_official, 
+            detail.cost_price, deal.discount_official, 
             deal.month_price
             FROM deal
             INNER JOIN store
