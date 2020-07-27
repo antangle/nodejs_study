@@ -11,11 +11,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const {verifyToken} = require('./middleware/verify');
-const buyRouter = require('./api/buy');
-const userRouter = require('./api/user');
-const storeRouter = require('./api/store');
-const myAuctionRouter = require('./api/myAuction')
+const APIRouter = require('./api');
+const loginRouter = require('./api/login');
 const landingRouter = require('./api/landing');
+
 const port = process.env.port || 9000;
 const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
@@ -29,12 +28,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/user', userRouter);
-app.use('/store', storeRouter);
-app.use('/myAuction', myAuctionRouter);
+app.use('/api', APIRouter);
+app.use('/login', loginRouter);
 app.use('/landing', landingRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
-app.use('/buy', buyRouter);
 
 app.use('/', (req, res) =>{
   res.send('Welcome to Backend');

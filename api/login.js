@@ -3,9 +3,9 @@ const app = express();
 const { hash } = require('bcrypt');
 const router = express.Router();
 
-const users = require('./db_layer/query_login')
-const helper = require('../controller/validate').helper;
-const define = require('../definition/define')
+const users = require('./db_layer/query_login');
+const define = require('../definition/define');
+const {helper} = require('../controller/validate');
 const {verifyToken} = require('../middleware/verify');
 
 app.use(express.urlencoded({limit:'50mb', extended: false }));

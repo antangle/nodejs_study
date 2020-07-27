@@ -20,7 +20,7 @@ tags:
 schemes:
 - "http"
 paths:
-  /buy/countAuction:
+  /api/buy/countAuction:
     get:
       tags:
       - "buy"
@@ -41,7 +41,7 @@ paths:
           description: "successful operation"
         "101":
           description: "Invalid status value"
-  /buy/getStep1Latest:
+  /api/buy/getStep1Latest:
     get:
       tags:
       - "buy"
@@ -62,7 +62,7 @@ paths:
           description: "successful operation"
         "101":
           description: "Invalid status value"
-  /buy/getStep1WithBrand:
+  /api/buy/getStep1WithBrand:
     get:
       tags:
       - "buy"
@@ -83,7 +83,7 @@ paths:
           description: "successful operation"
         "400":
           description: "Invalid status value"
-  /buy/postSaveStep1:
+  /api/buy/postSaveStep1:
     post:
       tags:
       - "buy"
@@ -110,7 +110,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /buy/getStep2ColorVolume:
+  /api/buy/getStep2ColorVolume:
     get:
       tags:
       - "buy"
@@ -131,7 +131,7 @@ paths:
           description: "successful operation"
         "400":
           description: "Invalid status value"
-  /buy/postSaveStep2:
+  /api/buy/postSaveStep2:
     post:
       tags:
       - "buy"
@@ -158,7 +158,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /buy/getStep3PaymentInfo:
+  /api/buy/getStep3PaymentInfo:
     get:
       tags:
       - "buy"
@@ -185,7 +185,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /buy/getStep3Info:
+  /api/buy/getStep3Info:
     get:
       tags:
       - "buy"
@@ -206,7 +206,7 @@ paths:
           description: "agency(1:SKT ,2:KT, 3:LG, 4:알뜰)"
         "400":
           description: "Invalid status value"
-  /buy/postSaveStep3:
+  /api/buy/postSaveStep3:
     post:
       tags:
       - "buy"
@@ -257,7 +257,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /buy/finish:
+  /api/buy/finish:
     get:
       tags:
       - "buy"
@@ -324,7 +324,7 @@ paths:
           description: "successful operation"
         "400":
           description: "Invalid status value"
-  /myAuction/get201MyAuctionOn:
+  /api/myAuction/get201MyAuctionOn:
     get:
       tags:
       - "myAuction"
@@ -345,7 +345,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get202MyAuctionOff:
+  /api/myAuction/get202MyAuctionOff:
     get:
       tags:
       - "myAuction"
@@ -366,7 +366,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get203MyAuctionDetails:
+  /api/myAuction/get203MyAuctionDetails:
     get:
       tags:
       - "myAuction"
@@ -387,7 +387,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get204MyAuctionDetailsFinish:
+  /api/myAuction/get204MyAuctionDetailsFinish:
     get:
       tags:
       - "myAuction"
@@ -408,7 +408,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get205DealDetails:
+  /api/myAuction/get205DealDetails:
     get:
       tags:
       - "myAuction"
@@ -429,7 +429,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/patch208ConfirmPopup:
+  /api/myAuction/patch208ConfirmPopup:
     patch:
       tags:
       - "myAuction"
@@ -450,7 +450,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get209ConfirmedAuction:
+  /api/myAuction/get209ConfirmedAuction:
     get:
       tags:
       - "myAuction"
@@ -471,7 +471,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get210InfoForReview:
+  /api/myAuction/get210InfoForReview:
     get:
       tags:
       - "myAuction"
@@ -492,7 +492,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/post210DealReview:
+  /api/myAuction/post210DealReview:
     post:
       tags:
       - "myAuction"
@@ -525,7 +525,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /myAuction/get211StoreDetails:
+  /api/myAuction/get211StoreDetails:
     get:
       tags:
       - "myAuction"
@@ -546,7 +546,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"  
-  /myAuction/get212AllStoreReviews:
+  /api/myAuction/get212AllStoreReviews:
     get:
       tags:
       - "myAuction"
@@ -567,7 +567,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /user/login:
+  /login/login:
     post:
       tags:
       - "user"
@@ -594,7 +594,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /user/004CheckId:
+  /login/004CheckId:
     post:
       tags:
       - "user"
@@ -615,7 +615,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /user/004SignIn:
+  /login/004SignIn:
     post:
       tags:
       - "user"
@@ -642,7 +642,7 @@ paths:
           description: "return 값으로 user_id 줌"
         "400":
           description: "Invalid status value"
-  /user/006CheckNick:
+  /login/006CheckNick:
     post:
       tags:
       - "user"
@@ -663,7 +663,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /user/006PostNick:
+  /login/006PostNick:
     post:
       tags:
       - "user"
@@ -690,7 +690,7 @@ paths:
           description: "return 값으로 user_id 줌"
         "400":
           description: "Invalid status value"
-  /user/Get007SdCode:
+  /login/Get007SdCode:
     get:
       tags:
       - "user"
@@ -704,7 +704,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /user/Get007SggCode:
+  /login/Get007SggCode:
     get:
       tags:
       - "user"
@@ -725,7 +725,7 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /user/007PostLocationCode:
+  /login/007PostLocationCode:
     post:
       tags:
       - "user"
@@ -749,205 +749,6 @@ paths:
       - name: "sgg_code"
         in: "query"
         description: "시/군/구"
-        required: true
-        type: "integer"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: "Invalid status value"
-  /store/login:
-    post:
-      tags:
-      - "store"
-      summary: "판매자 로그인"
-      description: ""
-      operationId: "store_login"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "login_id"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      - name: "login_pwd"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: "Invalid status value"
-  /store/s003CheckId:
-    post:
-      tags:
-      - "store"
-      summary: "아이디 중복확인"
-      description: "중복이면 match:1 중복없는 아디면 match:-2(match!=1)"
-      operationId: "s003CheckId"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "login_id"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: "Invalid status value"
-  /store/s003SignIn:
-    post:
-      tags:
-      - "store"
-      summary: "판매자 회원가입"
-      description: "return값으로 store_id받고 다음 페이지 갈때 넘길것."
-      operationId: "s003SignIn"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "login_id"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      - name: "login_pwd"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: "return 값으로 store_id 줌"
-        "400":
-          description: "Invalid status value"
-  /store/s004PostBusinessInfo:
-    post:
-      tags:
-      - "store"
-      summary: "사업자 정보 등록"
-      description: "return값으로 store_id받고 다음 페이지 갈때 넘길것"
-      operationId: "s004PostBusinessInfo"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "uuid"
-        in: "query"
-        description: "사업자등록번호"
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      - name: "name"
-        in: "query"
-        description: ""
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      - name: "trade_name"
-        in: "query"
-        description: ""
-        required: false
-        type: "string"
-        collectionFormat: "multi"
-      - name: "phone"
-        in: "query"
-        description: "사업자전화번호"
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      - name: "phone_1"
-        in: "query"
-        description: "관리자전화번호"
-        required: false
-        type: "string"
-        collectionFormat: "multi"
-      - name: "address"
-        in: "query"
-        description: "사업자주소"
-        required: true
-        type: "string"
-        collectionFormat: "multi"
-      - name: "store_id"
-        in: "query"
-        description: "store번호"
-        required: true
-        type: "integer"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: "Invalid status value"
-  /store/Get007SdCode:
-    get:
-      tags:
-      - "store"
-      summary: "시/도 불러오기"
-      description: ""
-      operationId: "Get007SdCode"
-      produces:
-      - "application/json"
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: "Invalid status value"
-  /store/Get007SggCode:
-    get:
-      tags:
-      - "store"
-      summary: "시군구 불러오기"
-      description: ""
-      operationId: "Get007SggCode"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "sido_code"
-        in: "query"
-        description: "시/도 코드"
-        required: true
-        type: "integer"
-        collectionFormat: "multi"
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: "Invalid status value"
-  /store/s007PostLocationCode:
-    post:
-      tags:
-      - "store"
-      summary: "시/도, 시군구 입력"
-      description: ""
-      operationId: "s007PostLocationCode"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "store_id"
-        in: "query"
-        description: ""
-        required: true
-        type: "integer"
-      - name: "sido_code"
-        in: "query"
-        description: "시/도 코드"
-        required: true
-        type: "integer"
-        collectionFormat: "multi"
-      - name: "sgg_code"
-        in: "query"
-        description: "시/군/구 코드"
         required: true
         type: "integer"
         collectionFormat: "multi"

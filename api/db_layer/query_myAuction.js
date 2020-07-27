@@ -133,9 +133,11 @@ const get205DealDetail = async(deal_id)=>{
             deal.contract_list, deal.discount_official, deal.discount_price,
             deal.discount_payment, deal.month_price,
             deal.gift, deal.create_time AS deal_create_time,
-            payment.price, payment.alias, payment.data,
-            payment.call, payment.text, payment.limitation,
-            payment.generation
+            payment.price AS payment_price, payment.alias AS payment_alias, 
+            payment.data AS payment_data,
+            payment.call AS payment_call, 
+            payment.text AS payment_text, 
+            payment.limitation, payment.generation
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
@@ -248,13 +250,14 @@ const insert210Review = async(jsondata)=>{
             INSERT INTO score(user_id, 
                 store_id, score, 
                 comment, deal_id, create_date)
-            SELECT user_id, store_id, $1, $2, $3, now()
+            SELECT user_id, store_id, $1, $2, $3, current_date
             FROM deal
             WHERE deal.id = $3
             AND EXISTS(SELECT 1 FROM deal WHERE deal.id = $3)
             ON CONFLICT (deal_id) DO UPDATE 
             SET score = $1,
-            comment = $2            
+            comment = $2,
+            create_date = current_date            
             RETURNING (select cte.score from cte)
         `;
         var {score, comment, deal_id} = jsondata;
@@ -306,13 +309,14 @@ const get211StoreDetails = async(store_id)=>{
             SELECT store.id AS store_id, store.score AS avg_score, 
             store.score_weight AS review_count,
             store.comment AS store_comment, 
-            score.score AS my_score, 
-            score.comment AS my_comment,
-            device.name AS device_name
+            score.score AS user_score, 
+            score.comment AS user_comment,
+            device.name AS device_name,
+            deal.store_nick
             FROM store
             INNER JOIN score
-            ON score.store_id = $1
-            AND score.store_id = store.id
+            ON store.id = $1
+            AND score.store_id = $1
             INNER JOIN deal
             ON deal.id = score.deal_id
             INNER JOIN device
@@ -340,13 +344,14 @@ const get212AllStoreReviews = async(store_id)=>{
             store.comment AS store_comment, 
             score.score AS my_score, 
             score.comment AS my_comment,
+            DATE(score.create_date),
             device.name AS device_name,
             detail.color_name,
             detail.volume
             FROM store
             INNER JOIN score
-            ON score.store_id = $1
-            AND score.store_id = store.id
+            ON store.id = $1
+            AND score.store_id = $1
             INNER JOIN deal
             ON deal.id = score.deal_id
             INNER JOIN device_detail AS detail
@@ -355,6 +360,7 @@ const get212AllStoreReviews = async(store_id)=>{
             ON deal.device_id = device.id
             `;
         var {rows} = await query(querytext, [store_id]);
+        console.log(rows)
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, review: rows};
     }

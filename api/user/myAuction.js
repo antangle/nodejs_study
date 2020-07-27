@@ -4,8 +4,8 @@ const app = express();
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
-const define = require('../definition/define')
-const auction = require('./db_layer/query_myAuction');
+const define = require('../../definition/define')
+const auction = require('../db_layer/query_myAuction');
 
 router.get('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
@@ -221,6 +221,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     var result ={};
     try{
         var {store_id} = req.query;
+        console.log(store_id)
         result = await auction.get212AllStoreReviews(store_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);

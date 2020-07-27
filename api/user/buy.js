@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const buy = require('./db_layer/query_buy');
-const define = require('../definition/define')
+const buy = require('../db_layer/query_buy');
+const define = require('../../definition/define')
 const app = express();
+
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
