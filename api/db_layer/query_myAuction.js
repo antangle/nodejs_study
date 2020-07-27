@@ -37,15 +37,18 @@ const update201AuctionState = async(user_id)=>{
     var result = {};
     try{
       const querytext = `
-        UPDATE auction SET state = 2
+        UPDATE auction SET state = (
+            CASE WHEN finish_time + interval '1 hour' < current_timestamp
+            THEN -1
+            WHEN finish_time < current_timestamp
+            THEN 2
+            WHEN finish_time >= current_timestamp
+            THEN 1
+            END
+        )
         WHERE user_id = $1
-        AND finish_time < current_timestamp 
     `;
-      var {rowCount} = await query(querytext, [user_id]);
-      console.log(rowCount)
-      if(rowCount !== 0){
-          throw('something wrong with -2012: Extra Values')
-      }
+      await query(querytext, [user_id]);
       result.result = define.const_SUCCESS;
     }
     catch(err){

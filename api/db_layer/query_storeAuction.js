@@ -29,7 +29,6 @@ const get6011StoreAuction = async(store_id)=>{
     try{
       const querytext = `
       SELECT deal.id AS deal_id, deal.agency, deal.contract_list
-      
       FROM deal
       WHERE deal.store_id = $1
       
