@@ -378,6 +378,27 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
+  /api/myAuction/get201StateUpdate:
+    get:
+      tags:
+      - "myAuction"
+      summary: "나의경매-입찰중 page"
+      description: "203 or 204 페이지로 갈때 finish_time 서버에서 비교해서 state값 넘겨줌"
+      operationId: "get201StateUpdate"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "finish_time"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
   /api/myAuction/get202MyAuctionOff:
     get:
       tags:

@@ -38,8 +38,13 @@ const get201AuctionInfo = async(user_id, win_state)=>{
     var result = {};
     try{
       const querytext = `
+      WITH cte AS(
+        UPDATE auction SET state = 2
+        WHERE id = $1
+        AND finish_time < current_timestamp 
+      )
       SELECT auc.id as auction_id, auc.device_detail_id, 
-      auc.payment_id, auc.agency_use, 
+      auc.payment_id, auc.agency_use,
       auc.agency_hope, auc.finish_time,
       auc.now_discount_price, auc.state, auc.win_state,
       auc.win_deal_id, payment.alias
@@ -51,6 +56,7 @@ const get201AuctionInfo = async(user_id, win_state)=>{
       ORDER BY auc.finish_time
     `;
       var {rows, rowCount} = await query(querytext, [user_id, win_state]);
+      
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
     }
@@ -62,26 +68,6 @@ const get201AuctionInfo = async(user_id, win_state)=>{
       return result;
     }
 };
-const update201AuctionState = async(user_id) =>{
-    var result = {};
-    try{
-      const querytext = `
-      UPDATE auction SET state = 2 
-      WHERE user_id = $1
-      AND finish_time < current_timestamp
-    `;
-      var {rows, rowCount} = await query(querytext, [user_id]);
-      result = {auction: rows, rowCount: rowCount};
-      result.result = define.const_SUCCESS;
-    }
-    catch(err){
-      result.result = -2012;
-      console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
-      return result;
-    }
-}
 const get203AuctionDeals = async(auction_id)=>{
     var result = {};
     try{
@@ -398,7 +384,6 @@ const get212AllStoreReviews = async(store_id)=>{
 module.exports = {
     getDeviceInfoWithDetail_Id,
     get201AuctionInfo,
-    update201AuctionState,
     get203AuctionDeals,
     get204AuctionDealsFinish,
     get205DealDetail,

@@ -34,7 +34,10 @@ const get6011StoreAuction = async(store_id)=>{
       WHERE deal.store_id = $1
       
     `;
-      var {rows} = await query(querytext, [store_id]);
+      var {rows, rowCount} = await query(querytext, [store_id]);
+      if(rowCount === 0){
+          throw('query return value doesnt match');
+      }
       result = {rows};
       result.result = define.const_SUCCESS;
     }

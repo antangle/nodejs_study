@@ -6,6 +6,7 @@ app.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const define = require('../../definition/define')
 const auction = require('../db_layer/query_myAuction');
+const { const_SUCCESS } = require('../../definition/define');
 
 router.get('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
@@ -28,6 +29,27 @@ router.get('/get201MyAuctionOn', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: 201/' + err);
+        result.result = -201;
+    }
+    finally{
+        return res.json(result);
+    }
+});
+router.post('/get201StateUpdate', async (req, res) =>{
+    var result ={};
+    var {finish_time} = req.body;
+    try{
+        const currentTime = Date.now()
+        const finishTime = new Date(finish_time).valueOf()
+        if(finishTime < currentTime){
+            result= {result: define.const_SUCCESS, state: 2}
+        }
+        else{
+            result= {result: define.const_SUCCESS, state: 1}
+        }
+    }
+    catch(err){
+        console.log('router ERROR: 201a/' + err);
         result.result = -201;
     }
     finally{
