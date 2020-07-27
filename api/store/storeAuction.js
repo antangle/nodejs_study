@@ -11,6 +11,8 @@ const auction = require('../db_layer/query_storeAuction')
 router.get('/S100HomepageInfo', async (req, res) =>{
     var result ={};
     try{
+        console.log('h');
+        console.log(Date('2017-03-18 09:41:26.208497+07'));
         var {store_id} = req.query;
         result = await auction.get6011StoreAuction(store_id);
         if(result.result !== define.const_SUCCESS){

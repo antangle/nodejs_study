@@ -33,23 +33,52 @@ const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
       return result;
     }
 };
+const update201AuctionState = async(auction_id) =>{
+    var result = {};
+    try{
+      const querytext = `
+      UPDATE auction SET state = 2 
+      WHERE id = $1
+    `;
+      var {rows, rowCount} = await query(querytext, [auction_id]);
+      result = {auction: rows, rowCount: rowCount};
+      result.result = define.const_SUCCESS;
+    }
+    catch(err){
+      result.result = -2011;
+      console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+      return result;
+    }
+}
 const get201AuctionInfo = async(user_id, win_state)=>{
     var result = {};
     try{
       const querytext = `
+      WITH cte AS(
+        UPDATE auction SET
+        state = 2
+        WHERE finish_time < current_timestamp
+        AND user_id = $1
+        RETURNING state
+      )
       SELECT auc.id as auction_id, auc.device_detail_id, 
       auc.payment_id, auc.agency_use, 
       auc.agency_hope, auc.finish_time,
-      auc.now_discount_price, auc.state, 
-      auc.win_deal_id, payment.alias
+      auc.now_discount_price, auc.state, auc.win_state,
+      auc.win_deal_id, payment.alias, cte.state AS cte_state
       FROM auction AS auc
       INNER JOIN payment
       ON auc.user_id = $1
       AND auc.win_state = $2
       AND payment.id = auc.payment_id
+      LEFT JOIN cte
+      ON true
       ORDER BY auc.finish_time
     `;
       var {rows, rowCount} = await query(querytext, [user_id, win_state]);
+      console.log(rows);  
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
     }
@@ -66,9 +95,9 @@ const get203AuctionDeals = async(auction_id)=>{
     try{
         const querytext = `
             SELECT deal.id AS deal_id, deal.store_id, 
-            store.name AS store_name, store.score,
+            deal.store_nick AS store_nick, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
-            auction.finish_time AS auction_finish_time, 
+            auction.finish_time AS auction_finish_time,
             auction.now_order, deal.order AS deal_order,
             detail.cost_price, deal.discount_official, deal.month_price,
             deal.discount_payment
