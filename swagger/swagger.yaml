@@ -379,7 +379,7 @@ paths:
         "400":
           description: "Invalid status value"
   /api/myAuction/get201StateUpdate:
-    get:
+    post:
       tags:
       - "myAuction"
       summary: "나의경매-입찰중 page"
