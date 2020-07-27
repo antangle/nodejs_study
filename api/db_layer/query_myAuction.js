@@ -109,7 +109,6 @@ const get202AuctionInfo = async(user_id)=>{
       ORDER BY auc.finish_time
     `;
       var {rows, rowCount} = await query(querytext, [user_id]);
-      
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
     }
