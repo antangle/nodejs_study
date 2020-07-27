@@ -71,6 +71,7 @@ const get201AuctionInfo = async(user_id)=>{
       INNER JOIN payment
       ON auc.user_id = $1
       AND auc.win_state = 1
+      AND(auc.state = 1 OR auc.state = 2)
       AND payment.id = auc.payment_id
       ORDER BY auc.finish_time
     `;
