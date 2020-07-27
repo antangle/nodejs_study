@@ -5,8 +5,7 @@ const pool = Pool.pool;
 const query = Pool.query;
 
 pool.on('error', function (err, client) {
-  console.error('idle client error', err.message, err.stack);
-  
+  console.error('idle client error', err.message, err.stack);  
 });
 
 //homepage latest device.

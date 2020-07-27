@@ -12,6 +12,7 @@ router.get('/get201MyAuctionOn', async (req, res) =>{
     var array =[]
     var {user_id} = req.query;
     try{
+        await auction.update201AuctionState(user_id);
         // 1 means ongoing auctions
         var win_state = 1;
         result = await auction.get201AuctionInfo(user_id, win_state)
