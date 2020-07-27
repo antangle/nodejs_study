@@ -96,7 +96,8 @@ const get202AuctionInfo = async(user_id)=>{
       auc.payment_id, auc.agency_use,
       auc.agency_hope, auc.finish_time,
       auc.now_discount_price, auc.state, auc.win_state,
-      auc.win_deal_id, payment.alias, store.phone, store.phone_1
+      auc.win_deal_id, payment.alias, store.phone, store.phone_1,
+      score.id AS score_id
       FROM auction AS auc
       INNER JOIN payment
       ON auc.user_id = $1
@@ -107,6 +108,8 @@ const get202AuctionInfo = async(user_id)=>{
       LEFT JOIN store
       ON store.id = deal.store_id
       AND auc.win_time + interval '1 day' > current_timestamp
+      LEFT JOIN score
+      ON score.deal_id = auc.win_deal_id
       ORDER BY auc.finish_time
     `;
       var {rows, rowCount} = await query(querytext, [user_id]);
