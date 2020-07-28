@@ -20,14 +20,14 @@ const getS001GetPassword = async(login_id)=>{
         `;
         var {rows} = await query(querytext, [login_id]);
         result ={result: define.const_SUCCESS, data: rows[0]};
+        return result;
     }
     catch(err){
         result.result = -511;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const postS003LoginIdCheck = async(login_id)=>{
@@ -41,14 +41,14 @@ const postS003LoginIdCheck = async(login_id)=>{
                     `;
         var {rows} = await query(querytext, [login_id]);
         result ={result: define.const_SUCCESS, match: rows[0].match};
+        return result;
     }
     catch(err){
         result.result = -531;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 const postS003IdPassword = async(login_id, hash_pwd)=>{
     var result = {};
@@ -67,14 +67,14 @@ const postS003IdPassword = async(login_id, hash_pwd)=>{
             throw('please do ID check first');
         }
         result ={result: define.const_SUCCESS, store_id: rows[0].id};
+        return result;
     }
     catch(err){
         result.result = -532;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 
 const postS004StoreInfo = async(postArray)=>{
@@ -95,14 +95,14 @@ const postS004StoreInfo = async(postArray)=>{
             console.log(postArray)
         await query(querytext, postArray);
         result ={result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -541;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 
 
@@ -117,14 +117,14 @@ const posts007LocationCode = async(sido_code, sgg_code, store_id)=>{
             `;
         await query(querytext, [sido_code, sgg_code, store_id]);
         result ={result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -573;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 
 // user login query
@@ -139,14 +139,14 @@ const get001GetPassword = async(login_id)=>{
         `;
         var {rows} = await query(querytext, [login_id]);
         result ={result: define.const_SUCCESS, data: rows[0]};
+        return result;
     }
     catch(err){
         result.result = -11;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const post004LoginIdCheck = async(login_id)=>{
@@ -160,14 +160,14 @@ const post004LoginIdCheck = async(login_id)=>{
                     `;
         var {rows} = await query(querytext, [login_id]);
         result ={result: define.const_SUCCESS, match: rows[0].match};
+        return result;
     }
     catch(err){
         result.result = -41;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const post004IdPassword = async(login_id, hash_pwd)=>{
@@ -187,14 +187,14 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
             throw('please do ID check first');
         }
         result ={result: define.const_SUCCESS, user_id: rows[0].id};
+        return result;
     }
     catch(err){
         result.result = -42;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 const post006NicknameCheck = async(nick)=>{
     var result = {};
@@ -207,14 +207,14 @@ const post006NicknameCheck = async(nick)=>{
                     `;
         var {rows} = await query(querytext, [nick]);
         result ={result: define.const_SUCCESS, match: rows[0].match};
+        return result;
     }
     catch(err){
         result.result = -61;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const post006Nickname = async(nick, user_id)=>{
@@ -233,14 +233,14 @@ const post006Nickname = async(nick, user_id)=>{
             throw('please do nickname overlap check first');
         }
         result ={result: define.const_SUCCESS, user_id: rows[0].id};
+        return result;
     }
     catch(err){
         result.result = -62;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 
 
@@ -255,14 +255,14 @@ const get007SdCode = async()=>{
         if(rowCount == 0)
             throw('no info on DB')
         result ={result: define.const_SUCCESS, sd: rows};
+        return result;
     }
     catch(err){
         result.result = -71;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 const get007SggCode = async(sido_code)=>{
     var result = {};
@@ -276,14 +276,14 @@ const get007SggCode = async(sido_code)=>{
         if(rowCount == 0)
             throw('no info on DB')
         result ={result: define.const_SUCCESS, sgg: rows};
+        return result;
     }
     catch(err){
         result.result = -72;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
     var result = {};
@@ -296,14 +296,14 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
             `;
         await query(querytext, [sido_code, sgg_code, user_id]);
         result ={result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -73;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 module.exports = {
     //store login query

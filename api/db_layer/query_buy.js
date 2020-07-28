@@ -32,12 +32,11 @@ const get100LatestDeviceHomepage = async() =>{
     var {rows} = await query(querytext, []);
     result.result = define.const_SUCCESS;
     result.device_array = rows;
+    return result;
   }
   catch(err){
     result.result = -1012
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 }
@@ -81,12 +80,11 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
       result.selected_device_array = rows;      
     }
     result.result = define.const_SUCCESS;
+    return result;
   }
   catch(err){
     result.result = -1011;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 };
@@ -112,12 +110,11 @@ const getStep1Latest6 = async()=>{
     var {rows} = await query(querytext, []);
     result.result = define.const_SUCCESS;
     result.device_array = rows;
+    return result;
   }
   catch(err){
     result.result = -1012
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 };
@@ -169,15 +166,11 @@ const getStep1DeviceByBrand = async(brand_id)=>{
     }
     result.data = rows;
     result.result = define.const_SUCCESS;
-    
-    
+    return result;
   }
   catch(err){
     result.result = -1021;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
-    return result;
   }
 }
 
@@ -199,12 +192,11 @@ const checkIsFirstAuction = async(user_id)=>{
       "temp_device_id": rows[0].device_id,
       "result" :1
     }
+    return result;
   }
   catch(err){
     result.result = -1031;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 };
@@ -223,12 +215,11 @@ const postStep1Insert = async(user_id, device_id)=>{
     `;
     await query(querytext, [user_id, device_id]);
     result.result = define.const_SUCCESS;
+    return result;
   }
   catch(err){
     result.result = -1041;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 };
@@ -246,12 +237,11 @@ const postStep1Update = async(user_id, device_id)=>{
       `;
     await query(querytext, [user_id, device_id]);
     result.result = define.const_SUCCESS;
+    return result;
   }
   catch(err){  
     result.result = -1032;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 };
@@ -273,12 +263,11 @@ const getStep2ColorVolume = async(device_id)=>{
       `;
     var {rows, rowCount} = await query(querytext, [device_id]);
     result = {result: define.const_SUCCESS, data: rows, rowCount: rowCount}
+    return result;
   }
   catch(err){
     result.result = -1113
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
 };
@@ -305,14 +294,14 @@ const postStep2Update = async(user_id, device_id, check)=>{
       await query(querytext, [user_id, device_id]);
       result.result = define.const_SUCCESS;
     }
+    return result;
   }
   catch(err){
     result.result = -1123;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 //step:3
 const getAuctionTempWithUserStep3 = async(user_id)=>{
@@ -372,14 +361,14 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
         console.log('no possible values for page: step3::121')
       }
     }
+    return result;
   }
   catch(err){
     result.result = -1213;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 
 const getStep3PaymentInfo = async(agency, generation) =>{
@@ -397,14 +386,14 @@ const getStep3PaymentInfo = async(agency, generation) =>{
       `;
     var {rows} = await query(querytext, [agency, generation]);
     result = {payment: rows, result: 1}
+    return result;
   }
   catch(err){
     result.result = -1221;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 
 const getSelectedPayment = async(device_id, payment_id, volume)=>{
@@ -423,14 +412,14 @@ const getSelectedPayment = async(device_id, payment_id, volume)=>{
       throw('query rowCount returns no value in -1222')
     }
     result = {discount_official: rows[0].discount_official, result: 1}
+    return result;
   }
   catch(err){
     result.result = -1222;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 }
 
 const countAuctions = async(user_id) =>{
@@ -443,14 +432,14 @@ const countAuctions = async(user_id) =>{
     var {rows} = await query(querytext, [user_id]);
     result.count = rows[0].count;
     result.result = define.const_SUCCESS;
+    return result;
   }
   catch(err){
     result.result = -1233;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 const postStep3Update = async(check, postInput)=>{
   var result = {};
@@ -497,14 +486,14 @@ const postStep3Update = async(check, postInput)=>{
       }
       result.result = define.const_SUCCESS;
     }
+    return result;
   }
   catch(err){
     result.result = -1234;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 
 const killAuctionTempState = async(user_id)=>{
@@ -517,14 +506,14 @@ const killAuctionTempState = async(user_id)=>{
       `;
     await query(querytext, [user_id]);
     result.result = define.const_SUCCESS;
+    return result;
   }
   catch(err){
     result.result = -1235;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 const finishAuctionTempDeviceInfo = async(user_id)=>{
   try{
@@ -573,14 +562,14 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
     var {rows} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
     result.selected_device_array = rows;
     result.result = define.const_SUCCESS;
+    return result;
   }
   catch(err){
     result.result = -1311;
     console.log(`ERROR: ${result.result}/` + err);
-  }
-  finally{
     return result;
   }
+  
 };
 
 module.exports = {

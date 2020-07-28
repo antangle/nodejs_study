@@ -22,14 +22,14 @@ const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
       var {rows} = await query(querytext, [device_detail_id]);
       result = {rows};
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -2001;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const update201AuctionState = async(user_id)=>{
     var result = {};
@@ -49,14 +49,14 @@ const update201AuctionState = async(user_id)=>{
     `;
       await query(querytext, [user_id]);
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -2001;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const get201AuctionInfo = async(user_id)=>{
     var result = {};
@@ -79,14 +79,14 @@ const get201AuctionInfo = async(user_id)=>{
       
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -2011;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const get202AuctionInfo = async(user_id)=>{
     var result = {};
@@ -115,14 +115,14 @@ const get202AuctionInfo = async(user_id)=>{
       var {rows, rowCount} = await query(querytext, [user_id]);
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -2021;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const get203AuctionDeals = async(auction_id)=>{
     var result = {};
@@ -132,28 +132,28 @@ const get203AuctionDeals = async(auction_id)=>{
             deal.store_nick AS store_nick, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time,
-            auction.now_order, deal.order AS deal_order,
+            auction.now_order, deal.deal_order AS deal_order,
             detail.cost_price, deal.discount_official, deal.month_price,
             deal.discount_payment
             FROM deal
-            INNER JOIN store
-            ON store.id = deal.store_id
-            AND deal.auction_id = $1
             INNER JOIN auction
-            ON deal.auction_id = auction.id
+            ON auction.id = $1
+            INNER JOIN store
+            ON deal.auction_id = $1
+            AND store.id = deal.store_id
             INNER JOIN device_detail AS detail
             ON deal.device_detail_id = detail.id
         `;
         var {rows} = await query(querytext, [auction_id]);
         result = {auction: rows, result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -2031;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 const get204AuctionDealsFinish = async(auction_id)=>{
     var result = {};
@@ -163,7 +163,7 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             store.name AS store_name, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time, 
-            auction.now_order, deal.order AS deal_order,
+            auction.now_order, deal.deal_order AS deal_order,
             detail.cost_price, deal.discount_official, 
             deal.month_price
             FROM deal
@@ -179,14 +179,14 @@ const get204AuctionDealsFinish = async(auction_id)=>{
         `;
         var {rows} = await query(querytext, [auction_id]);
         result = {auction: rows, result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -2041;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 const get205DealDetail = async(deal_id)=>{
     var result = {};
@@ -221,14 +221,14 @@ const get205DealDetail = async(deal_id)=>{
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -2051;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const Update208DealConfirmation = async(deal_id)=>{
@@ -244,14 +244,14 @@ const Update208DealConfirmation = async(deal_id)=>{
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {result: define.const_SUCCESS, win_deal_id: rows[0].win_deal_id};
+        return result;
     }
     catch(err){
         result.result = -2081;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 }
 
 const get209ConfirmedAuction = async(deal_id)=>{
@@ -273,14 +273,14 @@ const get209ConfirmedAuction = async(deal_id)=>{
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -2091;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const get210InfoForReview = async(deal_id)=>{
@@ -299,14 +299,14 @@ const get210InfoForReview = async(deal_id)=>{
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {info: rows, result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -2101;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 const insert210Review = async(jsondata)=>{
@@ -337,14 +337,14 @@ const insert210Review = async(jsondata)=>{
             isScoreNull = true;
         }
         result = {isScoreNull: isScoreNull,scoreGap: score - rows[0].score,result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
         result.result = -2102;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 
 
@@ -363,14 +363,14 @@ const update210StoreAfterReview = async(jsondata)=>{
         var {scoreGap, weight, deal_id} = jsondata;
         await query(querytext, [scoreGap, weight, deal_id]);
         result.result = define.const_SUCCESS;
+        return result;
     }
     catch(err){
         result.result = -2103;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 const get211StoreDetails = async(store_id)=>{
     var result = {};
@@ -396,14 +396,14 @@ const get211StoreDetails = async(store_id)=>{
         console.log(rows);
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, store: rows[0]};
+        return result;
     }
     catch(err){
         result.result = -2103;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 const get212AllStoreReviews = async(store_id)=>{
     var result = {};
@@ -433,14 +433,14 @@ const get212AllStoreReviews = async(store_id)=>{
         console.log(rows)
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, review: rows};
+        return result;
     }
     catch(err){
         result.result = -2103;
         console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
         return result;
     }
+    
 };
 module.exports = {
     getDeviceInfoWithDetail_Id,

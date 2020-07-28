@@ -52,14 +52,14 @@ const get601StoreAuction = async(store_id)=>{
       }
       result = {myDeal: rows};
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -6011;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const get601Search = async(store_id)=>{
     var result = {};
@@ -93,14 +93,14 @@ const get601Search = async(store_id)=>{
       var {rows} = await query(querytext, [store_id]);
       result = {auction: rows};
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -6012;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const get601Reviews = async(store_id)=>{
     var result = {};
@@ -120,14 +120,14 @@ const get601Reviews = async(store_id)=>{
       var {rows} = await query(querytext, [store_id]);
       result = {review: rows};
       result.result = define.const_SUCCESS;
+      return result;
     }
     catch(err){
       result.result = -6013;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 
 const get701Search = async(store_id)=>{
@@ -159,16 +159,15 @@ const get701Search = async(store_id)=>{
       ORDER BY auction.finish_time
     `;
       var {rows} = await query(querytext, [store_id]);
-      result = {auction: rows};
-      result.result = define.const_SUCCESS;
+      result = {auction: rows, result: define.const_SUCCESS};
+      return result;
     }
     catch(err){
       result.result = -7011;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const post701CutAuction = async(store_id, auction_id)=>{
     var result = {};
@@ -184,14 +183,14 @@ const post701CutAuction = async(store_id, auction_id)=>{
     `;
         var {rows} = await query(querytext, [store_id, auction_id]);
         result.result = define.const_SUCCESS;
+        return result;
     }
     catch(err){
-      result.result = -7011;
+      result.result = -7012;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 const delete701CutAuction = async()=>{
     var result = {};
@@ -203,14 +202,14 @@ const delete701CutAuction = async()=>{
         var {rowCount} = await query(querytext, []);
         console.log(`Total ${rowCount} rows has been deleted`)
         result.result = define.const_SUCCESS;
+        return result;
     }
     catch(err){
-      result.result = -7011;
+      result.result = -7013;
       console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
       return result;
     }
+    
 };
 
 const get702Auction = async(auction_id)=>{
@@ -236,16 +235,200 @@ const get702Auction = async(auction_id)=>{
       ON auction.payment_id = payment.id
     `;
       var {rows} = await query(querytext, [auction_id]);
-      result = {auction: rows};
-      result.result = define.const_SUCCESS;
-    }
-    catch(err){
-      result.result = -7011;
-      console.log(`ERROR: ${result.result}/` + err);
-    }
-    finally{
+      result = {auction: rows, result:define.const_SUCCESS};
       return result;
     }
+    catch(err){
+      result.result = -7021;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+    
+};
+
+//creates temporary store_Nick. also checks for now_discount_price, deal_id
+const get702NeededInfoForDeal = async(store_id, auction_id)=>{
+    var result = {};
+    try{ 
+        const querytext = `
+        SELECT store.region, store_nick.nick, 
+        auction.now_discount_price, auction.now_order,
+        deal.id AS deal_id, deal.deal_order
+        FROM store
+        INNER JOIN auction
+        ON auction.id = $2
+        INNER JOIN store_nick
+        ON store_nick.id = mod(auction.now_order + auction.id*2, 999)
+        AND store.id = $1
+        LEFT JOIN deal
+        ON deal.store_id = $1
+        AND deal.auction_id = $2
+    `;
+        var {rows, rowCount} = await query(querytext, [store_id, auction_id]);
+        if(rowCount === 0){
+            throw('no value when performing get702NeededInfoForDeal')
+        }
+        var tempNick = rows[0].region + rows[0].nick;
+        result = {
+            store_nick: tempNick, 
+            data: rows[0],
+            result: define.const_SUCCESS
+        };
+        return result;
+    }
+    catch(err){
+      result.result = -7022;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+    
+};
+const insert702DealSend = async(paramArray)=>{
+    var result = {};
+    try{
+        const querytext = `
+        WITH cte AS(
+            UPDATE auction
+            SET now_discount_price = $3,
+            now_order = now_order +1,
+            store_count = store_count +1
+            WHERE id = $2
+            AND now_discount_price < $3
+        )
+        INSERT INTO deal(
+            store_id, auction_id, 
+            user_id, device_detail_id,
+            device_id, agency, 
+            contract_list, discount_official, 
+            discount_price, payment_id,
+            discount_payment,
+            create_time, deal_order,
+            state, store_nick)
+        SELECT $1, $2, 
+            auction.user_id, auction.device_detail_id,
+            auction.device_id, auction.agency_hope,
+            auction.contract_list, official.discount_official,
+            $3, auction.payment_id,
+            payment.price*6,
+            current_timestamp, auction.now_order +1,
+            1, $4
+        FROM auction
+        INNER JOIN payment
+        ON auction.id = $2
+        AND payment.id = auction.payment_id
+        AND auction.now_discount_price < $3
+        INNER JOIN device_detail
+        ON device_detail.id = auction.device_detail_id
+        INNER JOIN official
+        ON official.payment_id = auction.payment_id
+        AND official.device_id = auction.device_id
+        AND official.device_volume = device_detail.volume
+        `;
+        /*var paramArray = [
+            store_id, 
+            auction_id, 
+            discount_price, 
+            tempNick
+        ]*/
+        var {rowCount} = await query(querytext, paramArray);
+        if(rowCount === 0){
+            throw('post702DealSend ERROR. Check if discount_price is lower than now_discount_price')
+        }
+        if(rowCount !== 1){
+            throw('post702DealSend something is wrong.. dunno why')
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -7023;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+    
+};
+const update702DealSend = async(deal_id, auction_id, discount_price)=>{
+    var result = {};
+    try{
+        console.log(deal_id)
+        const querytext1 = `
+        UPDATE auction
+        SET now_discount_price = $1,
+            now_order = now_order +1
+        WHERE id = $2
+        AND now_discount_price < $1
+        `;
+        var {rowCount} = await query(querytext1, [discount_price, auction_id]);
+        if(rowCount === 0){
+            throw('post702DealSend1 ERROR. Check if discount_price is lower than now_discount_price')
+        }
+        if(rowCount !== 1){
+            throw('post702DealSend1 something is wrong.. dunno why')
+        }
+        const querytext2 = `
+        UPDATE deal SET
+            discount_price = $2, 
+            create_time = current_timestamp, 
+            deal_order = auc.now_order
+        FROM (
+            SELECT now_order FROM auction
+            WHERE auction.id = $3) auc
+        WHERE deal.id = $1
+        `;
+        var {rowCount} = await query(querytext2, [deal_id, discount_price, auction_id]);
+        if(rowCount === 0){
+            throw('post702DealSend2 ERROR. Check if discount_price is lower than now_discount_price')
+        }
+        if(rowCount !== 1){
+            throw('post702DealSend2 something is wrong.. dunno why')
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -7024;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+    
+};
+
+const get703MyDeal = async()=>{
+    var result = {};
+    try{
+        const querytext = `
+        SELECT device.name, detail.volume, 
+        detail.color_name, detail.color_hex,
+        image.url_2x,
+        auction.finish_time, auction.now_discount_price,
+        deal.id AS deal_id, deal.discount_price
+        FROM deal
+        INNER JOIN auction
+        ON store_id = $1
+        AND deal.state = 1
+        AND auction.id = deal.auction_id
+        INNER JOIN device_detail AS detail
+        ON device_detail.id = deal.device_detail_id
+        INNER JOIN device
+        ON device.id = deal.device_id
+        INNER JOIN image
+        ON image.id = device.image_id
+        ORDER BY deal.create_time
+    `;
+        var {rows, rowCount} = await query(querytext, []);
+        if(rowCount === 0){
+            throw('get703MyDeal : no return value')
+        }
+        result = rows;
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -7031;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+    
 };
 module.exports = {
     get601StoreAuction,
@@ -253,6 +436,11 @@ module.exports = {
     get601Reviews,
     get701Search,
     post701CutAuction,
-    delete701CutAuction
+    delete701CutAuction,
+    get702Auction,
+    get702NeededInfoForDeal,
+    insert702DealSend,
+    update702DealSend,
+    get703MyDeal
 };
    

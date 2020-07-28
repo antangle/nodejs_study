@@ -13,14 +13,14 @@ router.get('/getHomepageDevice', async (req, res) =>{
         result = await buy.get100LatestDeviceHomepage(); 
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 100/' + err);
         result.result = -100;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/countAuction', async (req, res) =>{
@@ -30,14 +30,14 @@ router.get('/countAuction', async (req, res) =>{
         result = await buy.countAuctions(user_id); 
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
-    }
+        return res.json(result);
+        }
     catch(err){
         console.log('router ERROR: 100/' + err);
         result.result = -100;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/getStep1Latest', async(req,res) =>{
@@ -51,14 +51,14 @@ router.get('/getStep1Latest', async(req,res) =>{
         if(latestDevices.result != define.const_SUCCESS)
             throw latestDevices.result;
         result.device_array = latestDevices.device_array;
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 101/' + err);
         result.result = -101;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/getStep1WithBrand', async(req, res) => {
@@ -71,14 +71,14 @@ router.get('/getStep1WithBrand', async(req, res) => {
         result = await buy.getStep1DeviceByBrand(brand_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 102/' + err);
         result.result = -102;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.post('/postSaveStep1', async(req, res) =>{
@@ -98,14 +98,14 @@ router.post('/postSaveStep1', async(req, res) =>{
                 throw(postInfo.result);
             result.result = define.const_SUCCESS;
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 103/' + err);
         result.result = -103;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 //step:2
 router.get('/getStep2ColorVolume', async(req,res) =>{
@@ -124,14 +124,14 @@ router.get('/getStep2ColorVolume', async(req,res) =>{
         result.data = data.data;
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 111/' + err);
         result.result = -111;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 router.post('/postSaveStep2', async (req, res) =>{
     var result ={};
@@ -142,14 +142,14 @@ router.post('/postSaveStep2', async (req, res) =>{
         result = await buy.postStep2Update(user_id, device_detail_id, check);
         if(result.result !== define.const_SUCCESS)
             throw(isError.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 112/' + err);
         result.result = -112;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 //step:3
 router.get('/getStep3Info', async(req,res) =>{
@@ -160,14 +160,14 @@ router.get('/getStep3Info', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 121/' + err);
         result.result = -121;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 router.get('/getStep3PaymentInfo', async(req,res) =>{
     var result ={};
@@ -177,14 +177,14 @@ router.get('/getStep3PaymentInfo', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 122/' + err);
         result.result = -122;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/getStep3OfficialInfo', async(req,res) =>{
@@ -195,14 +195,14 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 122/' + err);
         result.result = -122;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.post('/postSaveStep3', async (req, res) =>{
@@ -228,14 +228,14 @@ router.post('/postSaveStep3', async (req, res) =>{
         var kill = await buy.killAuctionTempState(postInput.user_id);
         if(kill.result != define.const_SUCCESS)
             throw(kill.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 123/' + err);
         result.result = -123;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/finish', async(req,res) =>{
@@ -246,13 +246,13 @@ router.get('/finish', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 131/' + err);
         result.result = -131;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 module.exports = router;

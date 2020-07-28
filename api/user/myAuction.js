@@ -24,19 +24,18 @@ router.get('/get201MyAuctionOn', async (req, res) =>{
             array.push(data.rows[0]);
         }
         result.selected_device_data = array;
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 201/' + err);
         result.result = -201;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 router.post('/get201StateUpdate', async (req, res) =>{
     var result ={};
-    
-    var {finish_time} = req.body || req.query;
+    var {finish_time} = req.body;
     
     try{
         //state, -1: unselected, 1: ongoing, 2: waiting selection
@@ -54,14 +53,14 @@ router.post('/get201StateUpdate', async (req, res) =>{
         else{
             throw('undefined ERROR')
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 201a/' + err);
         result.result = -201;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get202MyAuctionOff', async (req, res) =>{
@@ -79,14 +78,14 @@ router.get('/get202MyAuctionOff', async (req, res) =>{
             array.push(data.rows[0]);
         }
         result.selected_device_data = array;
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 202/' + err);
         result.result = -202;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get203MyAuctionDetails', async (req, res) =>{
@@ -96,14 +95,14 @@ router.get('/get203MyAuctionDetails', async (req, res) =>{
         result = await auction.get203AuctionDeals(auction_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 203/' + err);
         result.result = -203;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
@@ -113,14 +112,14 @@ router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
         result = await auction.get204AuctionDealsFinish(auction_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 204/' + err);
         result.result = -204;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get205DealDetails', async (req, res) =>{
@@ -134,14 +133,14 @@ router.get('/get205DealDetails', async (req, res) =>{
         if(data.result !== define.const_SUCCESS)
             throw(data.result);
         result.selected_device_data = data.rows;
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 205/' + err);
         result.result = -205;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 //update auction win_deal_id when the auction is confirmed.
 router.patch('/patch208ConfirmPopup', async (req, res) =>{
@@ -151,14 +150,14 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         result = await auction.Update208DealConfirmation(deal_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 208/' + err);
         result.result = -208;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get209ConfirmedAuction', async (req, res) =>{
@@ -168,14 +167,14 @@ router.get('/get209ConfirmedAuction', async (req, res) =>{
         result = await auction.get209ConfirmedAuction(deal_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 209/' + err);
         result.result = -209;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get210InfoForReview', async (req, res) =>{
@@ -185,14 +184,14 @@ router.get('/get210InfoForReview', async (req, res) =>{
         result = await auction.get210InfoForReview(deal_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 210a/' + err);
         result.result = -209;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.post('/post210DealReview', async(req,res) =>{
@@ -218,14 +217,14 @@ router.post('/post210DealReview', async(req,res) =>{
             if(store.result !== define.const_SUCCESS)
                 throw(store.result);
         }
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 210b/' + err);
         result.result = -210;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get211StoreDetails', async(req,res) =>{
@@ -235,14 +234,14 @@ router.get('/get211StoreDetails', async(req,res) =>{
         result = await auction.get211StoreDetails(store_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 211/' + err);
         result.result = -211;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 
 router.get('/get212AllStoreReviews', async(req,res) =>{
@@ -253,13 +252,13 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
         result = await auction.get212AllStoreReviews(store_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
+        return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 211/' + err);
         result.result = -211;
-    }
-    finally{
         return res.json(result);
     }
+    
 });
 module.exports = router;
