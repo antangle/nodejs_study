@@ -135,7 +135,8 @@ const get203AuctionDeals = async(auction_id)=>{
             auction.now_order, deal.deal_order AS deal_order,
             auction.contract_list, auction.period,
             detail.cost_price, deal.discount_official, deal.month_price,
-            deal.discount_payment
+            deal.discount_payment,
+            payment.price AS payment_price
             FROM deal
             INNER JOIN auction
             ON auction.id = $1
@@ -169,7 +170,8 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             auction.now_order, auction.period,
             deal.deal_order AS deal_order,
             detail.cost_price, deal.discount_official,
-            deal.month_price
+            deal.month_price,
+            payment.price AS payment_price
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
