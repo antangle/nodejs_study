@@ -46,6 +46,7 @@ const update201AuctionState = async(user_id)=>{
             END
         )
         WHERE user_id = $1
+        RETURNING state
     `;
       await query(querytext, [user_id]);
       result.result = define.const_SUCCESS;
@@ -97,7 +98,7 @@ const get202AuctionInfo = async(user_id)=>{
       auc.agency_hope, auc.finish_time,
       auc.now_discount_price, auc.state, auc.win_state,
       auc.win_deal_id, payment.alias, store.phone, store.phone_1,
-      score.id AS score_id
+      score.id AS score_id 
       FROM auction AS auc
       INNER JOIN payment
       ON auc.user_id = $1
@@ -202,7 +203,8 @@ const get205DealDetail = async(deal_id)=>{
             payment.data AS payment_data,
             payment.call AS payment_call, 
             payment.text AS payment_text, 
-            payment.limitation, payment.generation
+            payment.limitation, payment.generation,
+            official.discount_official
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id
@@ -213,6 +215,10 @@ const get205DealDetail = async(deal_id)=>{
             ON detail.id = deal.device_detail_id
             INNER JOIN payment
             ON payment.id = deal.payment_id
+            LEFT JOIN official
+            ON official.device_id = device.id
+            AND official.payment_id = payment.id
+            AND official.device_volume = detail.volume
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
