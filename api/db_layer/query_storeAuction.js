@@ -212,6 +212,41 @@ const delete701CutAuction = async()=>{
       return result;
     }
 };
+
+const get702Auction = async(auction_id)=>{
+    var result = {};
+    try{
+      const querytext = `
+      SELECT 
+      auction.id AS auction_id,
+      auction.agency_use, auction.agency_hope, auction.period,
+      auction.contract_list, auction.finish_time, 
+      auction.now_discount_price,
+      device.name, detail.volume, detail.color_hex, detail.color_name,
+      image.url_2x, payment.alias
+      FROM auction
+      INNER JOIN device_detail AS detail
+      ON auction.device_detail_id = detail.id
+      AND auction.id = $1
+      INNER JOIN device
+      ON auction.device_id = device.id
+      INNER JOIN image
+      ON device.image_id = image.id
+      INNER JOIN payment
+      ON auction.payment_id = payment.id
+    `;
+      var {rows} = await query(querytext, [auction_id]);
+      result = {auction: rows};
+      result.result = define.const_SUCCESS;
+    }
+    catch(err){
+      result.result = -7011;
+      console.log(`ERROR: ${result.result}/` + err);
+    }
+    finally{
+      return result;
+    }
+};
 module.exports = {
     get601StoreAuction,
     get601Search,

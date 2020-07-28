@@ -20,7 +20,6 @@ const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
       ON device.image_id = image.id
     `;
       var {rows} = await query(querytext, [device_detail_id]);
-      console.log(rows);
       result = {rows};
       result.result = define.const_SUCCESS;
     }

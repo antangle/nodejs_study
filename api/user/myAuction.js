@@ -35,12 +35,13 @@ router.get('/get201MyAuctionOn', async (req, res) =>{
 });
 router.post('/get201StateUpdate', async (req, res) =>{
     var result ={};
-    var {finish_time} = req.body;
+    
+    var {finish_time} = req.body || req.query;
+    
     try{
         //state, -1: unselected, 1: ongoing, 2: waiting selection
         const currentTime = Date.now() + 32400000
         const finishTime = new Date(finish_time).valueOf()
-        console.log(currentTime, finishTime);
         if(finishTime + 3600000 < currentTime){
             result= {result: define.const_SUCCESS, state: -1}
         }

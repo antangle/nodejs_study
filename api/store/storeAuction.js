@@ -86,6 +86,20 @@ router.delete('/S201DeleteAuction', async (req, res) =>{
         return res.json(result);
     }
 });
-                    
+
+router.get('/S201SearchAuction', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id} = req.query;
+        
+    }
+    catch(err){
+        console.log('router ERROR: s201/' + err);
+        result.result = -701;
+    }
+    finally{
+        return res.json(result);
+    }
+});
 module.exports = router;
 
