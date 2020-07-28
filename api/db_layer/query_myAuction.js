@@ -144,8 +144,8 @@ const get203AuctionDeals = async(auction_id)=>{
             INNER JOIN device_detail AS detail
             ON deal.device_detail_id = detail.id
         `;
-        var {rows} = await query(querytext, [auction_id]);
-        result = {auction: rows, result: define.const_SUCCESS};
+        var {rows, rowCount} = await query(querytext, [auction_id]);
+        result = {auction: rows, result: define.const_SUCCESS, rowCount: rowCount};
         return result;
     }
     catch(err){

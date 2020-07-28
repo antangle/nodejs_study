@@ -389,8 +389,7 @@ const update702DealSend = async(deal_id, auction_id, discount_price)=>{
       result.result = -7024;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
-    }
-    
+    } 
 };
 
 const get703MyDeal = async()=>{
