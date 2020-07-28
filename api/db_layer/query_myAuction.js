@@ -241,7 +241,7 @@ const get205DealDetail = async(deal_id)=>{
 const Update208DealConfirmation = async(deal_id)=>{
     var result = {};
     try{
-        const querytext = `
+        const querytext1 = `
             UPDATE auction 
             SET win_deal_id = $1,
             win_state = 2
@@ -249,8 +249,15 @@ const Update208DealConfirmation = async(deal_id)=>{
             (SELECT auction_id FROM deal WHERE id = $1)
             RETURNING win_deal_id
         `;
-        var {rows} = await query(querytext, [deal_id]);
-        result = {result: define.const_SUCCESS, win_deal_id: rows[0].win_deal_id};
+        var {rows} = await query(querytext1, [deal_id]);
+        result.win_deal_id = rows[0].win_deal_id;
+        const querytext2 = `
+            UPDATE deal
+            SET state = 2
+            WHERE deal.id = $1
+        `;
+        var {rowCount} = await query(querytext2, [deal_id]);
+        result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
