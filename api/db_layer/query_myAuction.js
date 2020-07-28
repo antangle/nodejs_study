@@ -133,6 +133,7 @@ const get203AuctionDeals = async(auction_id)=>{
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time,
             auction.now_order, deal.deal_order AS deal_order,
+            auction.contract_list,
             detail.cost_price, deal.discount_official, deal.month_price,
             deal.discount_payment
             FROM deal
@@ -162,9 +163,9 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             SELECT deal.id AS deal_id, deal.store_id, 
             store.name AS store_name, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
-            auction.finish_time AS auction_finish_time, 
+            auction.finish_time AS auction_finish_time, auction.contract_list,
             auction.now_order, deal.deal_order AS deal_order,
-            detail.cost_price, deal.discount_official, 
+            detail.cost_price, deal.discount_official,
             deal.month_price
             FROM deal
             INNER JOIN store

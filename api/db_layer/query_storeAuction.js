@@ -392,7 +392,7 @@ const update702DealSend = async(deal_id, auction_id, discount_price)=>{
     } 
 };
 
-const get703MyDeal = async()=>{
+const get801MyOngoingDeal = async(store_id)=>{
     var result = {};
     try{
         const querytext = `
@@ -400,34 +400,72 @@ const get703MyDeal = async()=>{
         detail.color_name, detail.color_hex,
         image.url_2x,
         auction.finish_time, auction.now_discount_price,
-        deal.id AS deal_id, deal.discount_price
+        deal.id AS deal_id, deal.discount_price AS my_discount_price
         FROM deal
         INNER JOIN auction
         ON store_id = $1
         AND deal.state = 1
         AND auction.id = deal.auction_id
         INNER JOIN device_detail AS detail
-        ON device_detail.id = deal.device_detail_id
+        ON detail.id = deal.device_detail_id
         INNER JOIN device
         ON device.id = deal.device_id
         INNER JOIN image
         ON image.id = device.image_id
         ORDER BY deal.create_time
     `;
-        var {rows, rowCount} = await query(querytext, []);
+        var {rows, rowCount} = await query(querytext, [store_id]);
         if(rowCount === 0){
-            throw('get703MyDeal : no return value')
+            throw('get801MyOngoingDeal : no return value')
         }
         result = rows;
         result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
-      result.result = -7031;
+      result.result = -8011;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
+};
+const get802MyPreviousDeal = async(store_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        SELECT device.name, detail.volume, 
+        detail.color_name, detail.color_hex,
+        image.url_2x, auction.finish_time,
+        deal.id AS deal_id, deal.discount_price AS my_discount_price,
+        users.phone
+        FROM deal
+        INNER JOIN auction
+        ON store_id = $1
+        AND deal.state = 1
+        AND auction.id = deal.auction_id
+        INNER JOIN device_detail AS detail
+        ON detail.id = deal.device_detail_id
+        INNER JOIN device
+        ON device.id = deal.device_id
+        INNER JOIN image
+        ON image.id = device.image_id
+        LEFT JOIN users
+        ON deal.user_id = users.id
+        AND auction.win_time + interval '1 day' < current_timestamp
+        ORDER BY deal.create_time
+    `;
+        var {rows, rowCount} = await query(querytext, [store_id]);
+        if(rowCount === 0){
+            throw('get802MyPreviousDeal : no return value')
+        }
+        result = rows;
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -8012;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
 };
 module.exports = {
     get601StoreAuction,
@@ -440,6 +478,7 @@ module.exports = {
     get702NeededInfoForDeal,
     insert702DealSend,
     update702DealSend,
-    get703MyDeal
+    get801MyOngoingDeal,
+    get802MyPreviousDeal,
 };
    

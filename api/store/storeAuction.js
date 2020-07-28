@@ -162,18 +162,34 @@ router.patch('/S202AuctionDealSend', async (req,res) =>{
         return res.json(result);
     }
 })
-router.get('/S203MyDeal', async (req, res) =>{
+router.get('/S301MyOngoingDeal', async (req, res) =>{
     var result ={};
     try{
-        var {auction_id} = req.query;
-        result = await store.get702Auction(auction_id);
+        var {store_id} = req.query;
+        result = await store.get801MyOngoingDeal(store_id);
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s203 - GetMyDeal/' + err);
+        console.log('router ERROR: s301 - MyOngoingDeal/' + err);
+        result.result = -709;
+        return res.json(result);
+    }
+});
+router.get('/S302MyPreviousDeal', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id} = req.query;
+        result = await store.get802MyPreviousDeal(store_id);
+        if(result.result !== define.const_SUCCESS){
+            throw(result.result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: s302 - MyPreviousDeal/' + err);
         result.result = -709;
         return res.json(result);
     }
