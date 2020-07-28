@@ -194,5 +194,20 @@ router.get('/S302MyPreviousDeal', async (req, res) =>{
         return res.json(result);
     }
 });
-
+router.get('/S303MyDealDetail', async (req, res) =>{
+    var result ={};
+    try{
+        var {deal_id} = req.query;
+        result = await store.get803MyDealDetail(deal_id);
+        if(result.result !== define.const_SUCCESS){
+            throw(result.result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: s302 - MyPreviousDeal/' + err);
+        result.result = -709;
+        return res.json(result);
+    }
+});
 module.exports = router;

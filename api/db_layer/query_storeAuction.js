@@ -369,7 +369,8 @@ const update702DealSend = async(deal_id, auction_id, discount_price)=>{
         UPDATE deal SET
             discount_price = $2, 
             create_time = current_timestamp, 
-            deal_order = auc.now_order
+            deal_order = auc.now_order,
+            state = -1
         FROM (
             SELECT now_order FROM auction
             WHERE auction.id = $3) auc
@@ -400,6 +401,7 @@ const get801MyOngoingDeal = async(store_id)=>{
         detail.color_name, detail.color_hex,
         image.url_2x,
         auction.finish_time, auction.now_discount_price,
+        auction.contract_list, auction.period,
         deal.id AS deal_id, deal.discount_price AS my_discount_price
         FROM deal
         INNER JOIN auction
@@ -436,11 +438,13 @@ const get802MyPreviousDeal = async(store_id)=>{
         detail.color_name, detail.color_hex,
         image.url_2x, auction.finish_time,
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
+        deal.state,
+        auction.contract_list, auction.period,
         users.phone
         FROM deal
         INNER JOIN auction
         ON store_id = $1
-        AND deal.state = 1
+        AND deal.state = 2
         AND auction.id = deal.auction_id
         INNER JOIN device_detail AS detail
         ON detail.id = deal.device_detail_id
@@ -449,11 +453,55 @@ const get802MyPreviousDeal = async(store_id)=>{
         INNER JOIN image
         ON image.id = device.image_id
         LEFT JOIN users
-        ON deal.user_id = users.id
+        ON auction.user_id = users.id
         AND auction.win_time + interval '1 day' > current_timestamp
         ORDER BY deal.create_time
     `;
         var {rows, rowCount} = await query(querytext, [store_id]);
+        if(rowCount === 0){
+            throw('get802MyPreviousDeal : no return value')
+        }
+        result = rows;
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -8012;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+};
+ 
+            
+            
+            
+            
+
+const get803MyDealDetail = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        SELECT device.name, detail.volume, 
+        detail.color_name, detail.color_hex, 
+        detail.cost_price, auction.finish_time,
+        deal.id AS deal_id, deal.discount_price AS my_discount_price,
+        deal.discount_official,
+        auction.contract_list, auction.period,
+        auction.win_time,
+        payment.price AS payment_price
+        FROM deal
+        INNER JOIN auction
+        ON deal.id = $1
+        AND deal.state = 1
+        AND auction.id = deal.auction_id
+        INNER JOIN payment
+        ON payment.id = deal.payment_id
+        INNER JOIN device_detail AS detail
+        ON detail.id = deal.device_detail_id
+        INNER JOIN device
+        ON device.id = deal.device_id
+    `;
+        var {rows, rowCount} = await query(querytext, [deal_id]);
         if(rowCount === 0){
             throw('get802MyPreviousDeal : no return value')
         }
@@ -480,5 +528,6 @@ module.exports = {
     update702DealSend,
     get801MyOngoingDeal,
     get802MyPreviousDeal,
+    get803MyDealDetail
 };
    
