@@ -133,12 +133,14 @@ const get203AuctionDeals = async(auction_id)=>{
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time,
             auction.now_order, deal.deal_order AS deal_order,
-            auction.contract_list,
+            auction.contract_list, auction.period,
             detail.cost_price, deal.discount_official, deal.month_price,
             deal.discount_payment
             FROM deal
             INNER JOIN auction
             ON auction.id = $1
+            INNER JOIN payment
+            ON payment.id = auction.payment_id
             INNER JOIN store
             ON deal.auction_id = $1
             AND store.id = deal.store_id
@@ -154,7 +156,6 @@ const get203AuctionDeals = async(auction_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 const get204AuctionDealsFinish = async(auction_id)=>{
     var result = {};
@@ -163,8 +164,10 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             SELECT deal.id AS deal_id, deal.store_id, 
             store.name AS store_name, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
-            auction.finish_time AS auction_finish_time, auction.contract_list,
-            auction.now_order, deal.deal_order AS deal_order,
+            auction.finish_time AS auction_finish_time, 
+            auction.contract_list,
+            auction.now_order, auction.period,
+            deal.deal_order AS deal_order,
             detail.cost_price, deal.discount_official,
             deal.month_price
             FROM deal
@@ -173,6 +176,8 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             AND deal.auction_id = $1
             INNER JOIN auction
             ON deal.auction_id = auction.id
+            INNER JOIN payment
+            ON payment.id = auction.payment_id
             INNER JOIN device_detail AS detail
             ON deal.device_detail_id = detail.id
             ORDER BY deal.discount_price DESC

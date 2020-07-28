@@ -450,7 +450,7 @@ const get802MyPreviousDeal = async(store_id)=>{
         ON image.id = device.image_id
         LEFT JOIN users
         ON deal.user_id = users.id
-        AND auction.win_time + interval '1 day' < current_timestamp
+        AND auction.win_time + interval '1 day' > current_timestamp
         ORDER BY deal.create_time
     `;
         var {rows, rowCount} = await query(querytext, [store_id]);
