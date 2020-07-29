@@ -471,12 +471,6 @@ const get802MyPreviousDeal = async(store_id)=>{
       return result;
     }
 };
- 
-            
-            
-            
-            
-
 const get803MyDealDetail = async(deal_id)=>{
     var result = {};
     try{
