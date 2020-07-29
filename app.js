@@ -15,7 +15,7 @@ const APIRouter = require('./api');
 const loginRouter = require('./api/login');
 const landingRouter = require('./api/landing');
 
-const port = process.env.port || 80;
+const port = process.env.port || 9000;
 const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
 //app.set('views', path.join(__dirname, 'views'));
