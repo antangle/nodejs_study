@@ -6,12 +6,6 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 const swagger = require('./swagger/swagger.js');
-const http = require('http');
-const port = process.env.port || 9000;
-const server = http.createServer(app).listen(port, function(req, res)
-{
-  console.log(`app running on port ${port}`)
-});
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -21,6 +15,7 @@ const APIRouter = require('./api');
 const loginRouter = require('./api/login');
 const landingRouter = require('./api/landing');
 
+const port = process.env.port || 9000;
 const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
 //app.set('views', path.join(__dirname, 'views'));
@@ -42,4 +37,7 @@ app.use('/', (req, res) =>{
   res.send('Welcome to Backend');
 });
 
+app.listen(port, ()=> {
+  console.log(`app running on port ${port}`)
+});
 
