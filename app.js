@@ -10,7 +10,6 @@ const http = require('http');
 const port = process.env.port || 9000;
 const server = http.createServer(app).listen(port, function(req, res)
 {
-  console.log("Socket server has been started");
   console.log(`app running on port ${port}`)
 });
 
