@@ -6,9 +6,9 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 const swagger = require('./swagger/swagger.js');
-const https = require('https');
+const http = require('http');
 const port = process.env.port || 9000;
-const server = https.createServer(app).listen(port, function(req, res)
+const server = http.createServer(app).listen(port, function(req, res)
 {
   console.log(`app running on port ${port}`)
 });
