@@ -40,9 +40,4 @@ app.use('/', (req, res) =>{
 app.listen(port, ()=> {
   console.log(`app running on port ${port}`)
 });
-app.listen(443, ()=> {
-  console.log(`app running on port 443`)
-});
-app.listen(80, ()=> {
-  console.log(`app running on port 80`)
-});
+
