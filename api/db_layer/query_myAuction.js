@@ -367,7 +367,6 @@ const insert210Review = async(jsondata)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 
 
@@ -408,7 +407,7 @@ const get211StoreDetails = async(store_id)=>{
             device.name AS device_name,
             deal.store_nick,
             sd.name AS sido_name, sgg.name AS sgg_name,
-            users.nick
+            users.nick AS user_nick
             FROM store
             INNER JOIN score
             ON store.id = $1
@@ -425,7 +424,6 @@ const get211StoreDetails = async(store_id)=>{
             ON users.id = score.user_id
             `;
         var {rows} = await query(querytext, [store_id]);
-        console.log(rows);
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, store: rows[0]};
         return result;
@@ -462,7 +460,6 @@ const get212AllStoreReviews = async(store_id)=>{
             ON deal.device_id = device.id
             `;
         var {rows} = await query(querytext, [store_id]);
-        console.log(rows)
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, review: rows};
         return result;
