@@ -35,6 +35,18 @@ const helper ={
       var errMessage = 'token generation failed';
       return errMessage;
     }
+  },
+  encryptJson(json){
+    try{
+      const encryptData = jwt.sign(json,
+        process.env.JWT_SECRET, { expiresIn: '1ms' })
+        return encryptData;
+      }
+      catch(err){
+        console.log(err);
+        var errMessage = 'json encryption failed';
+        return errMessage;
+      }
   }
 };
 

@@ -190,7 +190,6 @@ const post701CutAuction = async(store_id, auction_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
 const delete701CutAuction = async()=>{
     var result = {};

@@ -4,6 +4,10 @@ const { nextTick } = require("process");
 const exec = require("child_process").exec; // child_process 모듈 추가
 const router = express.Router();
 
+const {helper} = require('../controller/validate');
+const partner = require('./db_layer/query_login');
+const define = require('../definition/define');
+
 //NICE평가정보에서 발급한 본인인증 서비스 개발 정보(사이트 코드 , 사이트 패스워드)
 var sSiteCode = "BS147";
 var sSitePW = "R0R5wXCrcGjV";
@@ -144,8 +148,24 @@ router.post("/checkplus_success", function(request, response) {
       var mobileno = decodeURIComponent(GetValue(sDecData , "MOBILE_NO"));        //휴대폰번호(계약된 경우)
       var mobileco = decodeURIComponent(GetValue(sDecData , "MOBILE_CO"));        //통신사(계약된 경우)
     }
+    const data = {
+        sRtnMSG , 
+        requestnumber , 
+        responsenumber , 
+        authtype , 
+        name , 
+        birthdate , 
+        gender , 
+        nationalinfo , 
+        dupinfo , 
+        conninfo , 
+        mobileno , 
+        mobileco
+    }
+    const encryptedData = helper.encryptJson(data)
+    console.log(data, encryptedData);
     console.log(sDecData);
-    response.render("checkplus_success.ejs", {sRtnMSG , requestnumber , responsenumber , authtype , name , birthdate , gender , nationalinfo , dupinfo , conninfo , mobileno , mobileco});
+    response.render("checkplus_success.ejs", {encryptedData});
   });
 });
 
@@ -350,7 +370,6 @@ router.get("/checkplus_fail", function(request, response) {
     response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
   });
 });
-
 function GetValue(plaindata , key){
   var arrData = plaindata.split(":");
   var value = "";
