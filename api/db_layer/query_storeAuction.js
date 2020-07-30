@@ -485,7 +485,7 @@ const get803MyDealDetail = async(deal_id)=>{
         deal.discount_official,
         auction.contract_list, auction.period,
         auction.win_time,
-        payment.price AS payment_price
+        payment.price AS payment_price, payment.alias
         FROM deal
         INNER JOIN auction
         ON deal.id = $1
