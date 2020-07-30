@@ -394,7 +394,7 @@ const update210StoreAfterReview = async(jsondata)=>{
     }
     
 };
-const get211StoreDetails = async(store_id)=>{
+const get211StoreDetails = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
@@ -408,22 +408,23 @@ const get211StoreDetails = async(store_id)=>{
             deal.store_nick,
             sd.name AS sido_name, sgg.name AS sgg_name,
             users.nick AS user_nick
-            FROM store
-            INNER JOIN score
-            ON store.id = $1
-            AND score.store_id = $1
-            INNER JOIN deal
-            ON deal.id = score.deal_id
+            FROM deal
+            INNER JOIN store
+            ON deal.id = $1
+            AND store.id = deal.store_id
             INNER JOIN device
             ON deal.device_id = device.id
             INNER JOIN location_sd AS sd
             ON store.sido_code = sd.code
             INNER JOIN location_sgg AS sgg
             ON store.sgg_code = sgg.code
-            INNER JOIN users
+            LEFT JOIN score
+            ON score.store_id = deal.store_id
+            LEFT JOIN users
             ON users.id = score.user_id
+            ORDER BY score.create_date DESC
             `;
-        var {rows} = await query(querytext, [store_id]);
+        var {rows} = await query(querytext, [deal_id]);
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, store: rows[0]};
         return result;

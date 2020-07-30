@@ -264,6 +264,7 @@ const get702NeededInfoForDeal = async(store_id, auction_id)=>{
         ON deal.store_id = $1
         AND deal.auction_id = $2
     `;
+    console.log(rows);
         var {rows, rowCount} = await query(querytext, [store_id, auction_id]);
         if(rowCount === 0){
             throw('no value when performing get702NeededInfoForDeal')

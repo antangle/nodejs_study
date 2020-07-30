@@ -31,12 +31,10 @@ router.get('/get201MyAuctionOn', async (req, res) =>{
         result.result = -201;
         return res.json(result);
     }
-    
 });
 router.post('/get201StateUpdate', async (req, res) =>{
     var result ={};
     var {finish_time} = req.body;
-    
     try{
         //state, -1: unselected, 1: ongoing, 2: waiting selection
         const currentTime = Date.now() + 32400000
@@ -60,9 +58,7 @@ router.post('/get201StateUpdate', async (req, res) =>{
         result.result = -201;
         return res.json(result);
     }
-    
 });
-
 router.get('/get202MyAuctionOff', async (req, res) =>{
     var result ={};
     var array =[]
@@ -85,9 +81,7 @@ router.get('/get202MyAuctionOff', async (req, res) =>{
         result.result = -202;
         return res.json(result);
     }
-    
 });
-
 router.get('/get203MyAuctionDetails', async (req, res) =>{
     var result ={};
     try{
@@ -101,10 +95,8 @@ router.get('/get203MyAuctionDetails', async (req, res) =>{
         console.log('router ERROR: 203/' + err);
         result.result = -203;
         return res.json(result);
-    }
-    
+    } 
 });
-
 router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
     var result ={};
     try{
@@ -118,8 +110,7 @@ router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
         console.log('router ERROR: 204/' + err);
         result.result = -204;
         return res.json(result);
-    }
-    
+    } 
 });
 
 router.get('/get205DealDetails', async (req, res) =>{
@@ -140,7 +131,6 @@ router.get('/get205DealDetails', async (req, res) =>{
         result.result = -205;
         return res.json(result);
     }
-    
 });
 //update auction win_deal_id when the auction is confirmed.
 router.patch('/patch208ConfirmPopup', async (req, res) =>{
@@ -174,7 +164,6 @@ router.get('/get209ConfirmedAuction', async (req, res) =>{
         result.result = -209;
         return res.json(result);
     }
-    
 });
 
 router.get('/get210InfoForReview', async (req, res) =>{
@@ -191,7 +180,6 @@ router.get('/get210InfoForReview', async (req, res) =>{
         result.result = -209;
         return res.json(result);
     }
-    
 });
 
 router.post('/post210DealReview', async(req,res) =>{
@@ -230,8 +218,8 @@ router.post('/post210DealReview', async(req,res) =>{
 router.get('/get211StoreDetails', async(req,res) =>{
     var result ={};
     try{
-        var {store_id} = req.query;
-        result = await auction.get211StoreDetails(store_id);
+        var {deal_id} = req.query;
+        result = await auction.get211StoreDetails(deal_id);
         if(result.result !== define.const_SUCCESS)
             throw(result.result);
         return res.json(result);
