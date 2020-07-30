@@ -6,7 +6,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 const swagger = require('./swagger/swagger.js');
-
+var nice_module = require('../sample/app');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -27,6 +27,8 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use('/nice', nice_module);
 
 app.use('/api', APIRouter);
 app.use('/login', loginRouter);
