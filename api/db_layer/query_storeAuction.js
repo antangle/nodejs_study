@@ -421,7 +421,7 @@ const get801MyOngoingDeal = async(store_id)=>{
         if(rowCount === 0){
             throw('get801MyOngoingDeal : no return value')
         }
-        result = rows;
+        result.auction = rows;
         result.result = define.const_SUCCESS;
         return result;
     }
@@ -462,7 +462,7 @@ const get802MyPreviousDeal = async(store_id)=>{
         if(rowCount === 0){
             throw('get802MyPreviousDeal : no return value')
         }
-        result = rows;
+        result.auction = rows;
         result.result = define.const_SUCCESS;
         return result;
     }
