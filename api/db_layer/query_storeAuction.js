@@ -246,7 +246,7 @@ const get702Auction = async(auction_id)=>{
     
 };
 
-//creates temporary store_Nick. also checks for now_discount_price, deal_id
+//creates temporary store_nick. also checks for now_discount_price, deal_id
 const get702NeededInfoForDeal = async(store_id, auction_id)=>{
     var result = {};
     try{ 
@@ -257,9 +257,9 @@ const get702NeededInfoForDeal = async(store_id, auction_id)=>{
         FROM store
         INNER JOIN auction
         ON auction.id = $2
-        INNER JOIN store_nick
-        ON store_nick.id = mod(auction.now_order + auction.id*2, 999)
         AND store.id = $1
+        INNER JOIN store_nick
+        ON store_nick.id = mod(auction.now_order + auction.id*2, 1000)
         LEFT JOIN deal
         ON deal.store_id = $1
         AND deal.auction_id = $2

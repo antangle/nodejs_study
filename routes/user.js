@@ -28,7 +28,7 @@ router.post('/signup', async (req, res) =>{
     const {rows} = await query(querytext, [login_id, hashPassword, email])
     console.log(rows);
     var result = {status: 'fail', data: rows}
-    }   
+    }
     catch(err){
         var result = {status: 'fail'}
     }

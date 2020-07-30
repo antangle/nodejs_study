@@ -141,7 +141,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 store_id, 
                 auction_id, 
                 discount_price, 
-                info.data.store_nick
+                info.store_nick
             ]
             result = await store.insert702DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
