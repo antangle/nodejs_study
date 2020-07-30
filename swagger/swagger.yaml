@@ -9,11 +9,11 @@ tags:
 - name: "buy"
   description: "Everything about your buys"
 - name: "myAuction"
-  description: "나의 경매(소비자)"
-- name: "user"
-  description: "소비자 회원가입/로그인"
+  description: "소비자 페이지"
+- name: "signup/login"
+  description: "회원가입/로그인"
 - name: "store"
-  description: "판매자 회원가입/로그인"
+  description: "판매자 페이지"
 - name: "landingPage"
   description: "landingPage"
 
@@ -593,7 +593,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -614,7 +614,207 @@ paths:
         in: "query"
         description: ""
         required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S101HomepageInfo:
+    get:
+      tags:
+      - "store"
+      summary: "판매자 홈페이지"
+      description: "판매자의 자기 딜, 진행중인 경매, 리뷰, 공지사항 받음(공지사항아직안됨)"
+      operationId: "S101HomepageInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S201SearchAuction:
+    get:
+      tags:
+      - "store"
+      summary: "진행중인 딜 확인"
+      description: ""
+      operationId: "S201SearchAuction"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S201CutAuction:
+    post:
+      tags:
+      - "store"
+      summary: "이 경매 다시보지 않기"
+      description: "특정 판매자가 경매 다시보지 않기 기능. 할시 auction에 store_count +"
+      operationId: "S201CutAuction"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "auction_id"
+        in: "query" 
+        description: ""
+        required: true
         type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S201DeleteAuction:
+    delete:
+      tags:
+      - "store"
+      summary: "차단 테이블 관리용. 프론트엔 필요없을듯?"
+      description: ""
+      operationId: "S201DeleteAuction"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S202AuctionInfo:
+    get:
+      tags:
+      - "store"
+      summary: "판매자가 경매 골라서 들어갈떄, s202페이지에서 필요한 기타내용."
+      description: "진행중인 경매 정보 등등"
+      operationId: "S202AuctionInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "auction_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S202AuctionDealSend:
+    post:
+      tags:
+      - "store"
+      summary: "딜 제시"
+      description: "최초입찰시 무제한, 이후 최소 10000 최대 50000, 최신입찰자 자신이면 못하는 제약 구현"
+      operationId: "S202AuctionDealSend"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "auction_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "discount_price"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S301MyOngoingDeal:
+    get:
+      tags:
+      - "store"
+      summary: "내 진행중인 딜 찾기"
+      description: ""
+      operationId: "S301MyOngoingDeal"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S302MyPreviousDeal:
+    get:
+      tags:
+      - "store"
+      summary: "내 예전 딜"
+      description: ""
+      operationId: "S302MyPreviousDeal"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/S303MyDealDetail:
+    get:
+      tags:
+      - "store"
+      summary: "내 딜 상세"
+      description: ""
+      operationId: "S303MyDealDetail"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":
@@ -737,7 +937,7 @@ paths:
         in: "query"
         description: ""
         required: true
-        type: "integer"
+        type: "string"
         collectionFormat: "multi"
       responses:
         "200":

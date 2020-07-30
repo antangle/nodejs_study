@@ -104,7 +104,7 @@ router.get('/S202AuctionInfo', async (req, res) =>{
         return res.json(result);
     }
 });
-router.patch('/S202AuctionDealSend', async (req,res) =>{
+router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
         var {store_id, auction_id, discount_price} = req.body;
