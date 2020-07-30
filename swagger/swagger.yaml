@@ -810,11 +810,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "store_id"
+      - name: "deal_id"
         in: "query"
         description: ""
         required: true
-        type: "string"
+        type: "integer"
         collectionFormat: "multi"
       responses:
         "200":
