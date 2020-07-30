@@ -134,6 +134,7 @@ const get203AuctionDeals = async(auction_id)=>{
             auction.finish_time AS auction_finish_time,
             auction.now_order, deal.deal_order AS deal_order,
             auction.contract_list, auction.period, auction.finish_time,
+            auction.state,
             detail.cost_price, deal.discount_official,
             deal.discount_payment,
             payment.price AS payment_price,
@@ -150,6 +151,7 @@ const get203AuctionDeals = async(auction_id)=>{
             ON deal.device_detail_id = detail.id
             INNER JOIN device
             ON deal.device_id = device.id
+            ORDER BY deal.discount_price
         `;
         var {rows, rowCount} = await query(querytext, [auction_id]);
         result = {auction: rows, result: define.const_SUCCESS, rowCount: rowCount};
@@ -166,28 +168,29 @@ const get204AuctionDealsFinish = async(auction_id)=>{
     try{
         const querytext = `
             SELECT deal.id AS deal_id, deal.store_id, 
-            store.name AS store_name, store.score,
+            deal.store_nick AS store_nick, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
-            auction.finish_time AS auction_finish_time, 
-            auction.contract_list,
-            auction.now_order, auction.period,
-            deal.deal_order AS deal_order,
+            auction.finish_time AS auction_finish_time,
+            auction.now_order, deal.deal_order AS deal_order,
+            auction.contract_list, auction.period, auction.finish_time,
+            auction.state,
             detail.cost_price, deal.discount_official,
+            deal.discount_payment,
             payment.price AS payment_price,
             device.name
             FROM deal
-            INNER JOIN store
-            ON store.id = deal.store_id
-            AND deal.auction_id = $1
             INNER JOIN auction
-            ON deal.auction_id = auction.id
+            ON auction.id = $1
             INNER JOIN payment
             ON payment.id = auction.payment_id
+            INNER JOIN store
+            ON deal.auction_id = $1
+            AND store.id = deal.store_id
             INNER JOIN device_detail AS detail
             ON deal.device_detail_id = detail.id
             INNER JOIN device
             ON deal.device_id = device.id
-            ORDER BY deal.discount_price DESC
+            ORDER BY deal.discount_price
             LIMIT 5
         `;
         var {rows} = await query(querytext, [auction_id]);
@@ -248,7 +251,7 @@ const Update208DealConfirmation = async(deal_id)=>{
     var result = {};
     try{
         const querytext1 = `
-            UPDATE auction 
+            UPDATE auction
             SET win_deal_id = $1,
             win_state = 2
             WHERE auction.id IN
@@ -398,11 +401,14 @@ const get211StoreDetails = async(store_id)=>{
         const querytext = `
             SELECT store.id AS store_id, store.score AS avg_score, 
             store.score_weight AS review_count,
-            store.comment AS store_comment, 
-            score.score AS user_score, 
+            store.comment AS store_comment,
+            score.score AS user_score,
             score.comment AS user_comment,
+            score.create_date,
             device.name AS device_name,
-            deal.store_nick
+            deal.store_nick,
+            sd.name AS sido_name, sgg.name AS sgg_name,
+            users.nick
             FROM store
             INNER JOIN score
             ON store.id = $1
@@ -411,6 +417,12 @@ const get211StoreDetails = async(store_id)=>{
             ON deal.id = score.deal_id
             INNER JOIN device
             ON deal.device_id = device.id
+            INNER JOIN location_sd AS sd
+            ON store.sido_code = sd.code
+            INNER JOIN location_sgg AS sgg
+            ON store.sgg_code = sgg.code
+            INNER JOIN users
+            ON users.id = score.user_id
             `;
         var {rows} = await query(querytext, [store_id]);
         console.log(rows);

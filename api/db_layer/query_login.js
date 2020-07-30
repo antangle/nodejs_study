@@ -306,13 +306,13 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
     
 }
 module.exports = {
-    //store login query
+    /*store login query !!aborted!!
     getS001GetPassword,
     postS003LoginIdCheck,
     postS003IdPassword,
     postS004StoreInfo,
     posts007LocationCode,
-    
+    */
     //user login query
     get001GetPassword,
     post004LoginIdCheck,

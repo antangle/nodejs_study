@@ -11,11 +11,14 @@ const helper ={
   comparePassword(password, hashPassword) {
     return bcrypt.compareSync(password, hashPassword);
   },
-  
+  isValidId(login_id){
+    return /^[A-z][A-z0-9]{7,14}$/.test(login_id);
+  },
+  isValidNickname(nick){
+    return /^[가-힣a-zA-Z][^:<>()&.~\s]{0,14}$/.test(nick);
+  },
   validatePassword(password){
-    if (password.length <= 5 || password === '') {
-      return false;
-    } return true;
+    return /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{6,20}$/.test(password);
   },
   isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);
