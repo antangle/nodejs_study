@@ -25,8 +25,8 @@ var sGender = "";      			// 없으면 기본 선택화면, 0: 여자, 1: 남자
 
 // 본인인증 처리 후, 결과 데이타를 리턴 받기위해 다음예제와 같이 http부터 입력합니다.
 // 리턴url은 인증 전 인증페이지를 호출하기 전 url과 동일해야 합니다. ex) 인증 전 url : https://www.~ 리턴 url : https://www.~
-var sReturnUrl = "https://api.aptioncompany.com/nice/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
-var sErrorUrl = "https://api.aptioncompany.com/nice/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
+var sReturnUrl = "http://api.aptioncompany.com/nice/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
+var sErrorUrl = "http://api.aptioncompany.com/nice/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
 
 router.get("/", function(request, response) {
   response.send("sample index page");
@@ -62,6 +62,7 @@ router.get("/checkplus_main", function(request, response) {
     sEncData += data;
   });
   child.on("close", function() {
+    console.log(sEncData);
     //이곳에서 result처리 해야함. 
   
     //처리 결과 확인
@@ -147,7 +148,6 @@ router.post("/checkplus_success", function(request, response) {
       var mobileno = decodeURIComponent(GetValue(sDecData , "MOBILE_NO"));        //휴대폰번호(계약된 경우)
       var mobileco = decodeURIComponent(GetValue(sDecData , "MOBILE_CO"));        //통신사(계약된 경우)
     }
-    console.log(data);
     const data = {
         sRtnMSG , 
         requestnumber , 
@@ -165,7 +165,7 @@ router.post("/checkplus_success", function(request, response) {
     const encryptedData = helper.encryptJson(data)
     console.log(data, encryptedData);
     console.log(sDecData);
-    response.send(encryptedData);
+    response.render("checkplus_success.ejs", {sRtnMSG , requestnumber , responsenumber , authtype , name , birthdate , gender , nationalinfo , dupinfo , conninfo , mobileno , mobileco});
   });
 });
 
@@ -370,6 +370,7 @@ router.get("/checkplus_fail", function(request, response) {
     response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
   });
 });
+
 function GetValue(plaindata , key){
   var arrData = plaindata.split(":");
   var value = "";
