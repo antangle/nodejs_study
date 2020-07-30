@@ -111,6 +111,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         //자릿수 10000원대만 나오게 sanitize
         discount_price = parseInt(discount_price/10000)*10000;
         var info = await store.get702NeededInfoForDeal(store_id, auction_id);
+        console.log('info is:');
+        console.log(info)
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
             return res.json(result);
@@ -143,12 +145,13 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 discount_price, 
                 info.store_nick
             ]
+            console.log('paramArray')
             result = await store.insert702DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});
             }
         }
-        if(info.data.deal_id !== null){
+        else if(info.data.deal_id !== null){
             result = await store.update702DealSend(info.data.deal_id, auction_id, discount_price);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});
