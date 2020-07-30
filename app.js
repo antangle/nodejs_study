@@ -6,12 +6,12 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 const swagger = require('./swagger/swagger.js');
-var nice_module = require('../sample/app');
 const dotenv = require('dotenv');
 dotenv.config();
 
 const {verifyToken} = require('./middleware/verify');
 const APIRouter = require('./api');
+const niceRouter = require('./api/nice');
 const loginRouter = require('./api/login');
 const landingRouter = require('./api/landing');
 
@@ -28,12 +28,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/nice', nice_module);
-
 app.use('/api', APIRouter);
 app.use('/login', loginRouter);
-app.use('/landing', landingRouter);
+app.use('/nice', niceRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use('/landing', landingRouter);
 
 app.use('/', (req, res) =>{
   res.send('Welcome to Backend');
