@@ -193,7 +193,7 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
         var {device_id, payment_id, volume} = req.query;
         result = await buy.getSelectedPayment(device_id, payment_id, volume);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            throw(result.result);                               
         }
         return res.json(result);
     }
@@ -202,7 +202,6 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
         result.result = -122;
         return res.json(result);
     }
-    
 });
 
 router.post('/postSaveStep3', async (req, res) =>{

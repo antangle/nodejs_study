@@ -58,8 +58,7 @@ const get601StoreAuction = async(store_id)=>{
       result.result = -6011;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
-    }
-    
+    }    
 };
 const get601Search = async(store_id)=>{
     var result = {};
@@ -167,7 +166,6 @@ const get701Search = async(store_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
 const post701CutAuction = async(store_id, auction_id)=>{
     var result = {};
