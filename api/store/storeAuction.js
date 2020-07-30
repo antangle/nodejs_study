@@ -166,7 +166,7 @@ router.get('/S301MyOngoingDeal', async (req, res) =>{
     var result ={};
     try{
         var {store_id} = req.query;
-        result.nowDeal = await store.get801MyOngoingDeal(store_id);
+        result.auction = await store.get801MyOngoingDeal(store_id);
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
@@ -182,7 +182,7 @@ router.get('/S302MyPreviousDeal', async (req, res) =>{
     var result ={};
     try{
         var {store_id} = req.query;
-        result.pastDeal = await store.get802MyPreviousDeal(store_id);
+        result.auction = await store.get802MyPreviousDeal(store_id);
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
