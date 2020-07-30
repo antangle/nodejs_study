@@ -400,6 +400,7 @@ const get801MyOngoingDeal = async(store_id)=>{
         image.url_2x, auction.id AS auction_id,
         auction.finish_time, auction.now_discount_price,
         auction.contract_list, auction.period,
+        auction.agency_hope, auction.agency_use,
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
         payment.alias
         FROM deal
@@ -441,6 +442,7 @@ const get802MyPreviousDeal = async(store_id)=>{
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
         deal.state,
         auction.contract_list, auction.period,
+        auction.agency_hope, auction.agency_use,
         users.phone, payment.alias
         FROM deal
         INNER JOIN auction

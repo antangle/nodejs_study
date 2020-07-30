@@ -175,9 +175,7 @@ const get001GetPassword = async(login_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
-
 const post004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
@@ -196,7 +194,6 @@ const post004LoginIdCheck = async(login_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 
 const post004IdPassword = async(login_id, hash_pwd)=>{
@@ -223,8 +220,25 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 }
+const get005GetPassword = async(login_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT id AS partner_id, login_pwd AS hash_pwd
+            FROM partner
+            WHERE login_id = $1
+        `;
+        var {rows} = await query(querytext, [login_id]);
+        result ={result: define.const_SUCCESS, data: rows[0]};
+        return result;
+    }
+    catch(err){
+        result.result = -511;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
 const post006NicknameCheck = async(nick)=>{
     var result = {};
     try{
@@ -332,7 +346,24 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
+}
+const LogoutUser010 = async() =>{
+    try{
+        const querytext = `
+            UPDATE users SET
+            sido_code = $1,
+            sgg_code = $2
+            WHERE id = $3
+            `;
+        await query(querytext, [sido_code, sgg_code, user_id]);
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -73;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
 }
 module.exports = {
     PartnerToStore,
