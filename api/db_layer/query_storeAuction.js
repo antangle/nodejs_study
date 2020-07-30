@@ -399,6 +399,7 @@ const get801MyOngoingDeal = async(store_id)=>{
         detail.color_name, detail.color_hex,
         image.url_2x, auction.id AS auction_id,
         auction.finish_time, auction.now_discount_price,
+        auction.agency_hope, auction.agency_use,
         auction.contract_list, auction.period,
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
         payment.alias
@@ -441,7 +442,8 @@ const get802MyPreviousDeal = async(store_id)=>{
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
         deal.state,
         auction.contract_list, auction.period,
-        users.phone
+        auction.agency_hope, auction.agency_use,
+        users.phone, payment.alias
         FROM deal
         INNER JOIN auction
         ON store_id = $1
@@ -449,6 +451,8 @@ const get802MyPreviousDeal = async(store_id)=>{
         AND auction.id = deal.auction_id
         INNER JOIN device_detail AS detail
         ON detail.id = deal.device_detail_id
+        INNER JOIN payment
+        ON payment.id = deal.payment_id
         INNER JOIN device
         ON device.id = deal.device_id
         INNER JOIN image
@@ -481,6 +485,7 @@ const get803MyDealDetail = async(deal_id)=>{
         detail.cost_price, auction.finish_time,
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
         deal.discount_official,
+        auction.agency_hope, auction.agency_use,
         auction.contract_list, auction.period,
         auction.win_time,
         payment.price AS payment_price
