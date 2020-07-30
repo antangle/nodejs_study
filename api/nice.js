@@ -62,7 +62,6 @@ router.get("/checkplus_main", function(request, response) {
     sEncData += data;
   });
   child.on("close", function() {
-    console.log(sEncData);
     //이곳에서 result처리 해야함. 
   
     //처리 결과 확인

@@ -18,7 +18,7 @@
 
     <script language='javascript'>
         function redirectToParent(){
-            var url = "http://www.peachphone.co.kr/web/user/join/certificate/" + "<%-sEncData%>"
+            var url = "http://www.peachphone.co.kr/web/user/join/certificate/" + "<%=encryptedData%>"
             window.opener.location.href=url;
             window.close();
         }
