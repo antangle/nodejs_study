@@ -486,6 +486,7 @@ const get803MyDealDetail = async(deal_id)=>{
         deal.id AS deal_id, deal.discount_price AS my_discount_price,
         deal.discount_official,
         auction.contract_list, auction.period,
+        auction.agency_hope, auction.agency_use,
         auction.win_time,
         payment.price AS payment_price, payment.alias
         FROM deal
