@@ -281,15 +281,15 @@ const insert702DealSend = async(paramArray)=>{
             device_id, agency, 
             contract_list, discount_official, 
             discount_price, payment_id,
-            discount_payment,
+            discount_payment, period,
             create_time, deal_order,
             state, store_nick)
         SELECT $1, $2, 
             auction.user_id, auction.device_detail_id,
             auction.device_id, auction.agency_hope,
             auction.contract_list, official.discount_official,
-            $3, auction.payment_id,
-            payment.price*6,
+            $3, auction.payment_id, 
+            payment.price*6, auction.period,
             current_timestamp, auction.now_order +1,
             1, $4
         FROM auction
