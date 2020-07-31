@@ -6,6 +6,13 @@ const buyRouter = require('./user/buy');
 const myAuctionRouter = require('./user/myAuction');
 const niceRouter = require('./nice');
 
+const app01Router = require('./nice');
+const web01Router = require('./nice');
+
+router.use('/web01', web01Router);
+router.use('/app01', app01Router);
+
+
 //user API
 router.use('/buy', buyRouter);
 router.use('/myAuction', myAuctionRouter);

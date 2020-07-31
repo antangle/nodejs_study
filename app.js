@@ -10,10 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const {verifyToken} = require('./middleware/verify');
-const APIRouter = require('./api');
-const niceRouter = require('./api/nice');
-const loginRouter = require('./api/login');
-const landingRouter = require('./api/landing');
+
 
 const port = process.env.port || 9000;
 const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
@@ -28,11 +25,30 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api', APIRouter);
-app.use('/login', loginRouter);
-app.use('/nice', niceRouter);
+//save jihun 
+const APIwebRouter = require('./api_web/index');
+const nicewebRouter = require('./api_web/nice');
+const loginwebRouter = require('./api_web/login');
+const landingwebRouter = require('./api_web/landing');
+
+app.use('/api', APIwebRouter);
+app.use('/login', loginwebRouter);
+app.use('/nice', nicewebRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
-app.use('/landing', landingRouter);
+app.use('/landing', landingwebRouter);
+
+//web
+const web01Router = require('./api_web/login');
+app.use('/web01', web01Router);
+
+//app
+const app01Router = require('./app01/index');
+app.use('/app01', app01Router);
+
+//test
+const testRouter = require('./api_web/login');
+app.use('/test', testRouter);
+
 
 app.use('/', (req, res) =>{
   res.send('Welcome to Backend');

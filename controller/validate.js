@@ -8,18 +8,17 @@ dotenv.config({path: path.join(__dirname, '/../.env')});
 const helper ={
   hashPassword(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5));
-  },
-  
+  },  
   comparePassword(password, hashPassword) {
     return bcrypt.compareSync(password, hashPassword);
   },
   isValidId(login_id){
-    return /^[A-z][A-z0-9]{7,14}$/.test(login_id);
+    return /^[A-z][A-z0-9]{5,14}$/.test(login_id);
   },
   isValidNickname(nick){
     return /^[가-힣a-zA-Z][^:<>()&.~\s]{0,14}$/.test(nick);
   },
-  validatePassword(password){
+  isValidPassword(password){
     return /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{6,20}$/.test(password);
   },
   isValidEmail(email) {
