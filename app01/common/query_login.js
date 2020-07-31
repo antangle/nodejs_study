@@ -22,7 +22,7 @@ const getP001GetPassword = async(login_id)=>{
         return result;
     }
     catch(err){
-        result.result = -511;
+        result.result = -9011;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -41,7 +41,7 @@ const postP004LoginIdCheck = async(login_id)=>{
         return result;
     }
     catch(err){
-        result.result = -531;
+        result.result = -9041;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -66,7 +66,7 @@ const postP004IdPassword = async(login_id, hash_pwd)=>{
         return result;
     }
     catch(err){
-        result.result = -532;
+        result.result = -9042;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -109,13 +109,13 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
             `;
         var {rowCount} = await query(querytext, [sido_code, sgg_code, partner_id]);
         if(rowCount === 0){
-            return {result:-574, Message: 'given code or partner_id is wrong'}
+            return {result:-9072, Message: 'given code or partner_id is wrong'}
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -573;
+        result.result = -9071;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -136,13 +136,13 @@ const PartnerToStore908 = async(partner_id)=>{
         var store_id = strDate.substr(0,12)*1
         var {rows, rowCount} = await query(querytext, [store_id, partner_id]);
         if(rowCount === 0){
-            return {result: -502, Message: '스토어 계정 설립에 문제가 있었습니다'}
+            return {result: -9082, Message: '스토어 계정 설립에 문제가 있었습니다'}
         }
         result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
         return result;
     }
     catch(err){
-        result.result = -581;
+        result.result = -9081;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -420,13 +420,13 @@ const PartnerUpdateToken909 = async(partner_id, token) =>{
             `;
         var {rowCount} = await query(querytext, [partner_id, token]);
         if(rowCount !== 1){
-            return {result:-582, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-9092, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -581;
+        result.result = -9091;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -442,13 +442,13 @@ const PartnerLogout910 = async(partner_id) =>{
             `;
         var {rowCount} = await query(querytext, [partner_id]);
         if(rowCount !== 1){
-            return {result:-584, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-9102, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -583;
+        result.result = -9101;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -464,13 +464,13 @@ const PartnerShutAccount911 = async(partner_id) =>{
             `;
         var {rowCount} = await query(querytext, [partner_id]);
         if(rowCount !== 1){
-            return {result:-586, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-9112, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -585;
+        result.result = -9111;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }

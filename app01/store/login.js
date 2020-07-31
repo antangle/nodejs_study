@@ -16,7 +16,6 @@ router.get('/test', verifyToken, (req, res) =>{
 });
 
 //partner login/signup API
-
 router.post('/Login901', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
@@ -54,7 +53,7 @@ router.post('/Login901', async (req, res) =>{
         }
         delete req.body.login_pwd;
         const token = helper.generateToken(dbResponse.data.partner_id);
-        result = {result:1, token:token};
+        result = {result:1, token: token};
         return res.status(200).json(result);
     }
     catch(err){
