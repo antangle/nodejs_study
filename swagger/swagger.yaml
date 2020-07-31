@@ -1140,13 +1140,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/store/login/007PostLocationCode:
+  /app01/store/login/postLocationCode907:
     post:
       tags:
       - "partner"
       summary: "시/도, 시군구 입력"
       description: ""
-      operationId: "007PostLocationCode"
+      operationId: "postLocationCode907"
       produces:
       - "application/json"
       parameters:
