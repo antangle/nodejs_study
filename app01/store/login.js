@@ -184,7 +184,7 @@ router.post('/partnerToStore908', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
     try{
-        result = await partner.PartnerToStore(partner_id);
+        result = await partner.PartnerToStore908(partner_id);
         if(result.result != define.const_SUCCESS){
             return res.status(400).json(result);
         }

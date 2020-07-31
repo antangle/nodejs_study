@@ -16,7 +16,7 @@ router.get('/test', verifyToken, (req, res) =>{
 });
 
 //user login/signup API
-router.post('/user_login', async (req, res) =>{
+router.post('/Login901', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd){
@@ -58,14 +58,14 @@ router.post('/user_login', async (req, res) =>{
     }
     catch(err){
         delete req.body.login_pwd;
-        console.log('router ERROR: 001 - login/' + err);
+        console.log('router ERROR: U901 - Login901/' + err);
         result.result = -901;
         result.message = err;
         return res.status(400).json(result);
     }
 });
  
-router.post('/004SignIn', async (req, res) =>{
+router.post('/SignIn904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd) {
@@ -92,13 +92,13 @@ router.post('/004SignIn', async (req, res) =>{
     }   
     catch(err){
         delete req.body.login_pwd;
-        console.log('router ERROR: 004SignIn/' + err);
+        console.log('router ERROR: U904 - SignIn904/' + err);
         result.result = -902;
         return res.status(400).json(result);
     }
 });
    
-router.post('/004CheckId', async (req, res) =>{
+router.post('/CheckId904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id) {
@@ -115,13 +115,13 @@ router.post('/004CheckId', async (req, res) =>{
         return res.status(200).json(result);
     }   
     catch(err){
-        console.log('router ERROR: 004CheckId/' + err);
+        console.log('router ERROR: U904 - CheckId904/' + err);
         result.result = -903;
         return res.status(400).json(result);
     }
 });
 
-router.post('/006CheckNick', async (req, res) =>{
+router.post('/CheckNick906', async (req, res) =>{
     var result = {};
     var {nick, user_id} = req.body;
     if(!nick){
@@ -138,13 +138,13 @@ router.post('/006CheckNick', async (req, res) =>{
         return res.status(200).json(result);
     }   
     catch(err){
-        console.log('router ERROR: 006 - CheckNick/' + err);
+        console.log('router ERROR: 906 - CheckNick906/' + err);
         result.result = -904;
         return res.status(400).json(result);
     }
 });
 
-router.post('/006PostNick', async (req, res) =>{
+router.post('/PostNick906', async (req, res) =>{
     var result = {};
     var {nick, user_id} = req.body;
     if(!nick){
@@ -160,13 +160,13 @@ router.post('/006PostNick', async (req, res) =>{
         return res.status(200).json(result);
     }   
     catch(err){
-        console.log('router ERROR: 006- PostNick/' + err);
+        console.log('router ERROR: 906- PostNick906/' + err);
         result.result = -905;
         return res.status(400).json(result);
     }
 });
 
-router.get('/Get007SdCode', async (req, res) =>{
+router.get('/GetSdCode907', async (req, res) =>{
     var result ={};
     try{
         result = await users.get007SdCode();
@@ -175,13 +175,13 @@ router.get('/Get007SdCode', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 007 - GetSidoCode/' + err);
+        console.log('router ERROR: 907 - GetSdCode907/' + err);
         result.result = -906;
         return res.status(400).json(result);
     }
 });
 
-router.get('/Get007SggCode', async (req, res) =>{
+router.get('/GetSggCode907', async (req, res) =>{
     var result ={};
     var {sido_code} = req.query;
     if(sido_code <100){
@@ -194,13 +194,13 @@ router.get('/Get007SggCode', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 007 - GetSggCode/' + err);
+        console.log('router ERROR: 907 - GetSggCode907/' + err);
         result.result = -907;
         return res.status(400).json(result);
     }
 });
 
-router.post('/post007LocationCode', async (req, res) =>{
+router.post('/postLocationCode907', async (req, res) =>{
     var result ={};
     var {user_id, sido_code, sgg_code} = req.body;
     if(sido_code <100|| sgg_code < 100){
@@ -213,13 +213,13 @@ router.post('/post007LocationCode', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 007 - post007LocationCode/' + err);
+        console.log('router ERROR: 007 - postLocationCode907/' + err);
         result.result = -908;
         return res.status(400).json(result);
     }
 });
 
-router.post('/post008UserUpdateToken', async (req, res) =>{
+router.post('/postUserUpdateToken909', async (req, res) =>{
     var result ={};
     var {user_id, token} = req.body;
     try{
@@ -230,13 +230,13 @@ router.post('/post008UserUpdateToken', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - post008UserUpdateToken/' + err);
+        console.log('router ERROR: 008 - postUserUpdateToken909/' + err);
         result.result = -909;
         return res.status(400).json(result);
     }
 });
 
-router.post('/post008UserDeleteToken', async (req, res) =>{
+router.post('/postUserLogout910', async (req, res) =>{
     var result ={};
     var {user_id, token} = req.body;
     try{
@@ -247,13 +247,13 @@ router.post('/post008UserDeleteToken', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - post008UserDeleteToken/' + err);
+        console.log('router ERROR: 008 - postUserLogout910/' + err);
         result.result = -910;
         return res.status(400).json(result);
     }
 });
 
-router.post('/post008UserShutAccount', async (req, res) =>{
+router.post('/postUserLogout910', async (req, res) =>{
     var result ={};
     var {user_id, token} = req.body;
     try{
@@ -264,7 +264,7 @@ router.post('/post008UserShutAccount', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - post008UserShutAccount/' + err);
+        console.log('router ERROR: 008 - postUserLogout910/' + err);
         result.result = -911;
         return res.status(400).json(result);
     }

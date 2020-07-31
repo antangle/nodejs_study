@@ -168,16 +168,16 @@ const get204AuctionDealsFinish = async(auction_id)=>{
     try{
         const querytext = `
             SELECT deal.id AS deal_id, deal.store_id, 
-            deal.store_nick AS store_nick, store.score,
-            deal.discount_price, deal.create_time AS deal_create_time,
-            auction.finish_time AS auction_finish_time,
-            auction.now_order, deal.deal_order AS deal_order,
-            auction.contract_list, auction.period, auction.finish_time,
-            auction.state,
-            detail.cost_price, deal.discount_official,
-            deal.discount_payment,
-            payment.price AS payment_price,
-            device.name
+                deal.store_nick AS store_nick, store.score,
+                deal.discount_price, deal.create_time AS deal_create_time,
+                auction.finish_time AS auction_finish_time,
+                auction.now_order, deal.deal_order AS deal_order,
+                auction.contract_list, auction.period, auction.finish_time,
+                auction.state,
+                detail.cost_price, deal.discount_official,
+                deal.discount_payment,
+                payment.price AS payment_price,
+                device.name
             FROM deal
             INNER JOIN auction
             ON auction.id = $1
@@ -208,18 +208,18 @@ const get205DealDetail = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT deal.id AS deal_id, store.name AS store_name, 
-            detail.id AS device_detail_id, 
-            detail.cost_price, device.name AS device_name,
-            deal.contract_list, deal.discount_official, deal.discount_price,
-            deal.discount_payment, deal.month_price,
-            deal.gift, deal.create_time AS deal_create_time,
-            payment.price AS payment_price, payment.alias AS payment_alias, 
-            payment.data AS payment_data,
-            payment.call AS payment_call, 
-            payment.text AS payment_text, 
-            payment.limitation, payment.generation,
-            official.discount_official
+            SELECT deal.id AS deal_id, deal.store_nick AS store_nick, 
+                detail.id AS device_detail_id, 
+                detail.cost_price, device.name AS device_name,
+                deal.contract_list, deal.discount_official, deal.discount_price,
+                deal.discount_payment, deal.month_price,
+                deal.gift, deal.create_time AS deal_create_time,
+                payment.price AS payment_price, payment.alias AS payment_alias, 
+                payment.data AS payment_data,
+                payment.call AS payment_call, 
+                payment.text AS payment_text, 
+                payment.limitation, payment.generation,
+                official.discount_official
             FROM deal
             INNER JOIN store
             ON store.id = deal.store_id

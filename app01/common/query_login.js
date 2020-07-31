@@ -120,7 +120,7 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
         return result;
     }
 }
-const PartnerToStore = async(partner_id)=>{
+const PartnerToStore908 = async(partner_id)=>{
     try{
         const querytext = `
             WITH cte AS(
@@ -477,7 +477,7 @@ const PartnerShutAccount911 = async(partner_id) =>{
 }
 
 module.exports = {
-    PartnerToStore,
+    PartnerToStore908,
     //partner login query
     getP001GetPassword,
     postP004LoginIdCheck,

@@ -208,7 +208,7 @@ const get205DealDetail = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT deal.id AS deal_id, store.name AS store_name, 
+            SELECT deal.id AS deal_id, deal.store_nick AS store_nick, 
             detail.id AS device_detail_id, 
             detail.cost_price, device.name AS device_name,
             deal.contract_list, deal.discount_official, deal.discount_price,
