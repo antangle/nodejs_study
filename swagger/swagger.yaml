@@ -18,7 +18,7 @@ tags:
   description: "판매자 페이지"
 - name: "landingPage"
   description: "landingPage"
-- name: "partner"
+- name: "app_partner"
   description: "APP용. WEB용 아님."
 - name: "app_user"
   description: "APP용. WEB용 아님."
@@ -1035,7 +1035,7 @@ paths:
   /app01/store/login/Login901:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "파트너 로그인"
       description: ""
       operationId: "Login901"
@@ -1062,7 +1062,7 @@ paths:
   /app01/store/login/CheckId904:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "아이디 중복확인"
       description: "중복이면 match:1 중복없는 아디면 match:-2"
       operationId: "CheckId904"
@@ -1083,7 +1083,7 @@ paths:
   /app01/store/login/SignIn904:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "파트너 회원가입(아디비번)"
       description: "return값으로 partner_id 와 result:1"
       operationId: "SignIn904"
@@ -1110,7 +1110,7 @@ paths:
   /app01/store/login/GetSdCode907:
     get:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "시/도 불러오기"
       description: ""
       operationId: "GetSdCode907"
@@ -1124,7 +1124,7 @@ paths:
   /app01/store/login/GetSggCode907:
     get:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "시군구 불러오기"
       description: ""
       operationId: "GetSggCode907"
@@ -1145,7 +1145,7 @@ paths:
   /app01/store/login/postLocationCode907:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "시/도, 시군구 입력"
       description: ""
       operationId: "postLocationCode907"
@@ -1177,7 +1177,7 @@ paths:
   /app01/store/login/partnerToStore908:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "파트너에게 store권한을 줄 때"
       description: "store_id 생성과 동시에 store 에 INSERT, partner에 UPDATE"
       operationId: "partnerToStore908"
@@ -1198,7 +1198,7 @@ paths:
   /app01/store/login/postPartnerUpdateToken909:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "로그인 시 토큰 update"
       description: ""
       operationId: "postPartnerUpdateToken909"
@@ -1225,7 +1225,7 @@ paths:
   /app01/store/login/postPartnerLogout910:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "로그아웃"
       description: ""
       operationId: "postPartnerLogout910"
@@ -1246,7 +1246,7 @@ paths:
   /app01/store/login/postPartnerShutAccount911:
     post:
       tags:
-      - "partner"
+      - "app_partner"
       summary: "회원탈퇴"
       description: ""
       operationId: "postPartnerShutAccount911"
