@@ -1,8 +1,10 @@
 const bcrypt = require('bcrypt');
+const crypto = require("crypto")
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const path = require('path');
 dotenv.config({path: path.join(__dirname, '/../.env')});
+
 const helper ={
   hashPassword(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5));
@@ -23,7 +25,6 @@ const helper ={
   isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);
   },
-  
   generateToken(id) {
     try{
     const token = jwt.sign({id: id},

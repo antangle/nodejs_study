@@ -493,7 +493,7 @@ const get803MyDealDetail = async(deal_id)=>{
         return result;
     }
     catch(err){
-      result.result = -8012;
+      result.result = -8013;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }

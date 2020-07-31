@@ -52,8 +52,8 @@ const postP004IdPassword = async(login_id, hash_pwd)=>{
     var result = {};
     try{
         const querytext = `
-            INSERT INTO partner(id, login_id, login_pwd)
-            VALUES($1, $2, $3)
+            INSERT INTO partner(id, login_id, login_pwd, state)
+            VALUES($1, $2, $3, 1)
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
             `;
@@ -337,7 +337,10 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
             sgg_code = $2
             WHERE id = $3
             `;
-        await query(querytext, [sido_code, sgg_code, user_id]);
+        var {rowCount} = await query(querytext, [sido_code, sgg_code, user_id]);
+        if(rowCount !== 1){
+            return {result:-74, message: '시/도, 시/군/구가 등록되지 않았습니다'}
+        }
         result ={result: define.const_SUCCESS};
         return result;
     }
@@ -347,24 +350,139 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
         return result;
     }
 }
-const LogoutUser010 = async() =>{
+const UserUpdateToken008 = async(user_id, token) =>{
+    var result = {}
     try{
         const querytext = `
             UPDATE users SET
-            sido_code = $1,
-            sgg_code = $2
-            WHERE id = $3
+            push_token = $2
+            WHERE id = $1
             `;
-        await query(querytext, [sido_code, sgg_code, user_id]);
+        var {rowCount} = await query(querytext, [user_id, token]);
+        if(rowCount !== 1){
+            return {result:-82, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+        }
         result ={result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -73;
+        result.result = -81;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
 }
+
+const UserDeleteToken008 = async(user_id) =>{
+    var result = {}
+    try{
+        const querytext = `
+            UPDATE users SET
+            push_token = NULL
+            WHERE id = $1
+            `;
+        var {rowCount} = await query(querytext, [user_id]);
+        if(rowCount !== 1){
+            return {result:-84, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+        }
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -83;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+const UserShutAccount008 = async(user_id) =>{
+    var result = {}
+    try{
+        const querytext = `
+            UPDATE users SET
+            state = -1,
+            push_token = NULL
+            WHERE id = $1
+            `;
+        var {rowCount} = await query(querytext, [user_id]);
+        if(rowCount !== 1){
+            return {result:-86, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+        }
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -85;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
+
+const PartnerUpdateTokenP008 = async(partner_id, token) =>{
+    var result = {}
+    try{
+        const querytext = `
+            UPDATE partner SET
+            push_token = $2
+            WHERE id = $1
+            `;
+        var {rowCount} = await query(querytext, [partner_id, token]);
+        if(rowCount !== 1){
+            return {result:-582, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+        }
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -581;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
+const PartnerDeleteTokenP008 = async(partner_id) =>{
+    var result = {}
+    try{
+        const querytext = `
+            UPDATE partner SET
+            push_token = NULL
+            WHERE id = $1
+            `;
+        var {rowCount} = await query(querytext, [partner_id]);
+        if(rowCount !== 1){
+            return {result:-584, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+        }
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -583;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+const PartnerShutAccountP008 = async(partner_id) =>{
+    var result = {}
+    try{
+        const querytext = `
+            UPDATE partner SET
+            state = -1,
+            push_token = NULL
+            WHERE id = $1
+            `;
+        var {rowCount} = await query(querytext, [partner_id]);
+        if(rowCount !== 1){
+            return {result:-586, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+        }
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -585;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
 module.exports = {
     PartnerToStore,
     //partner login query
@@ -382,4 +500,12 @@ module.exports = {
     //both use
     get007SdCode,
     get007SggCode,
+    //User logout
+    UserUpdateToken008,
+    UserDeleteToken008,
+    UserShutAccount008,
+    //partner logout
+    PartnerUpdateTokenP008,
+    PartnerDeleteTokenP008,
+    PartnerShutAccountP008
 };

@@ -11,28 +11,17 @@
     <title>NICE평가정보 - CheckPlus 안심본인인증 테스트</title>
 </head>
 <body>
-    <center>
-    <p><p><p><p>
-    본인인증이 실패하였습니다.<br>
-    <table width=500 border=1>
-        <tr>
-            <td>message</td>
-            <td><%=sRtnMSG%></td>
-        </tr>            
-        <tr>
-            <td>요청 번호</td>
-            <td><%=requestnumber%></td>
-        </tr>            
-        <tr>
-            <td>본인인증 실패 코드</td>
-            <td><%=errcode%></td>
-        </tr>            
-        <tr>
-            <td>인증수단</td>
-            <td><%=authtype%></td>
-        </tr>
-        </tr>
-    </table>
-    </center>
+    <div id='test' value= <%=encyrptedData%> > </div>
+    <script language='javascript'>
+        function redirectToPage(){
+            var data = $("#test").attr("value")
+            var url = "http://www.peachphone.co.kr/web/user/join/certificate/?info=" + data;
+            window.opener.location.href=url;
+            self.close();
+        }
+        $( document ).ready(function() {
+            redirectToPage();
+        });
+    </script>
 </body>
 </html>
