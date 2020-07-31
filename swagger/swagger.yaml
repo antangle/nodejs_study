@@ -19,7 +19,7 @@ tags:
 - name: "landingPage"
   description: "landingPage"
 - name: "partner"
-  description: "partner"
+  description: "APP용. WEB용 아님."
 
 schemes:
 - "http"
