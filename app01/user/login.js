@@ -219,7 +219,7 @@ router.post('/postLocationCode907', async (req, res) =>{
     }
 });
 
-router.post('/postUserUpdateToken909', async (req, res) =>{
+router.post('/postUpdateToken909', async (req, res) =>{
     var result ={};
     var {user_id, token} = req.body;
     try{
@@ -236,7 +236,7 @@ router.post('/postUserUpdateToken909', async (req, res) =>{
     }
 });
 
-router.post('/postUserLogout910', async (req, res) =>{
+router.post('/postLogout910', async (req, res) =>{
     var result ={};
     var {user_id, token} = req.body;
     try{
@@ -253,7 +253,7 @@ router.post('/postUserLogout910', async (req, res) =>{
     }
 });
 
-router.post('/postUserLogout910', async (req, res) =>{
+router.post('/postShutAccount911', async (req, res) =>{
     var result ={};
     var {user_id, token} = req.body;
     try{
@@ -264,7 +264,7 @@ router.post('/postUserLogout910', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - postUserLogout910/' + err);
+        console.log('router ERROR: 008 - postUserShutAccount911/' + err);
         result.result = -911;
         return res.status(400).json(result);
     }

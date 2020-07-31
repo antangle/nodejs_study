@@ -1195,13 +1195,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/store/login/postPartnerUpdateToken909:
+  /app01/store/login/postUpdateToken909:
     post:
       tags:
       - "app_partner"
       summary: "로그인 시 토큰 update"
       description: ""
-      operationId: "postPartnerUpdateToken909"
+      operationId: "postUpdateTokenP909"
       produces:
       - "application/json"
       parameters:
@@ -1222,13 +1222,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/store/login/postPartnerLogout910:
+  /app01/store/login/postLogout910:
     post:
       tags:
       - "app_partner"
       summary: "로그아웃"
       description: ""
-      operationId: "postPartnerLogout910"
+      operationId: "postLogoutP910"
       produces:
       - "application/json"
       parameters:
@@ -1243,13 +1243,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/store/login/postPartnerShutAccount911:
+  /app01/store/login/postShutAccount911:
     post:
       tags:
       - "app_partner"
       summary: "회원탈퇴"
       description: ""
-      operationId: "postPartnerShutAccount911"
+      operationId: "postShutAccountP911"
       produces:
       - "application/json"
       parameters:

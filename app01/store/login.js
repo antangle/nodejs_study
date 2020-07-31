@@ -197,7 +197,7 @@ router.post('/partnerToStore908', async(req, res) =>{
     }
 })
 
-router.post('/postPartnerUpdateToken909', async (req, res) =>{
+router.post('/postUpdateToken909', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
@@ -208,13 +208,13 @@ router.post('/postPartnerUpdateToken909', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: P009 - postPartnerUpdateToken909/' + err);
+        console.log('router ERROR: P009 - postUpdateToken909/' + err);
         result.result = -928;
         return res.status(400).json(result);
     }
 });
 
-router.post('/postPartnerLogout910', async (req, res) =>{
+router.post('/postLogout910', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
@@ -225,13 +225,13 @@ router.post('/postPartnerLogout910', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: P910 - postPartnerLogout910/' + err);
+        console.log('router ERROR: P910 - postLogout910/' + err);
         result.result = -929;
         return res.status(400).json(result);
     }
 });
 
-router.post('/postPartnerShutAccount911', async (req, res) =>{
+router.post('/postShutAccount911', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
@@ -242,7 +242,7 @@ router.post('/postPartnerShutAccount911', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: P911 - postPartnerShutAccount911/' + err);
+        console.log('router ERROR: P911 - postShutAccount911/' + err);
         result.result = -930;
         return res.status(400).json(result);
     }
