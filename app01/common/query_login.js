@@ -31,6 +31,7 @@ const getP001GetPassword = async(login_id)=>{
         return result;
     }
 };
+
 const postP004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
