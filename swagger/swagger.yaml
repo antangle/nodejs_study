@@ -6,6 +6,8 @@ info:
 host: "localhost:9000"
 basePath: "/"
 tags:
+- name: "test"
+  description: "test"
 - name: "buy"
   description: "Everything about your buys"
 - name: "myAuction"
@@ -23,7 +25,7 @@ paths:
   /api/buy/test:
     get:
       tags:
-      - "buy"
+      - "test"
       summary: "device_id 치면 목록이 쭈르르륵 나옴. device_id는 1~51까지존재"
       description: ""
       operationId: "test"
