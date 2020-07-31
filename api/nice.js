@@ -82,7 +82,7 @@ router.get("/checkplus_main", function(request, response) {
     else{
       sRtnMSG = "";
     }
-    response.render("checkplus_main.ejs", {sRtnMSG,sEncData});
+    response.render(sEncData);
   });
 });
 
