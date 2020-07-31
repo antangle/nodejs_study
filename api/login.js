@@ -111,7 +111,7 @@ router.post('/P004CheckId', async (req, res) =>{
         result = await partner.postP004LoginIdCheck(login_id);
         if(result.result != define.const_SUCCESS)
             throw(result.result);        
-        result.Message = '가능한 아이디입니다';
+        result.message = '가능한 아이디입니다';
         return res.status(200).json(result);
     }   
     catch(err){
@@ -249,7 +249,7 @@ router.post('/004CheckId', async (req, res) =>{
         result = await users.post004LoginIdCheck(login_id);
         if(result.result != define.const_SUCCESS)
             throw(result.result);        
-        result.Message = '가능한 아이디입니다';
+        result.message = '가능한 아이디입니다';
         return res.status(200).json(result);
     }   
     catch(err){
