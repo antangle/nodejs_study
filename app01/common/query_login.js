@@ -17,7 +17,10 @@ const getP001GetPassword = async(login_id)=>{
             FROM partner
             WHERE login_id = $1
         `;
-        var {rows} = await query(querytext, [login_id]);
+        var {rows, rowCount} = await query(querytext, [login_id]);
+        if(rowCount !== 1){
+            return {result: 7}
+        }
         result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
     }

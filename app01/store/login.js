@@ -41,8 +41,7 @@ router.post('/Login901', async (req, res) =>{
         var dbResponse = await partner.getP001GetPassword(login_id);
         if(dbResponse.result != define.const_SUCCESS){
             return res.json({
-                'result': dbResponse.result, 
-                'message': dbResponse.message
+                'result': dbResponse.result
             });
         }
         if(!dbResponse.data.hash_pwd){
