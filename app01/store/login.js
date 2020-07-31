@@ -20,48 +20,48 @@ router.post('/Login901', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd){
-        return res.status(400).json({
-            'result': 2, 
+        return res.json({
+            'result': 2,
             'message': 'either Id or Password is missing'
         });
     }
     if(!helper.isValidId(login_id)){
-        return res.status(400).json({
+        return res.json({
             'result': 3, 
             'message': 'Please enter a valid Id form'
         })
     }
     if(!helper.isValidPassword(req.body.login_pwd)){
-        return res.status(400).json({
+        return res.json({
             'result': 4, 
             'message': 'Please enter a valid password form'
-        })
+        });
     }
     try{
         var dbResponse = await partner.getP001GetPassword(login_id);
         if(dbResponse.result != define.const_SUCCESS){
-            return res.status(404).json({
+            return res.json({
                 'result': dbResponse.result, 
                 'message': dbResponse.message
             });
         }
         if(!dbResponse.data.hash_pwd){
-            return res.status(404).json({'result': 5, 'message': 'Unidentified Account'});
+            return res.json({'result': 5, 'message': 'Unidentified Account'});
         }
         if(!helper.comparePassword(req.body.login_pwd, dbResponse.data.hash_pwd)){
-            return res.status(400).json({'result': 6, 'message': 'Incorrect Password'});
+            return res.json({'result': 6, 'message': 'Incorrect Password'});
         }
         delete req.body.login_pwd;
         const token = helper.generateToken(dbResponse.data.partner_id);
         result = {result:1, token: token, partner_id: dbResponse.data.partner_id};
-        return res.status(200).json(result);
+        return res.json(result);
     }
     catch(err){
         delete req.body.login_pwd;
         console.log('router ERROR: P901 - Login901/' + err);
         result.result = -921;
         result.message = err;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
  

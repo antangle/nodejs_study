@@ -502,7 +502,6 @@ router.get('/get211StoreDetails', async(req,res) =>{
         result.result = -211;
         return res.json(result);
     }
-    
 });
 
 router.get('/get212AllStoreReviews', async(req,res) =>{
@@ -519,7 +518,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
         console.log('router ERROR: 211/' + err);
         result.result = -211;
         return res.json(result);
-    }
-    
+    } 
 });
+
 module.exports = router;

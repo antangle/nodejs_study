@@ -163,6 +163,7 @@ const get203AuctionDeals = async(auction_id)=>{
         return result;
     }
 };
+
 const get204AuctionDealsFinish = async(auction_id)=>{
     var result = {};
     try{
@@ -202,8 +203,8 @@ const get204AuctionDealsFinish = async(auction_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
+
 const get205DealDetail = async(deal_id)=>{
     var result = {};
     try{
@@ -245,7 +246,6 @@ const get205DealDetail = async(deal_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 
 const Update208DealConfirmation = async(deal_id)=>{
@@ -275,7 +275,6 @@ const Update208DealConfirmation = async(deal_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 }
 
 const get209ConfirmedAuction = async(deal_id)=>{
@@ -304,7 +303,6 @@ const get209ConfirmedAuction = async(deal_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 
 const get210InfoForReview = async(deal_id)=>{
@@ -330,7 +328,6 @@ const get210InfoForReview = async(deal_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 
 const insert210Review = async(jsondata)=>{
@@ -370,7 +367,6 @@ const insert210Review = async(jsondata)=>{
     }
 };
 
-
 const update210StoreAfterReview = async(jsondata)=>{
     var result = {};
     try{
@@ -393,8 +389,8 @@ const update210StoreAfterReview = async(jsondata)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
+
 const get211StoreDetails = async(deal_id)=>{
     var result = {};
     try{
@@ -431,12 +427,12 @@ const get211StoreDetails = async(deal_id)=>{
         return result;
     }
     catch(err){
-        result.result = -2103;
+        result.result = -2111;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
+
 const get212AllStoreReviews = async(store_id)=>{
     var result = {};
     try{
@@ -467,12 +463,40 @@ const get212AllStoreReviews = async(store_id)=>{
         return result;
     }
     catch(err){
-        result.result = -2103;
+        result.result = -2121;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
+
+const post213Report = async(deal_id, type, comment)=>{
+    var result = {};
+    try{
+        const querytext = `
+            INSERT INTO report(user_id, store_id, deal_id, type, comment)
+            SELECT deal.user_id, deal.store_id, $1, $2, $3
+            FROM deal
+            WHERE deal.id = $1
+            ON CONFLICT (deal_id) DO
+            UPDATE SET
+            type = $2,
+            comment =$3
+            WHERE deal.id = $1
+            `;
+        var {rowCount} = await query(querytext, [deal_id, type, comment]);
+        if(rowCount !== 0){
+            return {result: -2132, message: '오류로 인해 신고가 등록되지 않았습니다'}
+        }
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -2131;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
@@ -487,6 +511,7 @@ module.exports = {
     get210InfoForReview,
     update210StoreAfterReview,
     get211StoreDetails,
-    get212AllStoreReviews
+    get212AllStoreReviews,
+    post213Report
 };
    
