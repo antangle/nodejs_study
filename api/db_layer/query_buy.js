@@ -51,6 +51,7 @@ const test = async(device_id)=>{
     return result;
   }
 };
+
 //homepage latest device.
 const get100LatestDeviceHomepage = async() =>{
   var result = {};
@@ -131,6 +132,7 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
     return result;
   }
 };
+
 //get 6 latest devices 
 const getStep1Latest6 = async()=>{
   var result = {};
@@ -161,6 +163,7 @@ const getStep1Latest6 = async()=>{
     return result;
   }
 };
+
 const getStep1DeviceByBrand = async(brand_id)=>{
   var result = {};
   try{
@@ -243,6 +246,7 @@ const checkIsFirstAuction = async(user_id)=>{
     return result;
   }
 };
+
 //save step1 info for beginners
 const postStep1Insert = async(user_id, device_id)=>{
   var result = {};
@@ -266,6 +270,7 @@ const postStep1Insert = async(user_id, device_id)=>{
     return result;
   }
 };
+
 //update step1 info & init other records
 const postStep1Update = async(user_id, device_id)=>{
   var result = {};
@@ -344,8 +349,8 @@ const postStep2Update = async(user_id, device_id, check)=>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
+
 //step:3
 const getAuctionTempWithUserStep3 = async(user_id)=>{
   try{
@@ -411,7 +416,6 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
 
 const getStep3PaymentInfo = async(agency, generation) =>{
@@ -437,7 +441,6 @@ const getStep3PaymentInfo = async(agency, generation) =>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
 
 const getSelectedPayment = async(device_detail_id, payment_id)=>{
@@ -469,7 +472,6 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 }
 
 const countAuctions = async(user_id) =>{
@@ -489,8 +491,8 @@ const countAuctions = async(user_id) =>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
+
 const postStep3Update = async(check, postInput)=>{
   var result = {};
   try{
@@ -543,7 +545,6 @@ const postStep3Update = async(check, postInput)=>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
 
 const killAuctionTempState = async(user_id)=>{
@@ -563,8 +564,8 @@ const killAuctionTempState = async(user_id)=>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
+
 const finishAuctionTempDeviceInfo = async(user_id)=>{
   try{
     var result = {};
@@ -619,7 +620,6 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
-  
 };
 
 module.exports = {

@@ -8,7 +8,6 @@ pool.on('error', function (err, client) {
     console.error('idle client error', err.message, err.stack);
 });
 
-
 const get601StoreAuction = async(store_id)=>{
     var result = {};
     try{
@@ -45,6 +44,7 @@ const get601StoreAuction = async(store_id)=>{
       return result;
     }    
 };
+
 const get601Search = async(store_id)=>{
     var result = {};
     try{
@@ -84,8 +84,8 @@ const get601Search = async(store_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
+
 const get601Reviews = async(store_id)=>{
     var result = {};
     try{
@@ -111,7 +111,6 @@ const get601Reviews = async(store_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
 
 const get701Search = async(store_id)=>{
@@ -152,6 +151,7 @@ const get701Search = async(store_id)=>{
       return result;
     }
 };
+
 const post701CutAuction = async(store_id, auction_id)=>{
     var result = {};
     try{
@@ -191,7 +191,6 @@ const delete701CutAuction = async()=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
 
 const get702Auction = async(auction_id)=>{
@@ -225,7 +224,6 @@ const get702Auction = async(auction_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
 
 //creates temporary store_nick. also checks for now_discount_price, deal_id
@@ -264,8 +262,8 @@ const get702NeededInfoForDeal = async(store_id, auction_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
+
 const insert702DealSend = async(paramArray)=>{
     var result = {};
     try{
@@ -326,8 +324,8 @@ const insert702DealSend = async(paramArray)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
+
 const update702DealSend = async(deal_id, auction_id, discount_price)=>{
     var result = {};
     try{
@@ -415,6 +413,7 @@ const get801MyOngoingDeal = async(store_id)=>{
       return result;
     }
 };
+
 const get802MyPreviousDeal = async(store_id)=>{
     var result = {};
     try{
@@ -459,6 +458,7 @@ const get802MyPreviousDeal = async(store_id)=>{
       return result;
     }
 };
+
 const get803MyDealDetail = async(deal_id)=>{
     var result = {};
     try{
@@ -498,6 +498,7 @@ const get803MyDealDetail = async(deal_id)=>{
       return result;
     }
 };
+
 module.exports = {
     get601StoreAuction,
     get601Search,

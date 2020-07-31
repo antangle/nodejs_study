@@ -1,12 +1,9 @@
 const express = require("express"); // express 모듈 추가
 const bodyParser = require("body-parser");  // body-parser 모듈 추가
-const { nextTick } = require("process");
 const exec = require("child_process").exec; // child_process 모듈 추가
 const router = express.Router();
 
 const {helper} = require('../controller/validate');
-const partner = require('./db_layer/query_login');
-const define = require('../definition/define');
 
 //NICE평가정보에서 발급한 본인인증 서비스 개발 정보(사이트 코드 , 사이트 패스워드)
 var sSiteCode = "BS147";

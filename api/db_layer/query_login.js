@@ -1,5 +1,5 @@
 const Pool = require('../connect/pool');
-const define = require('../../definition/define')
+const define = require('../../definition/define');
 
 const pool = Pool.pool;
 const query = Pool.query;
@@ -18,7 +18,7 @@ const getP001GetPassword = async(login_id)=>{
             WHERE login_id = $1
         `;
         var {rows} = await query(querytext, [login_id]);
-        result ={result: define.const_SUCCESS, data: rows[0]};
+        result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
     }
     catch(err){
@@ -27,7 +27,6 @@ const getP001GetPassword = async(login_id)=>{
         return result;
     }
 };
-
 const postP004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
@@ -38,7 +37,7 @@ const postP004LoginIdCheck = async(login_id)=>{
                     WHERE login_id = $1), -2) AS match
                     `;
         var {rows} = await query(querytext, [login_id]);
-        result ={result: define.const_SUCCESS, match: rows[0].match};
+        result = {result: define.const_SUCCESS, match: rows[0].match};
         return result;
     }
     catch(err){
@@ -46,7 +45,6 @@ const postP004LoginIdCheck = async(login_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 const postP004IdPassword = async(login_id, hash_pwd)=>{
     var result = {};
@@ -59,7 +57,7 @@ const postP004IdPassword = async(login_id, hash_pwd)=>{
             `;
         var strDate = String(Date.now());
         //cut strDate 0.001sec part and change type to Integer
-        var date = strDate.substr(0,12)*1
+        var date = strDate.substr(0,12)*1;
         var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd]);
         if(rowCount === 0){
             throw('please do ID check first');
@@ -73,7 +71,6 @@ const postP004IdPassword = async(login_id, hash_pwd)=>{
         return result;
     }
 }
-
 const postStoreInfo = async(postArray)=>{
     var result = {};
     try{
@@ -90,7 +87,6 @@ const postStoreInfo = async(postArray)=>{
             create_time = current_date
             WHERE store.partner_id = $8
             `;
-            console.log(postArray)
         await query(querytext, postArray);
         result ={result: define.const_SUCCESS};
         return result;
@@ -101,8 +97,6 @@ const postStoreInfo = async(postArray)=>{
         return result;
     }
 }
-
-
 const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
     var result = {};
     try{
@@ -117,7 +111,7 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
         if(rowCount === 0){
             return {result:-574, Message: 'given code or partner_id is wrong'}
         }
-        result ={result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
@@ -144,7 +138,7 @@ const PartnerToStore = async(partner_id)=>{
         if(rowCount === 0){
             return {result: -502, Message: '스토어 계정 설립에 문제가 있었습니다'}
         }
-        result ={result: define.const_SUCCESS, store_id: rows[0].store_id};
+        result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
         return result;
     }
     catch(err){
@@ -153,7 +147,6 @@ const PartnerToStore = async(partner_id)=>{
         return result;
     }
 }
-
 // user login query
 const get001GetPassword = async(login_id)=>{
     var result = {};
@@ -167,7 +160,7 @@ const get001GetPassword = async(login_id)=>{
         if(rowCount !== 1){
             return {result: -12, errMessage: '아이디가 존재하지 않습니다'};
         }
-        result ={result: define.const_SUCCESS, data: rows[0]};
+        result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
     }
     catch(err){
@@ -186,7 +179,7 @@ const post004LoginIdCheck = async(login_id)=>{
                     WHERE login_id = $1), -2) AS match
                     `;
         var {rows} = await query(querytext, [login_id]);
-        result ={result: define.const_SUCCESS, match: rows[0].match};
+        result = {result: define.const_SUCCESS, match: rows[0].match};
         return result;
     }
     catch(err){
@@ -212,7 +205,7 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
         if(rowCount === 0){
             throw('please do ID check first');
         }
-        result ={result: define.const_SUCCESS, user_id: rows[0].id};
+        result = {result: define.const_SUCCESS, user_id: rows[0].id};
         return result;
     }
     catch(err){
@@ -230,7 +223,7 @@ const get005GetPassword = async(login_id)=>{
             WHERE login_id = $1
         `;
         var {rows} = await query(querytext, [login_id]);
-        result ={result: define.const_SUCCESS, data: rows[0]};
+        result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
     }
     catch(err){
@@ -406,7 +399,7 @@ const UserShutAccount008 = async(user_id) =>{
         if(rowCount !== 1){
             return {result:-86, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
-        result ={result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
@@ -429,7 +422,7 @@ const PartnerUpdateTokenP008 = async(partner_id, token) =>{
         if(rowCount !== 1){
             return {result:-582, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
-        result ={result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
@@ -451,7 +444,7 @@ const PartnerDeleteTokenP008 = async(partner_id) =>{
         if(rowCount !== 1){
             return {result:-584, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
-        result ={result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
@@ -473,7 +466,7 @@ const PartnerShutAccountP008 = async(partner_id) =>{
         if(rowCount !== 1){
             return {result:-586, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
         }
-        result ={result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){

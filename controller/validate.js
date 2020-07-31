@@ -40,7 +40,7 @@ const helper ={
   encryptJson(json){
     try{
       const encryptData = jwt.sign(json,
-        process.env.JWT_SECRET, { expiresIn: '1ms' })
+        process.env.JWT_SECRET, { expiresIn: '100' })
         return encryptData;
       }
       catch(err){
