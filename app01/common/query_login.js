@@ -92,7 +92,7 @@ const postStoreInfo = async(postArray)=>{
         return result;
     }
     catch(err){
-        result.result = -541;
+        result.result = -9051;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }

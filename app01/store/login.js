@@ -21,19 +21,19 @@ router.post('/Login901', async (req, res) =>{
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd){
         return res.status(400).json({
-            'result': -9001, 
+            'result': 2, 
             'message': 'either Id or Password is missing'
         });
     }
     if(!helper.isValidId(login_id)){
         return res.status(400).json({
-            'result': -9002, 
+            'result': 3, 
             'message': 'Please enter a valid Id form'
         })
     }
     if(!helper.isValidPassword(req.body.login_pwd)){
         return res.status(400).json({
-            'result': -9003, 
+            'result': 4, 
             'message': 'Please enter a valid password form'
         })
     }
@@ -53,7 +53,7 @@ router.post('/Login901', async (req, res) =>{
         }
         delete req.body.login_pwd;
         const token = helper.generateToken(dbResponse.data.partner_id);
-        result = {result:1, token: token};
+        result = {result:1, token: token, partner_id: dbResponse.data.partner_id};
         return res.status(200).json(result);
     }
     catch(err){
@@ -70,16 +70,16 @@ router.post('/SignIn904', async (req, res) =>{
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd) {
         return res.status(400).json({
-            'result': -9001, 
+            'result': 2, 
             'message': 'either Id or Password is missing'});
     }
     if(!helper.isValidId(login_id)){
         return res.status(400).json({
-            'result': -9002, 
+            'result': 3, 
             'message': 'Please enter a valid Id form'})
     }
     if(!helper.isValidPassword(req.body.login_pwd)){
-        return res.status(400).json({'result': -9003, 'message': 'Please enter a valid password form'})
+        return res.status(400).json({'result': 4, 'message': 'Please enter a valid password form'})
     }
     try{
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
@@ -103,10 +103,10 @@ router.post('/CheckId904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id) {
-        return res.status(400).json({'result': -9001, 'message': 'id is missing'});
+        return res.status(400).json({'result': 1, 'message': 'id is missing'});
     }
     else if(!helper.isValidId(login_id)){
-        return res.status(400).json({'result': -9002, 'message': 'Please enter a valid Id form'})
+        return res.status(400).json({'result': 2, 'message': 'Please enter a valid Id form'})
     }
     try{
         result = await partner.postP004LoginIdCheck(login_id);
@@ -143,7 +143,7 @@ router.get('/GetSggCode907', async (req, res) =>{
     var result ={};
     var {sido_code} = req.query;
     if(sido_code <100){
-        return res.status(400).json({'result': -9006, 'message': 'something wrong with sido_code input'});
+        return res.status(400).json({'result': 6, 'message': 'sido_code does not exist'});
     }
     try{
         result = await users.get007SggCode(sido_code);
@@ -163,7 +163,7 @@ router.post('/postLocationCode907', async (req, res) =>{
     var result ={};
     var {partner_id, sido_code, sgg_code} = req.body;
     if(sido_code <100|| sgg_code < 100){
-        return res.status(400).json({'result': -9006, 'message': 'something wrong with sido_code or sgg_code input'});
+        return res.status(400).json({'result': 6, 'message': 'sido_code or sgg_code does not exist'});
     }
     try{
         result = await partner.postP007LocationCode(sido_code, sgg_code, partner_id);
