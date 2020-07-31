@@ -338,7 +338,7 @@ const getAuctionTempWithUserStep3 = async(user_id)=>{
     else{
       const querytext2 = `
         SELECT device.name AS device_name,
-          device.id AS device_id,
+          detail.id AS device_detail_id,
           device.property,
           device.generation,
           brand.name AS brand_name, image.url_2x,
@@ -382,6 +382,7 @@ const getStep3PaymentInfo = async(agency, generation) =>{
       FROM payment
       WHERE agency = $1
       AND generation = $2
+      AND state = 1
       ORDER BY limitation ASC, price DESC
       `;
     var {rows} = await query(querytext, [agency, generation]);
@@ -396,18 +397,24 @@ const getStep3PaymentInfo = async(agency, generation) =>{
   
 };
 
-const getSelectedPayment = async(device_id, payment_id, volume)=>{
+const getSelectedPayment = async(device_detail_id, payment_id)=>{
   var result = {};
   try{
     const querytext = `
       SELECT discount_official
       FROM official
-      WHERE device_id = $1
-      AND payment_id = $2
-      AND device_volume = $3
-      AND state = 1
+      INNER JOIN device_detail AS detail
+      ON detail.id = $1
+      AND detail.volume = official.device_volume
+      AND official.state = 1
+      INNER JOIN payment
+      ON payment.id = $2
+      AND official.payment_id = payment.id
+      INNER JOIN device
+      ON device.id = official.device_id
+      AND device.id = detail.device_id
       `;
-    var {rows, rowCount} = await query(querytext, [device_id, payment_id, volume]);
+    var {rows, rowCount} = await query(querytext, [device_detail_id, payment_id]);
     if(rowCount === 0){
       throw('query rowCount returns no value in -1222')
     }

@@ -8,6 +8,21 @@ app.use(express.urlencoded({limit:'50mb', extended: false }));
 const define = require('../../definition/define')
 const store = require('../db_layer/query_storeAuction')
 
+router.get('/test', async(req, res)=>{
+    try{
+        var result = {}
+        for(var device_id=1; device_id<51; ++device_id){
+            result = await store.test(device_id);
+            console.log(device_id)
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: s101 - GetHomepageInfo/' + err);
+        result.result = -601;
+        return res.json(result);
+    }
+});
 router.get('/S101HomepageInfo', async (req, res) =>{
     var result ={};
     try{
@@ -37,7 +52,6 @@ router.get('/S101HomepageInfo', async (req, res) =>{
         result.result = -601;
         return res.json(result);
     }
-    
 });
 router.get('/S201SearchAuction', async (req, res) =>{
     var result ={};
@@ -54,7 +68,6 @@ router.get('/S201SearchAuction', async (req, res) =>{
         result.result = -701;
         return res.json(result);
     }
-    
 });
 router.post('/S201CutAuction', async (req, res) =>{
     var result ={};
@@ -71,7 +84,6 @@ router.post('/S201CutAuction', async (req, res) =>{
         result.result = -702;
         return res.json(result);
     }
-    
 });
 router.delete('/S201DeleteAuction', async (req, res) =>{
     var result ={};
@@ -111,7 +123,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         //자릿수 10000원대만 나오게 sanitize
         discount_price = parseInt(discount_price/10000)*10000;
         var info = await store.get702NeededInfoForDeal(store_id, auction_id);
-        console.log('info is:');
         console.log(info)
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
@@ -145,7 +156,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 discount_price, 
                 info.store_nick
             ]
-            console.log('paramArray')
             result = await store.insert702DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});

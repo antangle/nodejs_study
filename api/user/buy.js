@@ -190,8 +190,8 @@ router.get('/getStep3PaymentInfo', async(req,res) =>{
 router.get('/getStep3OfficialInfo', async(req,res) =>{
     var result ={};
     try{
-        var {device_id, payment_id, volume} = req.query;
-        result = await buy.getSelectedPayment(device_id, payment_id, volume);
+        var {device_detail_id, payment_id} = req.query;
+        result = await buy.getSelectedPayment(device_detail_id, payment_id);
         if(result.result !== define.const_SUCCESS){
             throw(result.result);                               
         }

@@ -201,13 +201,7 @@ paths:
         required: true
         type: "integer"
         collectionFormat: "multi"
-      - name: "device_id"
-        in: "query"
-        description: ""
-        required: true
-        type: "integer"
-        collectionFormat: "multi"
-      - name: "volume"
+      - name: "device_detail_id"
         in: "query"
         description: ""
         required: true
