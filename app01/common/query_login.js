@@ -59,8 +59,8 @@ const postP004IdPassword = async(login_id, hash_pwd)=>{
         //cut strDate 0.001sec part and change type to Integer
         var date = strDate.substr(0,12)*1;
         var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd]);
-        if(rowCount === 0){
-            throw('please do ID check first');
+        if(rowCount !== 1){
+            return {result: -9043, message:'query not working.'}
         }
         result ={result: define.const_SUCCESS, partner_id: rows[0].id};
         return result;
@@ -109,7 +109,7 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
             `;
         var {rowCount} = await query(querytext, [sido_code, sgg_code, partner_id]);
         if(rowCount === 0){
-            return {result:-9072, Message: 'given code or partner_id is wrong'}
+            return {result:-9072, message: 'given code or partner_id is wrong'}
         }
         result = {result: define.const_SUCCESS};
         return result;
