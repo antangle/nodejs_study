@@ -44,10 +44,10 @@ router.post('/Login901', async (req, res) =>{
             return res.json({result: dbResponse.result});
         }
         if(!dbResponse.data.hash_pwd){
-            return res.json({'result': 5, 'message': 'Unidentified Account'});
+            return res.json({result: 5});
         }
         if(!helper.comparePassword(req.body.login_pwd, dbResponse.data.hash_pwd)){
-            return res.json({'result': 6, 'message': 'Incorrect Password'});
+            return res.json({result: 6});
         }
         delete req.body.login_pwd;
         const token = helper.generateToken(dbResponse.data.partner_id);
