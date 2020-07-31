@@ -15,8 +15,8 @@ var sSitePW = "R0R5wXCrcGjV";
 //모듈의 절대 경로(권한:755 , FTP업로드방식 : binary)
 // ex) sModulePath = "C:\\module\\CPClient.exe";
 //     sModulePath = "/root/modile/CPClient";
-//var sModulePath = "/home/ubuntu/project/nodejs_study/CPClient_64bit";
-var sModulePath = "D:/sample/CPClient.exe";
+var sModulePath = "/home/ubuntu/project/nodejs_study/CPClient_64bit";
+//var sModulePath = "D:/sample/CPClient.exe";
 
 var sAuthType = "";      	  //없으면 기본 선택화면, X: 공인인증서, M: 핸드폰, C: 카드
 var sPopGubun 	= "N";			//Y : 취소버튼 있음 / N : 취소버튼 없음
@@ -26,8 +26,8 @@ var sGender = "";      			// 없으면 기본 선택화면, 0: 여자, 1: 남자
 
 // 본인인증 처리 후, 결과 데이타를 리턴 받기위해 다음예제와 같이 http부터 입력합니다.
 // 리턴url은 인증 전 인증페이지를 호출하기 전 url과 동일해야 합니다. ex) 인증 전 url : https://www.~ 리턴 url : https://www.~
-var sReturnUrl = "http://localhost:9000/nice/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
-var sErrorUrl = "http://localhost:9000/nice/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
+var sReturnUrl = "https://api.aptioncompany.com/nice/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
+var sErrorUrl = "https://api.aptioncompany.com/nice/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
 
 router.get("/", function(request, response) {
   response.send("sample index page");
@@ -96,8 +96,15 @@ router.post("/checkplus_success", function(request, response) {
     requestnumber = "";
     authtype = "";
     errcode = "";
-    response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
-  }
+    var data = {
+      sRtnMSG , 
+      requestnumber , 
+      authtype , 
+      errcode
+    }
+    var encyrptedData = helper.encryptJson(data)
+    response.render("checkplus_fail.ejs", {encyrptedData: encyrptedData});
+ }
 
   if(sEncData != "")
   {
@@ -163,7 +170,7 @@ router.post("/checkplus_success", function(request, response) {
         mobileno , 
         mobileco
     }
-    const encyrptedData = helper.encryptJson(data)
+    var encyrptedData = helper.encryptJson(data)
     console.log(data);
     response.render("checkplus_success.ejs", {encyrptedData: encyrptedData});
   });
@@ -179,8 +186,14 @@ router.get("/checkplus_success", function(request, response) {
     requestnumber = "";
     authtype = "";
     errcode = "";
-    response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
-  }
+    var data = {
+      sRtnMSG , 
+      requestnumber , 
+      authtype , 
+      errcode
+    }
+    var encyrptedData = helper.encryptJson(data)
+    response.render("checkplus_fail.ejs", {encyrptedData: encyrptedData});  }
 
   if(sEncData != "")
   {
@@ -247,8 +260,8 @@ router.get("/checkplus_success", function(request, response) {
       mobileno , 
       mobileco
     }
-    const encyrptedData = helper.encryptJson(data)
     console.log(data);
+    encyrptedData = helper.encryptJson(data)
     response.render("checkplus_success.ejs", {encyrptedData: encyrptedData});
   });
 });
@@ -262,8 +275,15 @@ router.post("/checkplus_fail", function(request, response) {
     requestnumber = "";
     authtype = "";
     errcode = "";
-    response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
-  }
+    var data = {
+      sRtnMSG , 
+      requestnumber , 
+      authtype , 
+      errcode
+    }
+    var encyrptedData = helper.encryptJson(data)
+    response.render("checkplus_fail.ejs", {encyrptedData: encyrptedData});
+   }
   
   if(sEncData != "")
   {
@@ -307,9 +327,15 @@ router.post("/checkplus_fail", function(request, response) {
       var authtype = decodeURIComponent(GetValue(sDecData , "AUTH_TYPE"));        //인증수단
       var errcode = decodeURIComponent(GetValue(sDecData , "ERR_CODE"));          //본인인증 실패 코드
     }
-
-    response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
-  });
+    var data = {
+      sRtnMSG , 
+      requestnumber , 
+      authtype , 
+      errcode
+    }
+    var encyrptedData = helper.encryptJson(data)
+    response.render("checkplus_fail.ejs", {encyrptedData: encyrptedData});
+   });
 });
 
 router.get("/checkplus_fail", function(request, response) {
@@ -322,7 +348,15 @@ router.get("/checkplus_fail", function(request, response) {
     requestnumber = "";
     authtype = "";
     errcode = "";
-    response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
+    var data = {
+      sRtnMSG , 
+      requestnumber , 
+      authtype , 
+      errcode
+    }
+    var encyrptedData = helper.encryptJson(data)
+    response.render("checkplus_fail.ejs", {encyrptedData: encyrptedData});
+ 
   }
   
   if(sEncData != "")
@@ -368,7 +402,14 @@ router.get("/checkplus_fail", function(request, response) {
       var errcode = decodeURIComponent(GetValue(sDecData , "ERR_CODE"));          //본인인증 실패 코드
     }
 
-    response.render("checkplus_fail.ejs", {sRtnMSG , requestnumber , authtype , errcode});
+    var data = {
+      sRtnMSG , 
+      requestnumber , 
+      authtype , 
+      errcode
+    }
+    var encyrptedData = helper.encryptJson(data)
+    response.render("checkplus_fail.ejs", {encyrptedData: encyrptedData});
   });
 });
 
