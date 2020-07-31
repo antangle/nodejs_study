@@ -8,6 +8,49 @@ pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);  
 });
 
+const test = async(device_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT device.id AS device_id, detail.id as detail_id, 
+      payment.id AS payment_id, discount_official
+      FROM device
+      INNER JOIN device_detail AS detail
+      ON detail.id IN(
+          SELECT detail.id FROM device_detail AS detail
+          WHERE detail.device_id = $1
+      )
+      AND device.id = $1
+      INNER JOIN payment
+      ON payment.id IN (
+          SELECT payment.id FROM payment
+          INNER JOIN device
+          ON device.id = $1
+          AND payment.generation = device.generation
+          )
+      LEFT JOIN official
+      ON device.id = official.device_id
+      AND official.payment_id = payment.id
+      AND official.state = 1
+      AND detail.volume = official.device_volume
+      ORDER BY device.id, detail.id, payment.id
+      `;
+    var {rows, rowCount} = await query(querytext, [device_id]);
+    if(rowCount === 0){
+        console.log('err device_id: ' +device_id);
+        result.errDevice = device_id
+        return result;
+    }
+    result = {rows: rows, rowCount: rowCount};
+    result.result = define.const_SUCCESS;
+    return result;
+  }
+  catch(err){
+    result.result = -1;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+};
 //homepage latest device.
 const get100LatestDeviceHomepage = async() =>{
   var result = {};
@@ -580,6 +623,7 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
 };
 
 module.exports = {
+  test,
   get100LatestDeviceHomepage,
   getAuctionTempWithUser,
   getStep1Latest6,

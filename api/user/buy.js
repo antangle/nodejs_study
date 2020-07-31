@@ -7,6 +7,32 @@ const app = express();
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
+router.get('/test', async(req, res)=>{
+    try{
+        var {device_id} = req.query;
+        var result = {}
+        /*
+        for(var device_id=1; device_id<52; ++device_id){
+            result = await store.test(device_id);
+            if(!result.errDevice){
+            for(var i=0; i<result.rowCount; ++i){
+                if(result.rows[i].discount_official === null){
+                    array.push(result.rows[i].device_id)
+                    break;
+                }
+            }
+        }
+        */
+        result = await buy.test(device_id);
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: test - /' + err);
+        result.result = -1;
+        return res.json(result);
+    }
+  });
+  
 router.get('/getHomepageDevice', async (req, res) =>{
     var result ={};
     try{

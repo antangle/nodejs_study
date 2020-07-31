@@ -20,6 +20,27 @@ tags:
 schemes:
 - "http"
 paths:
+  /api/buy/test:
+    get:
+      tags:
+      - "buy"
+      summary: "device_id 치면 목록이 쭈르르륵 나옴. device_id는 1~51까지존재"
+      description: ""
+      operationId: "test"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "device_id"
+        in: "query"
+        description: ""
+        required: false
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+        "101":
+          description: "Invalid status value"
   /api/buy/countAuction:
     get:
       tags:

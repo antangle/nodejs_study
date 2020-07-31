@@ -8,40 +8,6 @@ pool.on('error', function (err, client) {
     console.error('idle client error', err.message, err.stack);
 });
 
-const test = async(device_id)=>{
-    var result = {};
-    try{
-      const querytext = `
-        SELECT device.id AS device_id, detail.id AS detail_id, 
-        payment.id AS payment_id, official.id AS official_id
-        FROM device
-        INNER JOIN device_detail AS detail
-        ON detail.device_id = device.id
-        AND device.id = $1
-        INNER JOIN payment
-        ON payment.generation = device.generation
-        INNER JOIN official
-        ON official.device_id = device.id
-        AND official.device_volume = detail.volume
-        AND official.payment_id = payment.id
-        ORDER BY device.id, detail.id, payment.id, official.id
-        `;
-      var {rows, rowCount} = await query(querytext, [device_id]);
-      if(rowCount === 0){
-          console.log('err device_id: ' +device_id);
-          result.errDevice = device_id
-          return result;
-      }
-      result = {myDeal: rows};
-      result.result = define.const_SUCCESS;
-      return result;
-    }
-    catch(err){
-      result.result = -1;
-      console.log(`ERROR: ${result.result}/` + err);
-      return result;
-    }
-};
 
 const get601StoreAuction = async(store_id)=>{
     var result = {};
@@ -533,7 +499,6 @@ const get803MyDealDetail = async(deal_id)=>{
     }
 };
 module.exports = {
-    test,
     get601StoreAuction,
     get601Search,
     get601Reviews,

@@ -8,21 +8,7 @@ app.use(express.urlencoded({limit:'50mb', extended: false }));
 const define = require('../../definition/define')
 const store = require('../db_layer/query_storeAuction')
 
-router.get('/test', async(req, res)=>{
-    try{
-        var result = {}
-        for(var device_id=1; device_id<51; ++device_id){
-            result = await store.test(device_id);
-            console.log(device_id)
-        }
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: s101 - GetHomepageInfo/' + err);
-        result.result = -601;
-        return res.json(result);
-    }
-});
+
 router.get('/S101HomepageInfo', async (req, res) =>{
     var result ={};
     try{
