@@ -416,7 +416,7 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
       `;
     var {rows, rowCount} = await query(querytext, [device_detail_id, payment_id]);
     if(rowCount === 0){
-      throw('query rowCount returns no value in -1222')
+      return {result: -1223, Message: '등록된 공시지원금이 존재하지 않습니다'}
     }
     result = {discount_official: rows[0].discount_official, result: 1}
     return result;
