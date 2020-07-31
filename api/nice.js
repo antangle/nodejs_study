@@ -54,7 +54,7 @@ router.get("/checkplus_main", function(request, response) {
                 "11:POPUP_GUBUN" + sPopGubun.length + ":" + sPopGubun +
                 "9:CUSTOMIZE" + sCustomize.length + ":" + sCustomize +
                 "6:GENDER" + sGender.length + ":" + sGender ;
-  console.log("["+sPlaincData+"]");
+
 
   var cmd = sModulePath + " " + "ENC" + " " + sSiteCode + " " + sSitePW + " " + sPlaincData;
 
@@ -63,7 +63,6 @@ router.get("/checkplus_main", function(request, response) {
     sEncData += data;
   });
   child.on("close", function() {
-    console.log(sEncData);
     //이곳에서 result처리 해야함. 
   
     //처리 결과 확인
@@ -178,7 +177,7 @@ router.post("/checkplus_success", function(request, response) {
 
 router.get("/checkplus_success", function(request, response) {
   //chrome80 이상 대응
-  var sEncData = request.param('EncodeData')
+  var sEncData = request.query.EncodeData
   var cmd = "";
 
   if( /^0-9a-zA-Z+\/=/.test(sEncData) == true){
@@ -245,7 +244,6 @@ router.get("/checkplus_success", function(request, response) {
       var mobileno = decodeURIComponent(GetValue(sDecData , "MOBILE_NO"));        //휴대폰번호(계약된 경우)
       var mobileco = decodeURIComponent(GetValue(sDecData , "MOBILE_CO"));        //통신사(계약된 경우)
     }
-    console.log(sDecData);
     const data = {
       sRtnMSG , 
       requestnumber , 
