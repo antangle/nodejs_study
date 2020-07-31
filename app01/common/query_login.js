@@ -410,7 +410,7 @@ const UserShutAccount008 = async(user_id) =>{
 }
 
 
-const PartnerUpdateTokenP008 = async(partner_id, token) =>{
+const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
     try{
         const querytext = `
@@ -432,7 +432,7 @@ const PartnerUpdateTokenP008 = async(partner_id, token) =>{
     }
 }
 
-const PartnerDeleteTokenP008 = async(partner_id) =>{
+const PartnerLogout910 = async(partner_id) =>{
     var result = {}
     try{
         const querytext = `
@@ -453,7 +453,7 @@ const PartnerDeleteTokenP008 = async(partner_id) =>{
         return result;
     }
 }
-const PartnerShutAccountP008 = async(partner_id) =>{
+const PartnerShutAccount911 = async(partner_id) =>{
     var result = {}
     try{
         const querytext = `
@@ -498,7 +498,7 @@ module.exports = {
     UserDeleteToken008,
     UserShutAccount008,
     //partner logout
-    PartnerUpdateTokenP008,
-    PartnerDeleteTokenP008,
-    PartnerShutAccountP008
+    PartnerUpdateToken909,
+    PartnerLogout910,
+    PartnerShutAccount911
 };

@@ -17,7 +17,7 @@ router.get('/test', verifyToken, (req, res) =>{
 
 //partner login/signup API
 
-router.post('/partner_login', async (req, res) =>{
+router.post('/Login901', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd){
@@ -59,14 +59,14 @@ router.post('/partner_login', async (req, res) =>{
     }
     catch(err){
         delete req.body.login_pwd;
-        console.log('router ERROR: P001 - partner_login/' + err);
+        console.log('router ERROR: P901 - Login901/' + err);
         result.result = -921;
         result.message = err;
         return res.status(400).json(result);
     }
 });
  
-router.post('/P004SignIn', async (req, res) =>{
+router.post('/SignIn904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id || !req.body.login_pwd) {
@@ -87,19 +87,20 @@ router.post('/P004SignIn', async (req, res) =>{
         delete req.body.login_pwd;
         
         result = await partner.postP004IdPassword(login_id, hash_pwd);
-        if(result.result != define.const_SUCCESS)
-            throw(result.result);
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
         return res.status(200).json(result);
     }   
     catch(err){
         delete req.body.login_pwd;
-        console.log('router ERROR: P004SignIn/' + err);
+        console.log('router ERROR: P904 - SignIn904/' + err);
         result.result = -922;
         return res.status(400).json(result);
     }
 });
    
-router.post('/P004CheckId', async (req, res) =>{
+router.post('/CheckId904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
     if (!login_id) {
@@ -110,19 +111,56 @@ router.post('/P004CheckId', async (req, res) =>{
     }
     try{
         result = await partner.postP004LoginIdCheck(login_id);
-        if(result.result != define.const_SUCCESS)
-            throw(result.result);        
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
         result.message = '가능한 아이디입니다';
         return res.status(200).json(result);
     }   
     catch(err){
-        console.log('router ERROR: P004CheckId/' + err);
+        console.log('router ERROR: P904 - CheckId904/' + err);
         result.result = -923;
         return res.status(400).json(result);
     }
 });
 
-router.post('/postP007LocationCode', async (req, res) =>{
+router.get('/GetSdCode907', async (req, res) =>{
+    var result ={};
+    try{
+        result = await users.get007SdCode();
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 007 - GetSidoCode/' + err);
+        result.result = -924;
+        return res.status(400).json(result);
+    }
+});
+
+router.get('/GetSggCode907', async (req, res) =>{
+    var result ={};
+    var {sido_code} = req.query;
+    if(sido_code <100){
+        return res.status(400).json({'result': -9006, 'message': 'something wrong with sido_code input'});
+    }
+    try{
+        result = await users.get007SggCode(sido_code);
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 007 - GetSggCode/' + err);
+        result.result = -925;
+        return res.status(400).json(result);
+    }
+});
+
+router.post('/postLocationCode907', async (req, res) =>{
     var result ={};
     var {partner_id, sido_code, sgg_code} = req.body;
     if(sido_code <100|| sgg_code < 100){
@@ -130,80 +168,82 @@ router.post('/postP007LocationCode', async (req, res) =>{
     }
     try{
         result = await partner.postP007LocationCode(sido_code, sgg_code, partner_id);
-        if(result.result != define.const_SUCCESS)
-            throw(result.result);
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: P007 - postP007LocationCode/' + err);
-        result.result = -924;
+        console.log('router ERROR: P907 - postLocationCode907/' + err);
+        result.result = -926;
         return res.status(400).json(result);
     }
 })
 
-router.post('/partnerToStore', async(req, res) =>{
+router.post('/partnerToStore908', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
     try{
         result = await partner.PartnerToStore(partner_id);
-        if(result.result != define.const_SUCCESS)
-            throw(result.result);
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: store1 - partnerToStore/' + err);
-        result.result = -925;
+        console.log('router ERROR: p908 - partnerToStore908/' + err);
+        result.result = -927;
         return res.status(400).json(result);
     }
 })
 
-router.post('/postP008PartnerUpdateToken', async (req, res) =>{
+router.post('/postPartnerUpdateToken909', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
-        result = await partner.PartnerUpdateTokenP008(partner_id, token);
+        result = await partner.PartnerUpdateToken909(partner_id, token);
         if(result.result != define.const_SUCCESS){
             return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - post008PartnerUpdateToken/' + err);
-        result.result = -909;
+        console.log('router ERROR: P009 - postPartnerUpdateToken909/' + err);
+        result.result = -928;
         return res.status(400).json(result);
     }
 });
 
-router.post('/postP008PartnerDeleteToken', async (req, res) =>{
+router.post('/postPartnerLogout910', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
-        result = await partner.PartnerDeleteTokenP008(partner_id);
+        result = await partner.PartnerLogout910(partner_id);
         if(result.result != define.const_SUCCESS){
             return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - post008PartnerDeleteToken/' + err);
-        result.result = -910;
+        console.log('router ERROR: P910 - postPartnerLogout910/' + err);
+        result.result = -929;
         return res.status(400).json(result);
     }
 });
 
-router.post('/postP008PartnerShutAccount', async (req, res) =>{
+router.post('/postPartnerShutAccount911', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
-        result = await partner.PartnerShutAccountP008(partner_id);
+        result = await partner.PartnerShutAccount911(partner_id);
         if(result.result != define.const_SUCCESS){
             return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 008 - post008PartnerShutAccount/' + err);
-        result.result = -911;
+        console.log('router ERROR: P911 - postPartnerShutAccount911/' + err);
+        result.result = -930;
         return res.status(400).json(result);
     }
 });
