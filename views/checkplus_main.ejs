@@ -19,17 +19,12 @@
 		document.form_chk.target = "popupChk";
 		document.form_chk.submit();
 	}
-	function showFBWindow(){
-            url = "checkplus_success"
-            newwindow=window.open(url,'name','height=200,width=150');
-            if (window.focus) {newwindow.focus()}
-	}
+	
 	</script>
 </head>
 <body>
 	<%=sRtnMSG%><br><br>
 	업체정보 암호화 데이타 : [<%=sEncData%>]<br><br>
-	<input type="button" OnClick="showFBWindow()" value="Open FB" />
 	<!-- 본인인증 서비스 팝업을 호출하기 위해서는 다음과 같은 form이 필요합니다. -->
 	<form name="form_chk" method="post">
 		<input type="hidden" name="m" value="checkplusService">				<!-- 필수 데이타로, 누락하시면 안됩니다. -->
