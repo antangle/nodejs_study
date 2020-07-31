@@ -1454,13 +1454,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/user/login/postUserUpdateToken909:
+  /app01/user/login/postUpdateToken909:
     post:
       tags:
       - "app_user"
       summary: "로그인 시 토큰 update"
       description: ""
-      operationId: "postUserUpdateToken909"
+      operationId: "postUpdateToken909"
       produces:
       - "application/json"
       parameters:
@@ -1481,13 +1481,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/user/login/postUserLogout910:
+  /app01/user/login/postLogout910:
     post:
       tags:
       - "app_user"
       summary: "로그아웃"
       description: ""
-      operationId: "postUserLogout910"
+      operationId: "postLogout910"
       produces:
       - "application/json"
       parameters:
@@ -1502,13 +1502,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/user/login/postUserShutAccount911:
+  /app01/user/login/postShutAccount911:
     post:
       tags:
       - "app_user"
       summary: "회원탈퇴"
       description: ""
-      operationId: "postUserShutAccount911"
+      operationId: "postShutAccount911"
       produces:
       - "application/json"
       parameters:
