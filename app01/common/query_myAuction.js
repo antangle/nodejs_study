@@ -214,6 +214,7 @@ const get205DealDetail = async(deal_id)=>{
             deal.contract_list, deal.discount_official, deal.discount_price,
             deal.discount_payment, deal.month_price,
             deal.gift, deal.create_time AS deal_create_time,
+            deal.period, deal.agency,
             payment.price AS payment_price, payment.alias AS payment_alias, 
             payment.data AS payment_data,
             payment.call AS payment_call, 

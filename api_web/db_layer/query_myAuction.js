@@ -208,32 +208,33 @@ const get205DealDetail = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT deal.id AS deal_id, deal.store_nick AS store_nick, 
-                detail.id AS device_detail_id, 
-                detail.cost_price, device.name AS device_name,
-                deal.contract_list, deal.discount_official, deal.discount_price,
-                deal.discount_payment, deal.month_price,
-                deal.gift, deal.create_time AS deal_create_time,
-                payment.price AS payment_price, payment.alias AS payment_alias, 
-                payment.data AS payment_data,
-                payment.call AS payment_call, 
-                payment.text AS payment_text, 
-                payment.limitation, payment.generation,
-                official.discount_official
-            FROM deal
-            INNER JOIN store
-            ON store.id = deal.store_id
-            AND deal.id = $1
-            INNER JOIN device
-            ON device.id = deal.device_id
-            INNER JOIN device_detail AS detail
-            ON detail.id = deal.device_detail_id
-            INNER JOIN payment
-            ON payment.id = deal.payment_id
-            LEFT JOIN official
-            ON official.device_id = device.id
-            AND official.payment_id = payment.id
-            AND official.device_volume = detail.volume
+        SELECT deal.id AS deal_id, deal.store_nick AS store_nick, 
+            detail.id AS device_detail_id, 
+            detail.cost_price, device.name AS device_name,
+            deal.contract_list, deal.discount_official, deal.discount_price,
+            deal.discount_payment, deal.month_price,
+            deal.gift, deal.create_time AS deal_create_time,
+            deal.period, deal.agency,
+            payment.price AS payment_price, payment.alias AS payment_alias, 
+            payment.data AS payment_data,
+            payment.call AS payment_call, 
+            payment.text AS payment_text, 
+            payment.limitation, payment.generation,
+            official.discount_official
+        FROM deal
+        INNER JOIN store
+        ON store.id = deal.store_id
+        AND deal.id = $1
+        INNER JOIN device
+        ON device.id = deal.device_id
+        INNER JOIN device_detail AS detail
+        ON detail.id = deal.device_detail_id
+        INNER JOIN payment
+        ON payment.id = deal.payment_id
+        LEFT JOIN official
+        ON official.device_id = device.id
+        AND official.payment_id = payment.id
+        AND official.device_volume = detail.volume
         `;
         var {rows} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
