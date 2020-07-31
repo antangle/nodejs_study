@@ -39,10 +39,9 @@ router.post('/Login901', async (req, res) =>{
     }
     try{
         var dbResponse = await partner.getP001GetPassword(login_id);
-        if(dbResponse.result != define.const_SUCCESS){
-            return res.json({
-                'result': dbResponse.result
-            });
+        console.log(dbResponse)
+        if(dbResponse.result !== define.const_SUCCESS){
+            return res.json({result: dbResponse.result});
         }
         if(!dbResponse.data.hash_pwd){
             return res.json({'result': 5, 'message': 'Unidentified Account'});

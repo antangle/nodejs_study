@@ -18,6 +18,7 @@ const getP001GetPassword = async(login_id)=>{
             WHERE login_id = $1
         `;
         var {rows, rowCount} = await query(querytext, [login_id]);
+        console.log(rowCount);
         if(rowCount !== 1){
             return {result: 7}
         }
