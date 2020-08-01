@@ -1174,13 +1174,13 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
-  /app01/store/login/partnerToStore908:
+  /app01/store/login/partnerToStore909:
     post:
       tags:
       - "app_partner"
       summary: "파트너에게 store권한을 줄 때"
       description: "store_id 생성과 동시에 store 에 INSERT, partner에 UPDATE"
-      operationId: "partnerToStore908"
+      operationId: "partnerToStore909"
       produces:
       - "application/json"
       parameters:

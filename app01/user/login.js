@@ -1,19 +1,20 @@
 const express = require('express');
-const app = express();
-const { hash } = require('bcrypt');
 const router = express.Router();
+const { hash } = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const users = require('../common/query_login');
 const define = require('../../definition/define');
 const {helper} = require('../../controller/validate');
 const {verifyToken} = require('../../middleware/verify');
 
-app.use(express.urlencoded({limit:'50mb', extended: false }));
-app.use(express.json({limit: '50mb'}));
+router.use(express.urlencoded({limit:'50mb', extended: false }));
+router.use(express.json({limit: '50mb'}));
 
 router.get('/test', verifyToken, (req, res) =>{
     res.send('hi you are verified');
 });
+
 
 //user login/signup API
 router.post('/Login901', async (req, res) =>{

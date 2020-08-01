@@ -16,12 +16,12 @@ var db_config = {
 
 const pool = new Pool(db_config);
 
-async function query (queryText, params) {
+async function query (queryText, params, errcode) {
   const client = await pool.connect()
   .catch(err => {console.log('PGconnection err:' + err)
     client.release();
   });
-  let res;
+  var res;
   try {
     await client.query('BEGIN');
     try {
@@ -29,10 +29,12 @@ async function query (queryText, params) {
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.log('query ERROR: ' +err);
+      console.log('query ERROR: ' + err);
+      res = {errcode: errcode};
     }
   } catch(error){
-      console.log('error in query function: ' + error);
+      console.log('error in query: ' + error);
+      res = {errcode: errcode};
   } finally{
     client.release(); 
   };

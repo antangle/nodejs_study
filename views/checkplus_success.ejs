@@ -16,7 +16,7 @@
     <script language='javascript'>
         function redirectToPage(){
             var data = $("#test").attr("value")
-            var url = "http://www.peachphone.co.kr/web/user/join/certificate/?info=" + data;
+            var url = "http://www.peachphone.co.kr/web/user/join/certificate/?user_info=" + data;
             window.opener.location.href=url;
             self.close();
         }

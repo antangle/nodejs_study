@@ -18,20 +18,6 @@ const verifyToken = async (req, res, next) => {
     return res.status(401).send('Authentication Failed');
   }
 };
-const decodeJWT = async (jwtData, next) => {
-  if (!jwtData) {
-    return res.status.send(9031);
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = {
-      user_id: decoded.user_id
-    };
-    next();
-  } catch (error) {
-    return res.status(401).send('Authentication Failed');
-  }
-};
 module.exports ={
-    verifyToken
+    verifyToken,
 }

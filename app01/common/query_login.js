@@ -9,6 +9,54 @@ pool.on('error', function (err, client) {
 });
 
 //partner login query(P001~P007)
+
+const updatePushTokenPartner = async(login_id, device_token)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE partner SET
+            push_token = $2
+            WHERE login_id = $1
+        `;
+        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
+        console.log(rowCount);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const updatePushTokenStore = async(login_id, device_token)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store SET
+            push_token = $2
+            WHERE login_id = $1
+        `;
+        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
+        console.log(rowCount);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+
 const getP001GetPassword = async(login_id)=>{
     var result = {};
     try{
@@ -17,13 +65,12 @@ const getP001GetPassword = async(login_id)=>{
             FROM partner
             WHERE login_id = $1
         `;
-        var {rows, rowCount} = await query(querytext, [login_id]);
-        console.log(rowCount);
-        if(rowCount === 0){
-            return {result: 2}
+        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9012);
+        if(errcode){
+            return {result: errcode};
         }
-        else if(rowCount !== 1){
-            return {result: -9012}
+        if(rowCount !== 1){
+            return {result: -9012};
         }
         result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
@@ -38,44 +85,73 @@ const getP001GetPassword = async(login_id)=>{
 const postP004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
+        //9031: 중복 있음. 1, 중복 없음
         const querytext = `
             SELECT
                 COALESCE(
-                    (SELECT 1 FROM partner 
-                    WHERE login_id = $1), -2) AS match
+                    (SELECT 9031 FROM partner 
+                    WHERE login_id = $1), 1) AS match
                     `;
-        var {rows} = await query(querytext, [login_id]);
-        result = {result: define.const_SUCCESS, match: rows[0].match};
+        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9032);
+        if(errcode){
+            return {result: -errcode}
+        }
+        result = {result: rows[0].match};
         return result;
     }
     catch(err){
-        result.result = -9041;
+        result.result = -9033;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
 };
 
-const postP004IdPassword = async(login_id, hash_pwd)=>{
+const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
     var result = {};
     try{
         const querytext = `
-            INSERT INTO partner(id, login_id, login_pwd, state)
-            VALUES($1, $2, $3, 1)
+            INSERT INTO partner(
+                id, login_id, 
+                login_pwd, name, 
+                phone, birth, 
+                state, term,
+                create_time
+            )
+            VALUES(
+                $1, $2, 
+                $3, $4, 
+                $5, $6, 
+                1, 1, 
+                current_timestamp
+            )
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());
         //cut strDate 0.001sec part and change type to Integer
-        var date = strDate.substr(0,12)*1;
-        var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd]);
-        if(rowCount !== 1){
-            return {result: -9043, message:'query not working.'}
+        var id = strDate.substr(0,12);
+
+        var paramArray = [
+            id,
+            login_id,
+            hash_pwd,
+            decode.name,
+            decode.mobileno,
+            decode.birthdate
+        ];
+
+        var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
+        if(!errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -9042};
         }
         result ={result: define.const_SUCCESS, partner_id: rows[0].id};
         return result;
     }
     catch(err){
-        result.result = -9042;
+        result.result = -9044;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -116,45 +192,118 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
             sido_code = $1,
             sgg_code = $2
             WHERE id = $3
-            RETURNING id
             `;
-        var {rowCount} = await query(querytext, [sido_code, sgg_code, partner_id]);
+        var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, partner_id], -9078);
+        if(errcode){
+            return {result: errcode}
+        }
         if(rowCount === 0){
-            return {result:-9072, message: 'given code or partner_id is wrong'}
+            return {result: -9078}
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -9071;
+        result.result = -9077;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
 }
 
-const PartnerToStore908 = async(partner_id)=>{
+const makeMeStore908 = async(store_info)=>{
     try{
         const querytext = `
             WITH cte AS(
                 UPDATE partner SET
-                store_id = $1
+                store_id = $1,
+                state = 2
                 WHERE partner.id = $2
             )
-            INSERT INTO store(id, partner_id)
-            VALUES($1, $2)
-            RETURNING id`;
+            INSERT INTO store(
+                id, partner_id, 
+                uuid, name,
+                trade_name, phone,
+                phone_1, address,
+                state,
+                login_id, login_pwd,
+                sido_code, sgg_code,
+                create_time, score,
+                score_sum, score_weight,
+                region
+            )
+            SELECT
+                $1, $2, 
+                $3, $4, 
+                $5, $6, 
+                $7, $8, 
+                -1,
+                partner.login_id, partner.login_pwd,
+                partner.sido_code, partner.sgg_code,
+                current_timestamp, 0,
+                0, 0,
+                sgg.name
+            FROM partner
+            INNER JOIN location_sgg AS sgg
+            ON partner.id = $2
+            AND sgg.code = partner.sgg_code
+            RETURNING id AS store_id
+        `;
+        //여기서 store_id 줘야되나???? 필요없지 않나?
         var strDate = String(Date.now());
         //cut strDate 0.001sec part and change type to Integer
-        var store_id = strDate.substr(0,12)*1
-        var {rows, rowCount} = await query(querytext, [store_id, partner_id]);
+        var store_id = strDate.substr(0,12);
+        var paramArray = [
+            store_id, store_info.partner_id,
+            store_info.uuid, store_info.name,
+            store_info.trade_name, store_info.phone,
+            store_info.phone_1, store_info.address
+        ];
+        var {rows, rowCount, errcode} = await query(querytext, paramArray, -9082);
+        if(errcode){
+            return {result: errcode}
+        }
+        if(rowCount !== 1){
+            return {result: -9082}
+        }
+        console.log(rows);
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9081;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
+const PartnerToStore909 = async(partner_id)=>{
+    try{
+        const querytext = `
+            WITH cte AS(
+                UPDATE store SET
+                state = 1
+            )
+            UPDATE partner SET
+            store_id = store.id,
+            state = 3
+            FROM store
+            WHERE partner.id = $1
+            AND store.partner_id = $1
+            RETURNING store_id
+        `;
+       
+        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9092);
+        if(errcode){
+            return {result: errcode};
+        }
         if(rowCount === 0){
-            return {result: -9082, Message: '스토어 계정 설립에 문제가 있었습니다'}
+            return {result: -9092}
         }
         result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
         return result;
     }
     catch(err){
-        result.result = -9081;
+        result.result = -9091;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -214,7 +363,7 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
             `;
         var strDate = String(Date.now());
         //cut strDate 0.001sec part and change type to Integer
-        var date = strDate.substr(0,12)*1
+        var date = strDate.substr(0,12)
         var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd]);
         if(rowCount === 0){
             throw('please do ID check first');
@@ -301,13 +450,14 @@ const get007SdCode = async()=>{
             FROM location_sd
             `;
         var {rows, rowCount} = await query(querytext, []);
-        if(rowCount == 0)
-            throw('no info on DB')
-        result ={result: define.const_SUCCESS, sd: rows};
+        if(rowCount === 0){
+            return {result: -9072}
+        }
+        result = {result: define.const_SUCCESS, sd: rows};
         return result;
     }
     catch(err){
-        result.result = -71;
+        result.result = -9071;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }    
@@ -317,18 +467,19 @@ const get007SggCode = async(sido_code)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT code, name 
+            SELECT code, name
             FROM location_sgg
             WHERE sido_code = $1
             `;
         var {rows, rowCount} = await query(querytext, [sido_code]);
-        if(rowCount == 0)
-            throw('no info on DB')
+        if(rowCount == 0){
+            return {result: -9074};
+        }
         result ={result: define.const_SUCCESS, sgg: rows};
         return result;
     }
     catch(err){
-        result.result = -72;
+        result.result = -9075;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -345,13 +496,13 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
             `;
         var {rowCount} = await query(querytext, [sido_code, sgg_code, user_id]);
         if(rowCount !== 1){
-            return {result:-74, message: '시/도, 시/군/구가 등록되지 않았습니다'}
+            return {result: -9078}
         }
         result ={result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -73;
+        result.result = -9077;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -492,8 +643,9 @@ const PartnerShutAccount911 = async(partner_id) =>{
 }
 
 module.exports = {
-    PartnerToStore908,
     //partner login query
+    updatePushTokenPartner,
+    updatePushTokenStore,
     getP001GetPassword,
     postP004LoginIdCheck,
     postP004IdPassword,
@@ -515,5 +667,8 @@ module.exports = {
     //partner logout
     PartnerUpdateToken909,
     PartnerLogout910,
-    PartnerShutAccount911
+    PartnerShutAccount911,
+    //parter becoming store
+    makeMeStore908,
+    PartnerToStore909,
 };

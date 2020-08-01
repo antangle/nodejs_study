@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const app = express();
 
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit:'50mb', extended: false }));
+router.use(express.json({limit: '50mb'}));
+router.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const buy = require('../common/query_buy');
 const auction = require('../common/query_myAuction');
@@ -520,5 +519,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
         return res.json(result);
     } 
 });
+
+/* mypage */
 
 module.exports = router;

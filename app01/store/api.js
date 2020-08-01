@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const app = express();
 
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit:'50mb', extended: false }));
+router.use(express.json({limit: '50mb'}));
+router.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
-
 
 router.get('/S101HomepageInfo', async (req, res) =>{
     var result ={};
