@@ -61,24 +61,33 @@ router.get("/checkplus_main", function(request, response) {
   });
   child.on("close", function() {
     //이곳에서 result처리 해야함. 
-  
+    var result;
     //처리 결과 확인
     if (sEncData == "-1"){
       sRtnMSG = "암/복호화 시스템 오류입니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else if (sEncData == "-2"){
       sRtnMSG = "암호화 처리 오류입니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else if (sEncData == "-3"){
       sRtnMSG = "암호화 데이터 오류 입니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else if (sEncData == "-9"){
       sRtnMSG = "입력값 오류 : 암호화 처리시, 필요한 파라미터 값을 확인해 주시기 바랍니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else{
       sRtnMSG = "";
     }
-    response.json({data: sEncData});
+    
+    return response.json({result: 1, data: sEncData, message: sRtnMSG});
   });
 });
 
