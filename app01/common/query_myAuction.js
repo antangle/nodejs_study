@@ -512,6 +512,6 @@ module.exports = {
     update210StoreAfterReview,
     get211StoreDetails,
     get212AllStoreReviews,
-    post213Report
+    post213Report,
 };
    

@@ -69,8 +69,11 @@ const getP001GetPassword = async(login_id)=>{
         if(errcode){
             return {result: errcode};
         }
-        if(rowCount !== 1){
-            return {result: -9012};
+        if(rowCount < 1){
+            return {result: -9014};
+        }
+        else if(rowCount > 1){
+            return {result: -9015};    
         }
         result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
@@ -95,6 +98,12 @@ const postP004LoginIdCheck = async(login_id)=>{
         var {rows, rowCount, errcode} = await query(querytext, [login_id], -9032);
         if(errcode){
             return {result: -errcode}
+        }
+        if(rowCount > 1){
+            return {result: -9034}
+        }
+        else if(rowCount <1){
+            return {result: -9035}
         }
         result = {result: rows[0].match};
         return result;
@@ -141,11 +150,14 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
         ];
 
         var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
-        if(!errcode){
+        if(errcode){
             return {result: errcode};
         }
-        if(rowCount === 0){
-            return {result: -9042};
+        if(rowCount > 1){
+            return {result: -9045}
+        }
+        else if(rowCount <1){
+            return {result: -9046}
         }
         result ={result: define.const_SUCCESS, partner_id: rows[0].id};
         return result;
@@ -197,8 +209,11 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
         if(errcode){
             return {result: errcode}
         }
-        if(rowCount === 0){
-            return {result: -9078}
+        if(rowCount > 1){
+            return {result: -9045}
+        }
+        else if(rowCount <1){
+            return {result: -9046}
         }
         result = {result: define.const_SUCCESS};
         return result;
@@ -449,15 +464,21 @@ const get007SdCode = async()=>{
             SELECT code, name
             FROM location_sd
             `;
-        var {rows, rowCount} = await query(querytext, []);
-        if(rowCount === 0){
-            return {result: -9072}
+        var {rows, rowCount, errcode} = await query(querytext, [], -90702);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount > 1){
+            return {result: -90703}
+        }
+        else if(rowCount <1){
+            return {result: -90704}
         }
         result = {result: define.const_SUCCESS, sd: rows};
         return result;
     }
     catch(err){
-        result.result = -9071;
+        result.result = -90701;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }    
@@ -471,9 +492,12 @@ const get007SggCode = async(sido_code)=>{
             FROM location_sgg
             WHERE sido_code = $1
             `;
-        var {rows, rowCount} = await query(querytext, [sido_code]);
-        if(rowCount == 0){
-            return {result: -9074};
+        var {rows, rowCount, errcode} = await query(querytext, [sido_code], -90713);
+        if(rowCount > 1){
+            return {result: -9045}
+        }
+        else if(rowCount <1){
+            return {result: -9046}
         }
         result ={result: define.const_SUCCESS, sgg: rows};
         return result;

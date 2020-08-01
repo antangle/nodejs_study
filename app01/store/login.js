@@ -18,7 +18,7 @@ router.get('/test', verify.verifyToken, (req, res) =>{
 function decodejwt(jwtData){
     var decoded = jwt.decode(jwtData);
     return decoded;
-}
+};
 
 //partner login/signup API
 router.post('/Login901', async (req, res) =>{
@@ -74,7 +74,7 @@ router.post('/Login901', async (req, res) =>{
         return res.json(result);
     }
 });
-   
+
 router.post('/CheckId904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
@@ -89,9 +89,8 @@ router.post('/CheckId904', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result.message = '가능한 아이디입니다';
         return res.json(result);
-    }   
+    }
     catch(err){
         console.log('router ERROR: P904 - CheckId904/' + err);
         result.result = -9033;
@@ -119,7 +118,6 @@ router.post('/SignIn904', async (req, res) =>{
         }
         const token = helper.generateToken(result.partner_id);
         result.token = token
-
         return res.json(result);
     }   
     catch(err){
@@ -141,7 +139,7 @@ router.get('/GetSdCode907', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: 007 - GetSidoCode/' + err);
-        result.result = -9071;
+        result.result = -90701;
         return res.json(result);
     }
 });
@@ -150,7 +148,7 @@ router.get('/GetSggCode907', async (req, res) =>{
     var result ={};
     var {sido_code} = req.query;
     if(sido_code <100){
-        return res.json({result: -9073});
+        return res.json({result: -90711});
     }
     try{
         result = await partner.get007SggCode(sido_code);
@@ -161,7 +159,7 @@ router.get('/GetSggCode907', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: 007 - GetSggCode/' + err);
-        result.result = -9075;
+        result.result = -90713;
         return res.json(result);
     }
 });
@@ -170,7 +168,7 @@ router.post('/postLocationCode907', async (req, res) =>{
     var result ={};
     var {partner_id, sido_code, sgg_code} = req.body;
     if(!sido_code || !sgg_code || !partner_id || sido_code <100|| sgg_code < 100){
-        return res.json({result: -9076});
+        return res.json({result: -90721});
     }
     try{
         result = await partner.postP007LocationCode(sido_code, sgg_code, partner_id);
@@ -181,7 +179,7 @@ router.post('/postLocationCode907', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: P907 - postLocationCode907/' + err);
-        result.result = -9077;
+        result.result = -90722;
         return res.json(result);
     }
 });
