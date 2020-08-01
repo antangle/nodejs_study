@@ -25,7 +25,7 @@ var sGender = "";      			// 없으면 기본 선택화면, 0: 여자, 1: 남자
 var sReturnUrl = "http://api.aptioncompany.com/app01/common/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
 var sErrorUrl = "http://api.aptioncompany.com/app01/common/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
 
-router.get("/nice", function(request, response) {
+router.get("/", function(request, response) {
   response.send("sample index page");
 });
 
