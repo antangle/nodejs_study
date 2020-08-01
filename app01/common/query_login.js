@@ -205,21 +205,21 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
             sgg_code = $2
             WHERE id = $3
             `;
-        var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, partner_id], -9078);
+        var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, partner_id], -90723);
         if(errcode){
             return {result: errcode}
         }
         if(rowCount > 1){
-            return {result: -9045}
+            return {result: -90724}
         }
         else if(rowCount <1){
-            return {result: -9046}
+            return {result: -90725}
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -9077;
+        result.result = -90722;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -277,8 +277,11 @@ const makeMeStore908 = async(store_info)=>{
         if(errcode){
             return {result: errcode}
         }
-        if(rowCount !== 1){
-            return {result: -9082}
+        if(rowCount > 1){
+            return {result: -9084}
+        }
+        else if(rowCount <1){
+            return {result: -9085}
         }
         console.log(rows);
         result = {result: define.const_SUCCESS};
@@ -468,10 +471,7 @@ const get007SdCode = async()=>{
         if(errcode){
             return {result: errcode};
         }
-        if(rowCount > 1){
-            return {result: -90703}
-        }
-        else if(rowCount <1){
+        if(rowCount < 1){
             return {result: -90704}
         }
         result = {result: define.const_SUCCESS, sd: rows};
@@ -492,18 +492,18 @@ const get007SggCode = async(sido_code)=>{
             FROM location_sgg
             WHERE sido_code = $1
             `;
-        var {rows, rowCount, errcode} = await query(querytext, [sido_code], -90713);
-        if(rowCount > 1){
-            return {result: -9045}
+        var {rows, rowCount, errcode} = await query(querytext, [sido_code], -90712);
+        if(errcode){
+            return {result: errcode}
         }
-        else if(rowCount <1){
-            return {result: -9046}
+        if(rowCount <1){
+            return {result: -90715}
         }
         result ={result: define.const_SUCCESS, sgg: rows};
         return result;
     }
     catch(err){
-        result.result = -9075;
+        result.result = -90713;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }

@@ -100,19 +100,15 @@ router.post('/CheckId904', async (req, res) =>{
 
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
-    var {login_id, user_info} = req.body;
+    var {login_id, name, mobileno, birthdate} = req.body;
     if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd)){
         return res.json({result: -9041});
-    }
-    var decode = decodejwt(user_info);
-    if(!decode){
-        return res.json({result: -9043});
     }
     try{
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
-
-        result = await partner.postP004IdPassword(login_id, hash_pwd, decode);
+        store_info = {name, mobileno, birthdate};
+        result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
