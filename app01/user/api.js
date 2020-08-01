@@ -12,18 +12,19 @@ router.get('/test', async(req, res)=>{
     try{
         var {device_id} = req.query;
         var result = {}
-        /*
+        var array = [];
         for(var device_id=1; device_id<52; ++device_id){
-            result = await store.test(device_id);
+            result = await buy.test(device_id);
             if(!result.errDevice){
-            for(var i=0; i<result.rowCount; ++i){
-                if(result.rows[i].discount_official === null){
-                    array.push(result.rows[i].device_id)
-                    break;
+                for(var i=0; i<result.rowCount; ++i){
+                    if(result.rows[i].discount_official === null){
+                        array.push(result.rows[i].device_id)
+                        break;
+                    }
                 }
             }
         }
-        */
+        console.log(array);
         result = await buy.test(device_id);
         return res.json(result);
     }
