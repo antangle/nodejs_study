@@ -115,7 +115,7 @@ router.post('/SignIn904', async (req, res) =>{
         const token = helper.generateToken(result.partner_id);
         result.token = token
         return res.json(result);
-    }   
+    }
     catch(err){
         delete req.body.login_pwd;
         console.log('router ERROR: P904 - SignIn904/' + err);
