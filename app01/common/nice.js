@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");  // body-parser 모듈 추가
 const exec = require("child_process").exec; // child_process 모듈 추가
 const router = express.Router();
 
-const {helper} = require('../controller/validate');
+const {helper} = require('../../controller/validate');
 
 //NICE평가정보에서 발급한 본인인증 서비스 개발 정보(사이트 코드 , 사이트 패스워드)
 var sSiteCode = "BS147";
@@ -20,13 +20,12 @@ var sPopGubun 	= "N";			//Y : 취소버튼 있음 / N : 취소버튼 없음
 var sCustomize 	= "";			  //없으면 기본 웹페이지 / Mobile : 모바일페이지
 var sGender = "";      			// 없으면 기본 선택화면, 0: 여자, 1: 남자
 
-
 // 본인인증 처리 후, 결과 데이타를 리턴 받기위해 다음예제와 같이 http부터 입력합니다.
 // 리턴url은 인증 전 인증페이지를 호출하기 전 url과 동일해야 합니다. ex) 인증 전 url : https://www.~ 리턴 url : https://www.~
-var sReturnUrl = "http://api.aptioncompany.com/nice/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
-var sErrorUrl = "http://api.aptioncompany.com/nice/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
+var sReturnUrl = "http://api.aptioncompany.com/app01/common/checkplus_success";	// 성공시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
+var sErrorUrl = "http://api.aptioncompany.com/app01/common/checkplus_fail";	  	// 실패시 이동될 URL (방식 : 프로토콜을 포함한 절대 주소)
 
-router.get("/", function(request, response) {
+router.get("/nice", function(request, response) {
   response.send("sample index page");
 });
 
@@ -61,24 +60,33 @@ router.get("/checkplus_main", function(request, response) {
   });
   child.on("close", function() {
     //이곳에서 result처리 해야함. 
-  
+    var result;
     //처리 결과 확인
     if (sEncData == "-1"){
       sRtnMSG = "암/복호화 시스템 오류입니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else if (sEncData == "-2"){
       sRtnMSG = "암호화 처리 오류입니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else if (sEncData == "-3"){
       sRtnMSG = "암호화 데이터 오류 입니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else if (sEncData == "-9"){
       sRtnMSG = "입력값 오류 : 암호화 처리시, 필요한 파라미터 값을 확인해 주시기 바랍니다.";
+      result = sEncData;
+      return response.json({result: result, data: sEncData, message: sRtnMSG});
     }
     else{
       sRtnMSG = "";
     }
-    response.json({data: sEncData});
+    
+    return response.json({result: 1, data: sEncData, message: sRtnMSG});
   });
 });
 

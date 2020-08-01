@@ -13,20 +13,23 @@ const getP001GetPassword = async(login_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT id AS partner_id, login_pwd AS hash_pwd, store_id
+            SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
             FROM partner
             WHERE login_id = $1
         `;
         var {rows, rowCount} = await query(querytext, [login_id]);
         console.log(rowCount);
-        if(rowCount !== 1){
-            return {result: 7}
+        if(rowCount === 0){
+            return {result: 2}
+        }
+        else if(rowCount !== 1){
+            return {result: -9012}
         }
         result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
     }
     catch(err){
-        result.result = -9011;
+        result.result = -9012;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -51,6 +54,7 @@ const postP004LoginIdCheck = async(login_id)=>{
         return result;
     }
 };
+
 const postP004IdPassword = async(login_id, hash_pwd)=>{
     var result = {};
     try{
@@ -76,6 +80,7 @@ const postP004IdPassword = async(login_id, hash_pwd)=>{
         return result;
     }
 }
+
 const postStoreInfo = async(postArray)=>{
     var result = {};
     try{
@@ -102,6 +107,7 @@ const postStoreInfo = async(postArray)=>{
         return result;
     }
 }
+
 const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
     var result = {};
     try{
@@ -125,6 +131,7 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
         return result;
     }
 }
+
 const PartnerToStore908 = async(partner_id)=>{
     try{
         const querytext = `
@@ -152,6 +159,7 @@ const PartnerToStore908 = async(partner_id)=>{
         return result;
     }
 }
+
 // user login query
 const get001GetPassword = async(login_id)=>{
     var result = {};
@@ -174,6 +182,7 @@ const get001GetPassword = async(login_id)=>{
         return result;
     }
 };
+
 const post004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
@@ -219,6 +228,7 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
         return result;
     }
 }
+
 const get005GetPassword = async(login_id)=>{
     var result = {};
     try{
@@ -237,6 +247,7 @@ const get005GetPassword = async(login_id)=>{
         return result;
     }
 };
+
 const post006NicknameCheck = async(nick)=>{
     var result = {};
     try{
@@ -255,7 +266,6 @@ const post006NicknameCheck = async(nick)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 };
 
 const post006Nickname = async(nick, user_id)=>{
@@ -281,9 +291,7 @@ const post006Nickname = async(nick, user_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 }
-
 
 const get007SdCode = async()=>{
     var result = {};
@@ -302,9 +310,9 @@ const get007SdCode = async()=>{
         result.result = -71;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
-    }
-    
+    }    
 }
+
 const get007SggCode = async(sido_code)=>{
     var result = {};
     try{
@@ -324,8 +332,8 @@ const get007SggCode = async(sido_code)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-    
 }
+
 const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
     var result = {};
     try{
@@ -348,6 +356,7 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
         return result;
     }
 }
+
 const UserUpdateToken008 = async(user_id, token) =>{
     var result = {}
     try{
@@ -391,6 +400,7 @@ const UserDeleteToken008 = async(user_id) =>{
         return result;
     }
 }
+
 const UserShutAccount008 = async(user_id) =>{
     var result = {}
     try{
@@ -413,7 +423,6 @@ const UserShutAccount008 = async(user_id) =>{
         return result;
     }
 }
-
 
 const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
@@ -458,6 +467,7 @@ const PartnerLogout910 = async(partner_id) =>{
         return result;
     }
 }
+
 const PartnerShutAccount911 = async(partner_id) =>{
     var result = {}
     try{

@@ -8,13 +8,14 @@
 -->    
 <html>
 <head>
-    <title>NICE평가정보 - CheckPlus 안심본인인증 테스트</title>
+    <title>NICE평가정보 - CheckPlus 안심본인인증</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id='test' value= <%=encyrptedData%> > </div>
     <script language='javascript'>
         function redirectToPage(){
-            var data = $("#test").attr("value")
+            var data = $("#test").attr("value");
             var url = "http://www.peachphone.co.kr/web/user/join/certificate/?info=" + data;
             window.opener.location.href=url;
             self.close();

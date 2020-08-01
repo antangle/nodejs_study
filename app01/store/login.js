@@ -19,62 +19,79 @@ router.get('/test', verifyToken, (req, res) =>{
 router.post('/Login901', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
-    if (!login_id || !req.body.login_pwd){
-        return res.json({
-            'result': 2,
-            'message': 'either Id or Password is missing'
-        });
-    }
     if(!helper.isValidId(login_id)){
         return res.json({
-            'result': 3, 
-            'message': 'Please enter a valid Id form'
+            result: -9011, 
+            message: 'Please enter a valid Id form'
         })
     }
     if(!helper.isValidPassword(req.body.login_pwd)){
         return res.json({
-            'result': 4, 
-            'message': 'Please enter a valid password form'
+            result: -9011, 
+            message: 'Please enter a valid password form'
         });
     }
     try{
         var dbResponse = await partner.getP001GetPassword(login_id);
         console.log(dbResponse)
-        if(dbResponse.result !== define.const_SUCCESS){
-            return res.json({result: dbResponse.result});
+        if(dbResponse.result === 2){
+            return res.json({result: 9013});
+        }
+        else if(dbResponse.result !== 1){
+            return res.json({result: -9012});
         }
         if(!dbResponse.data.hash_pwd){
-            return res.json({result: 5});
+            return res.json({result: 9013});
         }
         if(!helper.comparePassword(req.body.login_pwd, dbResponse.data.hash_pwd)){
-            return res.json({result: 6});
+            return res.json({result: 9014});
         }
         delete req.body.login_pwd;
         const token = helper.generateToken(dbResponse.data.partner_id);
-        result = {result:1, token: token, partner_id: dbResponse.data.partner_id};
+        result = {
+            result:1, 
+            token: token, 
+            partner_id: dbResponse.data.partner_id,
+            state: dbResponse.data.state
+        };
         return res.json(result);
     }
     catch(err){
         delete req.body.login_pwd;
         console.log('router ERROR: P901 - Login901/' + err);
-        result.result = -921;
+        result.result = -9010;
         result.message = err;
         return res.json(result);
     }
 });
- 
+
+router.get('/Identify903', async (req, res) =>{
+    var result = {};
+    var {jwtData} = req.query;
+    
+    try{
+        const hash_pwd = helper.hashPassword(req.body.login_pwd);
+        delete req.body.login_pwd;
+        
+        result = await partner.postP004IdPassword(login_id, hash_pwd);
+        if(result.result != define.const_SUCCESS){
+            return res.status(400).json(result);
+        }
+        return res.status(200).json(result);
+    }   
+    catch(err){
+        delete req.body.login_pwd;
+        console.log('router ERROR: P904 - SignIn904/' + err);
+        result.result = -922;
+        return res.status(400).json(result);
+    }
+});
+
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
-    if (!login_id || !req.body.login_pwd) {
-        return res.status(400).json({
-            'result': 2, 
-            'message': 'either Id or Password is missing'});
-    }
     if(!helper.isValidId(login_id)){
-        return res.status(400).json({
-            'result': 3, 
-            'message': 'Please enter a valid Id form'})
+        return res.status(400).json({result: 3})
     }
     if(!helper.isValidPassword(req.body.login_pwd)){
         return res.status(400).json({'result': 4, 'message': 'Please enter a valid password form'})
