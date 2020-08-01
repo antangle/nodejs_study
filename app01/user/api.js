@@ -13,7 +13,7 @@ router.get('/test', async(req, res)=>{
         var {device_id} = req.query;
         var result = {}
         var array = [];
-        for(var device_id=1; device_id<52; ++device_id){
+        for(var device_id=1; device_id<54; ++device_id){
             result = await buy.test(device_id);
             if(!result.errDevice){
                 for(var i=0; i<result.rowCount; ++i){
