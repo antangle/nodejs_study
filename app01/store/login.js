@@ -11,8 +11,23 @@ const verify = require('../../middleware/verify');
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 router.use(express.json({limit: '50mb'}));
 
-router.get('/test', verify.verifyToken, (req, res) =>{
+router.get('/test1', verify.verifyToken, (req, res) =>{
     res.send('hi you are verified');
+});
+
+
+router.get('/test', async(req, res) =>{
+    var result = {};
+    var {partner_id} = req.body;
+    try{
+        result = await partner.test(partner_id);
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: P904 - CheckId904/' + err);
+        result.result = -9021;
+        return res.status(400).json(result);
+    }
 });
 
 //partner login/signup API

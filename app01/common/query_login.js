@@ -10,6 +10,30 @@ pool.on('error', function (err, client) {
 
 //partner login query(P001~P007)
 
+
+const test = async(partner_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT name
+            FROM partner
+            WHERE partner.id = $1
+        `;
+        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
+        console.log(rowCount);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS, name: rows[0].name};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 const updatePushTokenPartner = async(login_id, device_token)=>{
     var result = {};
     try{
@@ -675,6 +699,7 @@ const PartnerShutAccount911 = async(partner_id) =>{
 };
 
 module.exports = {
+    test,
     //partner login query
     updatePushTokenPartner,
     updatePushTokenStore,
