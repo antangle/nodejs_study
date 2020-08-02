@@ -18,7 +18,7 @@ router.get('/test1', verify.verifyToken, (req, res) =>{
 
 router.get('/test', async(req, res) =>{
     var result = {};
-    var {partner_id} = req.body;
+    var {partner_id} = req.query;
     try{
         result = await partner.test(partner_id);
         return res.json(result);
