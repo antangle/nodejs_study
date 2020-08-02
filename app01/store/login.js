@@ -81,7 +81,7 @@ router.post('/toJWT902', async(req, res) =>{
     }
     var json = {name, mobileno, birthdate};
     try{
-        var encryptedData = helper.encryptJson(1);
+        var encryptedData = helper.encryptJson(json);
         if(encryptedData === -9022){
             return res.json({result: encryptedData})
         }
