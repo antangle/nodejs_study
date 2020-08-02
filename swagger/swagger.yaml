@@ -11,7 +11,9 @@ tags:
 - name: "buy"
   description: "Everything about your buys"
 - name: "myAuction"
-  description: "소비자 페이지"
+  description: "소비자 내 경매"
+- name: "myPage_user"
+  description: "소비자 마이 페이지"
 - name: "signup/login"
   description: "회원가입/로그인"
 - name: "store"
@@ -632,6 +634,216 @@ paths:
       - "application/json"
       parameters:
       - name: "store_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/myPageNeededInfo401:
+    get:
+      tags:
+      - "myPage_user"
+      summary: "마이페이지 홈"
+      description: ""
+      operationId: "myPageNeededInfo401"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/myPageHelp402:
+    post:
+      tags:
+      - "myPage_user"
+      summary: "1:1문의. 문의 하면 help 테이블에 문의 등록."
+      description: ""
+      operationId: "myPageHelp402"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "type"
+        in: "query"
+        description: "문의 type. 1: 지훈이가 미우엉! 2: ?? 3: ??"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "comment"
+        in: "query"
+        description: "문의내용"
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/myReview403:
+    get:
+      tags:
+      - "myPage_user"
+      summary: "내가 쓴 리뷰 전부 보기."
+      description: ""
+      operationId: "myReview403"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/CheckNick404:
+    post:
+      tags:
+      - "myPage_user"
+      summary: "닉네임 중복확인."
+      description: ""
+      operationId: "CheckNick404"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "nick"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/changeNick404:
+    post:
+      tags:
+      - "myPage_user"
+      summary: "닉네임 바꾸기."
+      description: ""
+      operationId: "changeNick404"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "nick"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/changePlace405:
+    post:
+      tags:
+      - "myPage_user"
+      summary: "주소 바꾸기"
+      description: ""
+      operationId: "changePlace405"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "sido_code"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "sgg_code"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/changePassword406:
+    post:
+      tags:
+      - "myPage_user"
+      summary: "비밀번호 바꾸기"
+      description: ""
+      operationId: "changePassword406"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "old_pwd"
+        in: "query"
+        description: "이전 비밀번호"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "new_pwd"
+        in: "query"
+        description: "새로운 비밀번호"
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/myPage/UserShutAccount410:
+    post:
+      tags:
+      - "myPage_user"
+      summary: "회원 탈퇴"
+      description: ""
+      operationId: "UserShutAccount410"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
         in: "query"
         description: ""
         required: true
