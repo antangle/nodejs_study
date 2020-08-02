@@ -19,7 +19,7 @@ const test = async(partner_id)=>{
             FROM partner
             WHERE partner.id = $1
         `;
-        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
+        var {rows, rowCount} = await query(querytext, [partner_id]);
         console.log(rowCount);
         if(rowCount !== 1){
             return {result: -9000}
