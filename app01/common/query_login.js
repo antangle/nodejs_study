@@ -56,7 +56,6 @@ const updatePushTokenStore = async(login_id, device_token)=>{
     }
 };
 
-
 const getP001GetPassword = async(login_id)=>{
     var result = {};
     try{
@@ -130,7 +129,7 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 $1, $2, 
                 $3, $4, 
                 $5, $6, 
-                1, 1, 
+                1, 1,
                 current_timestamp
             )
             ON CONFLICT (login_id) DO NOTHING
@@ -148,7 +147,6 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
             decode.mobileno,
             decode.birthdate
         ];
-
         var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
         if(errcode){
             return {result: errcode};
@@ -247,10 +245,10 @@ const makeMeStore908 = async(store_info)=>{
                 region
             )
             SELECT
-                $1, $2, 
-                $3, $4, 
-                $5, $6, 
-                $7, $8, 
+                $1, $2,
+                $3, $4,
+                $5, $6,
+                $7, $8,
                 -1,
                 partner.login_id, partner.login_pwd,
                 partner.sido_code, partner.sgg_code,
@@ -292,7 +290,7 @@ const makeMeStore908 = async(store_info)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const PartnerToStore909 = async(partner_id)=>{
     try{
@@ -325,7 +323,7 @@ const PartnerToStore909 = async(partner_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 // user login query
 const get001GetPassword = async(login_id)=>{
@@ -394,7 +392,7 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const get005GetPassword = async(login_id)=>{
     var result = {};
@@ -458,7 +456,7 @@ const post006Nickname = async(nick, user_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const get007SdCode = async()=>{
     var result = {};
@@ -481,8 +479,8 @@ const get007SdCode = async()=>{
         result.result = -90701;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
-    }    
-}
+    }
+};
 
 const get007SggCode = async(sido_code)=>{
     var result = {};
@@ -507,7 +505,7 @@ const get007SggCode = async(sido_code)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
     var result = {};
@@ -517,10 +515,20 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
             sido_code = $1,
             sgg_code = $2
             WHERE id = $3
-            `;
-        var {rowCount} = await query(querytext, [sido_code, sgg_code, user_id]);
-        if(rowCount !== 1){
+            AND EXISTS(
+                SELECT 1 FROM location_sgg AS sgg
+                WHERE sgg.sido_code = $1
+                AND sgg.code = $2
+            )
+        `;
+        var {rowCount} = await query(querytext, [sido_code, sgg_code, user_id], -90793);
+        if(rowCount < 1){
             return {result: -9078}
+            //존재하지 않는 sido, sgg code
+        }
+        else if(rowCount > 1){
+            return {result: -9079}
+            //예상외의 업뎃
         }
         result ={result: define.const_SUCCESS};
         return result;
@@ -530,7 +538,7 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const UserUpdateToken008 = async(user_id, token) =>{
     var result = {}
@@ -552,7 +560,7 @@ const UserUpdateToken008 = async(user_id, token) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const UserDeleteToken008 = async(user_id) =>{
     var result = {}
@@ -574,7 +582,7 @@ const UserDeleteToken008 = async(user_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const UserShutAccount008 = async(user_id) =>{
     var result = {}
@@ -597,7 +605,7 @@ const UserShutAccount008 = async(user_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
@@ -619,7 +627,7 @@ const PartnerUpdateToken909 = async(partner_id, token) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const PartnerLogout910 = async(partner_id) =>{
     var result = {}
@@ -641,7 +649,7 @@ const PartnerLogout910 = async(partner_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const PartnerShutAccount911 = async(partner_id) =>{
     var result = {}
@@ -654,7 +662,7 @@ const PartnerShutAccount911 = async(partner_id) =>{
             `;
         var {rowCount} = await query(querytext, [partner_id]);
         if(rowCount !== 1){
-            return {result:-9112, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-9112}
         }
         result = {result: define.const_SUCCESS};
         return result;
@@ -664,7 +672,7 @@ const PartnerShutAccount911 = async(partner_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 module.exports = {
     //partner login query

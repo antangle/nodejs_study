@@ -6,7 +6,6 @@ app.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const define = require('../../definition/define')
 const auction = require('../db_layer/query_myAuction');
-const { const_SUCCESS } = require('../../definition/define');
 
 router.get('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
@@ -247,6 +246,6 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
         result.result = -211;
         return res.json(result);
     }
-    
 });
+
 module.exports = router;

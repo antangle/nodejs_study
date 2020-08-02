@@ -37,6 +37,7 @@ router.get('/S101HomepageInfo', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.get('/S201SearchAuction', async (req, res) =>{
     var result ={};
     try{
@@ -53,6 +54,7 @@ router.get('/S201SearchAuction', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.post('/S201CutAuction', async (req, res) =>{
     var result ={};
     try{
@@ -69,6 +71,7 @@ router.post('/S201CutAuction', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.delete('/S201DeleteAuction', async (req, res) =>{
     var result ={};
     try{
@@ -84,6 +87,7 @@ router.delete('/S201DeleteAuction', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.get('/S202AuctionInfo', async (req, res) =>{
     var result ={};
     try{
@@ -100,6 +104,7 @@ router.get('/S202AuctionInfo', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
@@ -158,7 +163,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         result.result = -708;
         return res.json(result);
     }
-})
+});
+
 router.get('/S301MyOngoingDeal', async (req, res) =>{
     var result ={};
     try{
@@ -175,6 +181,7 @@ router.get('/S301MyOngoingDeal', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.get('/S302MyPreviousDeal', async (req, res) =>{
     var result ={};
     try{
@@ -191,6 +198,7 @@ router.get('/S302MyPreviousDeal', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.get('/S303MyDealDetail', async (req, res) =>{
     var result ={};
     try{
@@ -207,4 +215,5 @@ router.get('/S303MyDealDetail', async (req, res) =>{
         return res.json(result);
     }
 });
+
 module.exports = router;

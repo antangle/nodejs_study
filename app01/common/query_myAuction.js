@@ -485,7 +485,7 @@ const post213Report = async(deal_id, type, comment)=>{
             `;
         var {rowCount} = await query(querytext, [deal_id, type, comment]);
         if(rowCount !== 0){
-            return {result: -2132, message: '오류로 인해 신고가 등록되지 않았습니다'}
+            return {result: -2132}
         }
         result ={result: define.const_SUCCESS};
         return result;

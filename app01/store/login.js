@@ -15,11 +15,9 @@ router.get('/test', verify.verifyToken, (req, res) =>{
     res.send('hi you are verified');
 });
 
-function decodejwt(jwtData){
-    var decoded = jwt.decode(jwtData);
-    return decoded;
-};
+function decodeJWT(jwt){
 
+}
 //partner login/signup API
 router.post('/Login901', async (req, res) =>{
     var result = {};
@@ -75,6 +73,24 @@ router.post('/Login901', async (req, res) =>{
     }
 });
 
+router.post('/toJWT902', async(req, res) =>{
+    var result = {};
+    var {name, mobileno, birthdate} = req.body;
+    if (!name|| !mobileno || !birthdate) {
+        return res.json({result: 9021});
+    }
+    var json = {name, mobileno, birthdate};
+    try{
+        var encryptedData = helper.encryptJson(json);
+        return res.json({result:1, encryptedData: encryptedData});
+    }
+    catch(err){
+        console.log('router ERROR: P904 - CheckId904/' + err);
+        result.result = -9021;
+        return res.status(400).json(result);
+    }
+});
+
 router.post('/CheckId904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
@@ -100,14 +116,18 @@ router.post('/CheckId904', async (req, res) =>{
 
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
-    var {login_id, name, mobileno, birthdate} = req.body;
+    var {login_id, info} = req.body;
+    if(!info){
+        return res.json({result: 9041});
+    }
     if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd)){
         return res.json({result: -9041});
     }
     try{
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
-        store_info = {name, mobileno, birthdate};
+        var store_info = jwt.decode(info);
+        console.log(store_info);
         result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
