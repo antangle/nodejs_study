@@ -15,9 +15,6 @@ router.get('/test', verify.verifyToken, (req, res) =>{
     res.send('hi you are verified');
 });
 
-function decodeJWT(jwt){
-
-}
 //partner login/signup API
 router.post('/Login901', async (req, res) =>{
     var result = {};
@@ -76,12 +73,19 @@ router.post('/Login901', async (req, res) =>{
 router.post('/toJWT902', async(req, res) =>{
     var result = {};
     var {name, mobileno, birthdate} = req.body;
+    console.log(name);
     if (!name|| !mobileno || !birthdate) {
         return res.json({result: 9021});
     }
-    var json = {name, mobileno, birthdate};
+    var json = {
+        name: name, 
+        mobileno: mobileno, 
+        birthdate: birthdate
+    };
+    console.log('json:' + json)
     try{
         var encryptedData = helper.encryptJson(json);
+        console.log(jwt.decode(encryptedData));
         if(encryptedData === -9022){
             return res.json({result: encryptedData})
         }
@@ -130,7 +134,8 @@ router.post('/SignIn904', async (req, res) =>{
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
         var store_info = jwt.decode(info);
-        console.log(store_info);
+        console.log(store_info.header);
+        console.log(store_info.payload);
         result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);

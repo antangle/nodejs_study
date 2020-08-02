@@ -38,7 +38,6 @@ async function query (queryText, params, errcode) {
   } finally{
     client.release(); 
   };
-  console.log(res);
   return res;
 }
 
