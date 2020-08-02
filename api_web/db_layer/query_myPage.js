@@ -41,7 +41,7 @@ const myPageHelp402 = async(user_id, type, comment)=>{
     var result = {};
     try{
       const querytext = `
-      INSERT INTO help(user_id, type, comment)
+      INSERT INTO help_user(user_id, type, comment)
       VALUES($1, $2, $3)
     `;
       var {rows, rowCount, errcode} = await query(querytext, [user_id, type, comment], -4024);
