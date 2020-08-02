@@ -43,8 +43,7 @@ const helper ={
     }
     catch(err){
       console.log(err);
-      var errMessage = 'json encryption failed';
-      return errMessage;
+      return -9022;
     }
   }
 };
