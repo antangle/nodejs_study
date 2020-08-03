@@ -342,7 +342,7 @@ const getP001GetPassword = async(login_id, push_token)=>{
         return result;
     }
     catch(err){
-        result.result = -9012;
+        result.result = -9013;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
