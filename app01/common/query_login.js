@@ -387,14 +387,14 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 login_pwd, name, 
                 phone, birth, 
                 state, term,
-                create_time
+                create_time, dupinfo
             )
             VALUES(
                 $1, $2, 
                 $3, $4, 
                 $5, $6, 
                 1, 1,
-                current_timestamp
+                current_timestamp, $7
             )
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
@@ -409,7 +409,8 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
             hash_pwd,
             decode.name,
             decode.mobileno,
-            decode.birthdate
+            decode.birthdate,
+            decode.dupinfo
         ];
         var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
         if(errcode){
