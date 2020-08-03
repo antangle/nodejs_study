@@ -7,7 +7,7 @@ router.use(express.urlencoded({limit:'50mb', extended: false }));
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
-const {helper} = require('../../controller/validate');
+const {helper, comparePassword} = require('../../controller/validate');
 
 router.get('/S101HomepageInfo', async (req, res) =>{
     var result ={};
@@ -286,10 +286,10 @@ router.post('/changePassword804', async(req,res) =>{
     //old_pwd: 과거 비번, new_pwd: 바뀌는 비번
     if(!partner_id || !req.body.old_pwd || !req.body.new_pwd){
         //input 존재하지 않음
-        return res.json({result: 80601})
+        return res.json({result: 80401});
     }
     if(!helper.isValidPassword(req.body.new_pwd)){
-        return res.json({result: -80605})
+        return res.json({result: -80405});
     }
     try{
         const pwd = await myPage.getPartnerPassword804(partner_id);
@@ -298,11 +298,10 @@ router.post('/changePassword804', async(req,res) =>{
             return res.json({result: pwd.result});
         }
         if(!helper.comparePassword(req.body.old_pwd, pwd.hash_pwd)){
-            //비번이 다름
-            return res.json({result: 80602});
+            return res.json({result: 80402});
         }
         const hash = helper.hashPassword(req.body.new_pwd);
-        delete req.body.login_pwd;
+        delete req.body.new_pwd;
 
         result = await myPage.changePartnerPassword804(partner_id, hash);
         if(result.result !== define.const_SUCCESS){
@@ -311,28 +310,28 @@ router.post('/changePassword804', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        delete req.body.login_pwd;
+        delete req.body.new_pwd;
         console.log('router ERROR: changePassword804/' + err);
         result.result = -8060;
         return res.json(result);
     }
 });
 
-router.post('/partnerShutAccount410', async(req,res) =>{
+router.post('/partnerShutAccount810', async(req,res) =>{
     var result ={};
     try{
         var {partner_id} = req.body;
         if(!partner_id){
             return res.json({result: -8102});
         }
-        result = await myPage.PartnerShutAccount410(partner_id);
+        result = await myPage.partnerShutAccount810(partner_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: partnerShutAccount410/' + err);
+        console.log('router ERROR: partnerShutAccount810/' + err);
         result.result = -8101;
         return res.json(result);
     }

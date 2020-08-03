@@ -476,7 +476,7 @@ const changePartnerPassword804 = async(partner_id, hash_pwd)=>{
   }
 };
 
-const StoreShutAccountS410 = async(partner_id) =>{
+const partnerShutAccount810 = async(partner_id) =>{
   var result = {}
   try{
       const querytext = `
@@ -529,5 +529,5 @@ module.exports = {
   myReview803,
   getPartnerPassword804,
   changePartnerPassword804,
-  StoreShutAccountS410
+  partnerShutAccount810
 };

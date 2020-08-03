@@ -5,12 +5,16 @@ const dotenv = require('dotenv');
 const path = require('path');
 dotenv.config({path: path.join(__dirname, '/../.env')});
 
+const comparePassword = async (password, hashPassword) => {
+  var res = await bcrypt.compare(password, hashPassword);
+  return res;
+}
 const helper ={
   hashPassword(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5));
   },
   comparePassword(password, hashPassword) {
-    return bcrypt.compareSync(password, hashPassword);
+    return bcrypt.compareSync(password, hashPassword)
   },
   isValidId(login_id){
     return /^[a-zA-Z][a-zA-Z0-9]{5,14}$/.test(login_id);
@@ -49,5 +53,6 @@ const helper ={
 };
 
 module.exports = {
-    helper
+    helper,
+    comparePassword
 }

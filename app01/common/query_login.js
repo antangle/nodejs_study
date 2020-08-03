@@ -20,7 +20,6 @@ const test = async(partner_id)=>{
             WHERE partner.id = $1
         `;
         var {rows, rowCount} = await query(querytext, [partner_id]);
-        console.log(rowCount);
         if(rowCount !== 1){
             return {result: -9000}
         }
@@ -29,321 +28,6 @@ const test = async(partner_id)=>{
     }
     catch(err){
         result.result = -9000;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
-const updatePushTokenPartner = async(login_id, device_token)=>{
-    var result = {};
-    try{
-        const querytext = `
-            UPDATE partner SET
-            push_token = $2
-            WHERE login_id = $1
-        `;
-        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
-        console.log(rowCount);
-        if(rowCount !== 1){
-            return {result: -9000}
-        }
-        result = {result: define.const_SUCCESS};
-        return result;
-    }
-    catch(err){
-        result.result = -9000;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
-const updatePushTokenStore = async(login_id, device_token)=>{
-    var result = {};
-    try{
-        const querytext = `
-            UPDATE store SET
-            push_token = $2
-            WHERE login_id = $1
-        `;
-        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
-        console.log(rowCount);
-        if(rowCount !== 1){
-            return {result: -9000}
-        }
-        result = {result: define.const_SUCCESS};
-        return result;
-    }
-    catch(err){
-        result.result = -9000;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
-const getP001GetPassword = async(login_id)=>{
-    var result = {};
-    try{
-        const querytext = `
-            SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
-            FROM partner
-            WHERE login_id = $1
-        `;
-        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9012);
-        if(errcode){
-            return {result: errcode};
-        }
-        if(rowCount < 1){
-            return {result: -9014};
-        }
-        else if(rowCount > 1){
-            return {result: -9015};    
-        }
-        result = {result: define.const_SUCCESS, data: rows[0]};
-        return result;
-    }
-    catch(err){
-        result.result = -9012;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
-const postP004LoginIdCheck = async(login_id)=>{
-    var result = {};
-    try{
-        //9031: 중복 있음. 1, 중복 없음
-        const querytext = `
-            SELECT
-                COALESCE(
-                    (SELECT 9031 FROM partner 
-                    WHERE login_id = $1), 1) AS match
-                    `;
-        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9032);
-        if(errcode){
-            return {result: -errcode}
-        }
-        if(rowCount > 1){
-            return {result: -9034}
-        }
-        else if(rowCount <1){
-            return {result: -9035}
-        }
-        result = {result: rows[0].match};
-        return result;
-    }
-    catch(err){
-        result.result = -9033;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
-const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
-    var result = {};
-    try{
-        const querytext = `
-            INSERT INTO partner(
-                id, login_id, 
-                login_pwd, name, 
-                phone, birth, 
-                state, term,
-                create_time
-            )
-            VALUES(
-                $1, $2, 
-                $3, $4, 
-                $5, $6, 
-                1, 1,
-                current_timestamp
-            )
-            ON CONFLICT (login_id) DO NOTHING
-            RETURNING id
-            `;
-        var strDate = String(Date.now());
-        //cut strDate 0.001sec part and change type to Integer
-        var id = strDate.substr(0,12);
-
-        var paramArray = [
-            id,
-            login_id,
-            hash_pwd,
-            decode.name,
-            decode.mobileno,
-            decode.birthdate
-        ];
-        var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
-        if(errcode){
-            return {result: errcode};
-        }
-        if(rowCount > 1){
-            return {result: -9045}
-        }
-        else if(rowCount <1){
-            return {result: -9046}
-        }
-        result ={result: define.const_SUCCESS, partner_id: rows[0].id};
-        return result;
-    }
-    catch(err){
-        result.result = -9044;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-}
-
-const postStoreInfo = async(postArray)=>{
-    var result = {};
-    try{
-        const querytext = `
-            UPDATE store SET
-            uuid = $1,
-            name = $2,
-            trade_name = $3,
-            phone = $4,
-            phone_1 = $5,
-            address = $6,
-            state = 1,
-            region = $7
-            create_time = current_date
-            WHERE store.partner_id = $8
-            `;
-        await query(querytext, postArray);
-        result ={result: define.const_SUCCESS};
-        return result;
-    }
-    catch(err){
-        result.result = -9051;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-}
-
-const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
-    var result = {};
-    try{
-        const querytext = `
-            UPDATE partner SET
-            sido_code = $1,
-            sgg_code = $2
-            WHERE id = $3
-            `;
-        var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, partner_id], -90723);
-        if(errcode){
-            return {result: errcode}
-        }
-        if(rowCount > 1){
-            return {result: -90724}
-        }
-        else if(rowCount <1){
-            return {result: -90725}
-        }
-        result = {result: define.const_SUCCESS};
-        return result;
-    }
-    catch(err){
-        result.result = -90722;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-}
-
-const makeMeStore908 = async(store_info)=>{
-    try{
-        const querytext = `
-            WITH cte AS(
-                UPDATE partner SET
-                store_id = $1,
-                state = 2
-                WHERE partner.id = $2
-            )
-            INSERT INTO store(
-                id, partner_id, 
-                uuid, name,
-                trade_name, phone,
-                phone_1, address,
-                state,
-                login_id, login_pwd,
-                sido_code, sgg_code,
-                create_time, score,
-                score_sum, score_weight,
-                region
-            )
-            SELECT
-                $1, $2,
-                $3, $4,
-                $5, $6,
-                $7, $8,
-                -1,
-                partner.login_id, partner.login_pwd,
-                partner.sido_code, partner.sgg_code,
-                current_timestamp, 0,
-                0, 0,
-                sgg.name
-            FROM partner
-            INNER JOIN location_sgg AS sgg
-            ON partner.id = $2
-            AND sgg.code = partner.sgg_code
-            RETURNING id AS store_id
-        `;
-        //여기서 store_id 줘야되나???? 필요없지 않나?
-        var strDate = String(Date.now());
-        //cut strDate 0.001sec part and change type to Integer
-        var store_id = strDate.substr(0,12);
-        var paramArray = [
-            store_id, store_info.partner_id,
-            store_info.uuid, store_info.name,
-            store_info.trade_name, store_info.phone,
-            store_info.phone_1, store_info.address
-        ];
-        var {rows, rowCount, errcode} = await query(querytext, paramArray, -9082);
-        if(errcode){
-            return {result: errcode}
-        }
-        if(rowCount > 1){
-            return {result: -9084}
-        }
-        else if(rowCount <1){
-            return {result: -9085}
-        }
-        console.log(rows);
-        result = {result: define.const_SUCCESS};
-        return result;
-    }
-    catch(err){
-        result.result = -9081;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
-const PartnerToStore909 = async(partner_id)=>{
-    try{
-        const querytext = `
-            WITH cte AS(
-                UPDATE store SET
-                state = 1
-            )
-            UPDATE partner SET
-            store_id = store.id,
-            state = 3
-            FROM store
-            WHERE partner.id = $1
-            AND store.partner_id = $1
-            RETURNING store_id
-        `;
-       
-        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9092);
-        if(errcode){
-            return {result: errcode};
-        }
-        if(rowCount === 0){
-            return {result: -9092}
-        }
-        result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
-        return result;
-    }
-    catch(err){
-        result.result = -9091;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -631,6 +315,274 @@ const UserShutAccount008 = async(user_id) =>{
     }
 };
 
+//store LOGIN
+
+const getP001GetPassword = async(login_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
+            FROM partner
+            WHERE login_id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9012);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount < 1){
+            return {result: -9014};
+        }
+        else if(rowCount > 1){
+            return {result: -9015};    
+        }
+        result = {result: define.const_SUCCESS, data: rows[0]};
+        return result;
+    }
+    catch(err){
+        result.result = -9012;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const postP004LoginIdCheck = async(login_id)=>{
+    var result = {};
+    try{
+        //9031: 중복 있음. 1, 중복 없음
+        const querytext = `
+            SELECT
+                COALESCE(
+                    (SELECT 9031 FROM partner 
+                    WHERE login_id = $1), 1) AS match
+                    `;
+        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9032);
+        if(errcode){
+            return {result: -errcode}
+        }
+        if(rowCount > 1){
+            return {result: -9034}
+        }
+        else if(rowCount <1){
+            return {result: -9035}
+        }
+        result = {result: rows[0].match};
+        return result;
+    }
+    catch(err){
+        result.result = -9033;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
+    var result = {};
+    try{
+        const querytext = `
+            INSERT INTO partner(
+                id, login_id, 
+                login_pwd, name, 
+                phone, birth, 
+                state, term,
+                create_time
+            )
+            VALUES(
+                $1, $2, 
+                $3, $4, 
+                $5, $6, 
+                1, 1,
+                current_timestamp
+            )
+            ON CONFLICT (login_id) DO NOTHING
+            RETURNING id
+            `;
+        var strDate = String(Date.now());
+        //cut strDate 0.001sec part and change type to Integer
+        var id = strDate.substr(0,12);
+
+        var paramArray = [
+            id,
+            login_id,
+            hash_pwd,
+            decode.name,
+            decode.mobileno,
+            decode.birthdate
+        ];
+        var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount > 1){
+            return {result: -9045}
+        }
+        else if(rowCount <1){
+            return {result: -9046}
+        }
+        result ={result: define.const_SUCCESS, partner_id: rows[0].id};
+        return result;
+    }
+    catch(err){
+        result.result = -9044;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
+const postStoreInfo = async(postArray)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store SET
+            uuid = $1,
+            name = $2,
+            trade_name = $3,
+            phone = $4,
+            phone_1 = $5,
+            address = $6,
+            state = 1,
+            region = $7
+            create_time = current_date
+            WHERE store.partner_id = $8
+            `;
+        await query(querytext, postArray);
+        result ={result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9051;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
+const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE partner SET
+            sido_code = $1,
+            sgg_code = $2
+            WHERE id = $3
+            `;
+        var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, partner_id], -90723);
+        if(errcode){
+            return {result: errcode}
+        }
+        if(rowCount > 1){
+            return {result: -90724}
+        }
+        else if(rowCount <1){
+            return {result: -90725}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -90722;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
+const makeMeStore908 = async(store_info)=>{
+    try{
+        const querytext = `
+            WITH cte AS(
+                UPDATE partner SET
+                store_id = $1,
+                state = 2
+                WHERE partner.id = $2
+            )
+            INSERT INTO store(
+                id, partner_id, 
+                uuid, name,
+                trade_name, phone,
+                phone_1, address,
+                state,
+                create_time, score,
+                score_sum, score_weight,
+                region
+            )
+            SELECT
+                $1, $2,
+                $3, $4,
+                $5, $6,
+                $7, $8,
+                -2,
+                current_timestamp, 0,
+                0, 0,
+                sgg.name
+            FROM partner
+            INNER JOIN location_sgg AS sgg
+            ON partner.id = $2
+            AND sgg.code = partner.sgg_code
+            RETURNING id AS store_id
+        `;
+        //여기서 store_id 줘야되나???? 필요없지 않나?
+        var strDate = String(Date.now());
+        //cut strDate 0.001sec part and change type to Integer
+        var store_id = strDate.substr(0,12);
+        var paramArray = [
+            store_id, store_info.partner_id,
+            store_info.uuid, store_info.name,
+            store_info.trade_name, store_info.phone,
+            store_info.phone_1, store_info.address
+        ];
+        var {rows, rowCount, errcode} = await query(querytext, paramArray, -9082);
+        if(errcode){
+            return {result: errcode}
+        }
+        if(rowCount > 1){
+            return {result: -9084}
+        }
+        else if(rowCount <1){
+            return {result: -9085}
+        }
+        console.log(rows);
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9081;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const PartnerToStore909 = async(partner_id)=>{
+    try{
+        const querytext = `
+            WITH cte AS(
+                UPDATE store SET
+                state = 1
+            )
+            UPDATE partner SET
+            store_id = store.id,
+            state = 3
+            FROM store
+            WHERE partner.id = $1
+            AND store.partner_id = $1
+            RETURNING store_id
+        `;
+       
+        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9092);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -9092}
+        }
+        result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
+        return result;
+    }
+    catch(err){
+        result.result = -9091;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+
 const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
     try{
@@ -698,15 +650,55 @@ const PartnerShutAccount911 = async(partner_id) =>{
     }
 };
 
+const updatePushTokenPartner = async(login_id, device_token)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE partner SET
+            push_token = $2
+            WHERE login_id = $1
+        `;
+        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
+        console.log(rowCount);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const updatePushTokenStore = async(login_id, device_token)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store SET
+            push_token = $2
+            WHERE login_id = $1
+        `;
+        var {rows, rowCount} = await query(querytext, [login_id, device_token]);
+        console.log(rowCount);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+
 module.exports = {
     test,
-    //partner login query
-    updatePushTokenPartner,
-    updatePushTokenStore,
-    getP001GetPassword,
-    postP004LoginIdCheck,
-    postP004IdPassword,
-    postP007LocationCode,
     //user login query
     get001GetPassword,
     post004LoginIdCheck,
@@ -721,11 +713,19 @@ module.exports = {
     UserUpdateToken008,
     UserDeleteToken008,
     UserShutAccount008,
-    //partner logout
-    PartnerUpdateToken909,
-    PartnerLogout910,
-    PartnerShutAccount911,
+    //partner login query
+    getP001GetPassword,
+    postP004LoginIdCheck,
+    postP004IdPassword,
+    postP007LocationCode,
     //parter becoming store
     makeMeStore908,
     PartnerToStore909,
+    updatePushTokenPartner,
+    updatePushTokenStore,
+    PartnerUpdateToken909,
+    //partner logout
+    PartnerLogout910,
+    //partner shut account
+    PartnerShutAccount911,
 };

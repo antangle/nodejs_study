@@ -322,7 +322,198 @@ const UserShutAccount410 = async(user_id) =>{
   }
 };
 
+
+//store myPage
+
+const myPageNeededInfo801 = async(partner_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT partner.state, store.score, store.trade_name,
+      store.address
+      FROM partner
+      LEFT JOIN store
+      ON store.partner_id = $1
+      AND store.state = 1
+      LEFT JOIN score
+      ON partner.store_id = score.store_id
+      WHERE partner.id = $1
+    `;
+    var {rows, rowCount, errcode} = await query(querytext, [partner_id], -8014);
+    if(errcode){
+        return {result: errcode};
+    }
+    if(rowCount !== 1){
+        return {result: -8013};
+    }
+    result = {
+      result: define.const_SUCCESS, 
+      state: rows[0].state,
+      score: rows[0].score, 
+      address: rows[0].address
+    };
+    return result;
+  }
+  catch(err){
+    result.result = -8011;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+};
+
+const myPageHelp802 = async(partner_id, type, comment)=>{
+  var result = {};
+  try{
+    const querytext = `
+      INSERT INTO help_store(partner_id, type, comment)
+      VALUES($1, $2, $3)
+    `;
+    var {rows, rowCount, errcode} = await query(querytext, [partner_id, type, comment], -8024);
+    if(errcode){
+        return {result: errcode};
+    }
+    if(rowCount !== 1){
+        return {result: -8023};
+    }
+    result.result = define.const_SUCCESS;
+    return result;
+  }
+  catch(err){
+    result.result = -8021;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+};
+
+const myReview803 = async(partner_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT score.score, score.comment,
+      users.nick, device.name, 
+      auction.win_time
+      FROM store
+      INNER JOIN score
+      ON score.store_id = store.id
+      AND store.partner_id = $1
+      INNER JOIN users
+      ON score.user_id = users.id
+      INNER JOIN deal
+      ON score.deal_id = deal.id
+      INNER JOIN auction
+      ON deal.auction_id = auction.id
+      INNER JOIN device
+      ON deal.device_id = device.id
+    `;
+    var {rows, rowCount, errcode} = await query(querytext, [partner_id], -8034);
+    if(errcode){
+        return {result: errcode};
+    }
+    if(rowCount === 0){
+        return {result: -8033};
+    }
+    result = {review: rows, count: rowCount, result: define.const_SUCCESS}
+    return result;
+  }
+  catch(err){
+    result.result = -8031;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+};
+
+
+const getPartnerPassword804 = async(partner_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+    SELECT login_pwd FROM partner
+    WHERE id = $1
+    AND EXISTS(
+      SELECT 1 FROM partner
+      WHERE id = $1
+    )
+  `;
+    var {rows, rowCount, errcode} = await query(querytext, [partner_id], -80403);
+    if(errcode){
+        return {result: errcode};
+    }
+    if(rowCount === 0){
+      //존재하지 않는 유저
+      return {result: -80404};
+    }
+    result = {hash_pwd: rows[0].login_pwd, result: define.const_SUCCESS}
+    return result;
+  }
+  catch(err){
+    result.result = -80401;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+};
+
+const changePartnerPassword804 = async(partner_id, hash_pwd)=>{
+  var result = {};
+  try{
+    const querytext = `
+      UPDATE partner SET
+      login_pwd = $2
+      WHERE id = $1
+    `;
+    var {rows, rowCount, errcode} = await query(querytext, [partner_id, hash_pwd], -40413);
+    if(errcode){
+        return {result: errcode};
+    }
+    if(rowCount === 0){
+        return {result: -80412};
+    }
+    result = {result: define.const_SUCCESS}
+    return result;
+  }
+  catch(err){
+    result.result = -80411;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+};
+
+const partnerShutAccount810 = async(partner_id) =>{
+  var result = {}
+  try{
+      const querytext = `
+        WITH cte AS(
+          UPDATE store SET
+          state = -1
+          WHERE partner_id = $1
+        )
+          UPDATE partner SET
+          state = -1,
+          update_time = current_timestamp,
+          push_token = NULL
+          WHERE id = $1
+      `;
+      var {rows, rowCount, errcode} = await query(querytext, [partner_id], -41013);
+      if(errcode){
+        return {result: errcode};
+      }
+      if(rowCount < 1){
+        return {result: -81014};
+      }
+      else if(rowCount > 1){
+        return {result: -81015};
+      }
+      return {result: define.const_SUCCESS};
+  }
+  catch(err){
+      result.result = -81016;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+  }
+};
+
 module.exports = {
+
+  //user myPage
   myPageNeededInfo401,
   myPageHelp402,
   myReview403,
@@ -333,5 +524,12 @@ module.exports = {
   post007LocationCode,
   getUserPassword406,
   changeUserPassword406,
-  UserShutAccount410
+  UserShutAccount410,
+  //store myPage
+  myPageNeededInfo801,
+  myPageHelp802,
+  myReview803,
+  getPartnerPassword804,
+  changePartnerPassword804,
+  partnerShutAccount810
 };

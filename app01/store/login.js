@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const partner = require('../common/query_login');
 const define = require('../../definition/define');
-const {helper} = require('../../controller/validate');
+const {helper, comparePassword} = require('../../controller/validate');
 const verify = require('../../middleware/verify');
 
 router.use(express.urlencoded({limit:'50mb', extended: false }));
@@ -14,7 +14,6 @@ router.use(express.json({limit: '50mb'}));
 router.get('/test1', verify.verifyToken, (req, res) =>{
     res.send('hi you are verified');
 });
-
 
 router.get('/test', async(req, res) =>{
     var result = {};
@@ -26,7 +25,7 @@ router.get('/test', async(req, res) =>{
     catch(err){
         console.log('router ERROR: P904 - CheckId904/' + err);
         result.result = -9021;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -42,7 +41,6 @@ router.post('/Login901', async (req, res) =>{
     }
     try{
         var dbResponse = await partner.getP001GetPassword(login_id);
-        console.log(dbResponse);
         if(dbResponse.result !== 1){
             return res.json({result: -9012});
         }
@@ -57,7 +55,8 @@ router.post('/Login901', async (req, res) =>{
         result = {
             token: token, 
             partner_id: dbResponse.data.partner_id,
-            store_id: dbResponse.data.store_id
+            store_id: dbResponse.data.store_id,
+            state: dbResponse.data.state
         }
         if(dbResponse.data.state === 1){
             await partner.updatePushTokenPartner(login_id, device_token)
@@ -88,7 +87,6 @@ router.post('/Login901', async (req, res) =>{
 router.post('/toJWT902', async(req, res) =>{
     var result = {};
     var {name, mobileno, birthdate} = req.body;
-    console.log(name);
     if (!name|| !mobileno || !birthdate) {
         return res.json({result: 9021});
     }
@@ -97,10 +95,8 @@ router.post('/toJWT902', async(req, res) =>{
         mobileno: mobileno, 
         birthdate: birthdate
     };
-    console.log('json:' + json)
     try{
         var encryptedData = helper.encryptJson(json);
-        console.log(jwt.decode(encryptedData));
         if(encryptedData === -9022){
             return res.json({result: encryptedData})
         }
@@ -149,8 +145,6 @@ router.post('/SignIn904', async (req, res) =>{
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
         var store_info = jwt.decode(info);
-        console.log(store_info.header);
-        console.log(store_info.payload);
         result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);

@@ -7,6 +7,7 @@ app.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const define = require('../../definition/define')
 const store = require('../db_layer/query_storeAuction')
+const myPage = require('../db_layer/query_myPage')
 
 
 router.get('/S101HomepageInfo', async (req, res) =>{
@@ -209,4 +210,123 @@ router.get('/S303MyDealDetail', async (req, res) =>{
         return res.json(result);
     }
 });
+
+
+router.get('/myPageNeededInfo801', async(req,res) =>{
+    var result ={};
+    try{
+        var {partner_id} = req.query;
+        if(!partner_id){
+            return res.json({result: 8011});
+        }
+        result = await myPage.myPageNeededInfo801(partner_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result)
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: myPageNeededInfo801/' + err);
+        result.result = -8011;
+        return res.json(result);
+    }
+});
+
+router.post('/myPageHelp802', async(req,res) =>{
+    var result ={};
+    try{
+        var {partner_id, type, comment} = req.body;
+        if(!partner_id || !type ||!comment){
+            return res.json({result: 8021});
+        }
+        result = await myPage.myPageHelp802(partner_id, type, comment);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: myPageHelp802/' + err);
+        result.result = -8021;
+        return res.json(result);
+    }
+});
+
+router.get('/myReview803', async(req,res) =>{
+    var result ={};
+    try{
+        var {partner_id} = req.query;
+        if(!partner_id){
+            return res.json({result: 8032});
+        }
+        result = await myPage.myReview803(partner_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: myReview803/' + err);
+        result.result = -8031;
+        return res.json(result);
+    }
+});
+
+router.post('/changePassword804', async(req,res) =>{
+    var result ={};
+    var {partner_id} = req.body;
+    //old_pwd: 과거 비번, new_pwd: 바뀌는 비번
+    if(!partner_id || !req.body.old_pwd || !req.body.new_pwd){
+        //input 존재하지 않음
+        return res.json({result: 80401});
+    }
+    if(!helper.isValidPassword(req.body.new_pwd)){
+        return res.json({result: -80405});
+    }
+    try{
+        const pwd = await myPage.getPartnerPassword804(partner_id);
+        if(pwd.result !== define.const_SUCCESS){
+            //getPartnerPassword804에서 뭔가 실패
+            return res.json({result: pwd.result});
+        }
+        if(!helper.comparePassword(req.body.old_pwd, pwd.hash_pwd)){
+            return res.json({result: 80402});
+        }
+        const hash = helper.hashPassword(req.body.new_pwd);
+        delete req.body.new_pwd;
+
+        result = await myPage.changePartnerPassword804(partner_id, hash);
+        if(result.result !== define.const_SUCCESS){
+            return res.json({result: result.result});
+        }
+        return res.json(result);
+    }
+    catch(err){
+        delete req.body.new_pwd;
+        console.log('router ERROR: changePassword804/' + err);
+        result.result = -8060;
+        return res.json(result);
+    }
+});
+
+router.post('/partnerShutAccount810', async(req,res) =>{
+    var result ={};
+    try{
+        var {partner_id} = req.body;
+        if(!partner_id){
+            return res.json({result: -8102});
+        }
+        result = await myPage.partnerShutAccount810(partner_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: partnerShutAccount810/' + err);
+        result.result = -8101;
+        return res.json(result);
+    }
+});
+
 module.exports = router;
