@@ -1054,6 +1054,135 @@ paths:
           description: ""
         "400":
           description: "Invalid status value"
+  /api/store/myPageNeededInfo801:
+    get:
+      tags:
+      - "store"
+      summary: "스토어 마이페이지 홈"
+      description: ""
+      operationId: "myPageNeededInfo801"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "partner_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/myPageHelp802:
+    get:
+      tags:
+      - "store"
+      summary: "파트너 1:1 문의"
+      description: ""
+      operationId: "myPageHelp802"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "partner_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "type"
+        in: "query"
+        description: ""
+        required: true
+        type: "integer"
+        collectionFormat: "multi"
+      - name: "comment"
+        in: "query"
+        description: "아마 text?"
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/myReview803:
+    get:
+      tags:
+      - "store"
+      summary: "스토어 리뷰 전부보기"
+      description: ""
+      operationId: "myReview803"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "partner_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/changePassword804:
+    get:
+      tags:
+      - "store"
+      summary: "내 딜 상세"
+      description: ""
+      operationId: "changePassword804"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "partner_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "old_pwd"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      - name: "new_pwd"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
+  /api/store/partnerShutAccount810:
+    get:
+      tags:
+      - "store"
+      summary: "회원탈퇴"
+      description: ""
+      operationId: "partnerShutAccount810"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "partner_id"
+        in: "query"
+        description: ""
+        required: true
+        type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: "Invalid status value"
   /login/user_login:
     post:
       tags:

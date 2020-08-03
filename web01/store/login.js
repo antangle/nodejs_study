@@ -32,7 +32,7 @@ router.get('/test', async(req, res) =>{
 //partner login/signup API
 router.post('/Login901', async (req, res) =>{
     var result = {};
-    var {login_id, push_token} = req.body;
+    var {login_id, device_token} = req.body;
     if (!login_id || !req.body.login_pwd) {
         return res.json({result: -9011});
     }
@@ -163,7 +163,7 @@ router.post('/SignIn904', async (req, res) =>{
 
 router.get('/GetSdCode907', async (req, res) =>{
     var result ={};
-    try{     
+    try{
         result = await partner.get007SdCode();
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -181,7 +181,7 @@ router.get('/GetSggCode907', async (req, res) =>{
     var result ={};
     var {sido_code} = req.query;
     if(sido_code <100){
-        return res.json({result: 90711});
+        return res.json({result: -90711});
     }
     try{
         result = await partner.get007SggCode(sido_code);
@@ -201,7 +201,7 @@ router.post('/postLocationCode907', async (req, res) =>{
     var result ={};
     var {partner_id, sido_code, sgg_code} = req.body;
     if(!sido_code || !sgg_code || !partner_id || sido_code <100|| sgg_code < 100){
-        return res.json({result: 90721});
+        return res.json({result: -90721});
     }
     try{
         result = await partner.postP007LocationCode(sido_code, sgg_code, partner_id);
@@ -228,7 +228,7 @@ router.post('/makeMeStore908', async(req, res) =>{
         }
     */
     if(!store_info.partner_id || !store_info.uuid || !store_info.name || !store_info.phone){
-        return res.json({result: 9081})
+        return res.json({result: -9083})
     }
     try{
         result = await partner.makeMeStore908(store_info);
@@ -248,7 +248,7 @@ router.post('/partnerToStore909', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
     if(!partner_id){
-        return res.json({result: 9091})
+        return res.json({result: -9093})
     }
     try{
         result = await partner.PartnerToStore909(partner_id);
@@ -264,28 +264,7 @@ router.post('/partnerToStore909', async(req, res) =>{
     }
 });
 
-router.post('/checkState910', async(req, res) =>{
-    var result ={};
-    var {partner_id} = req.body;
-    if(!partner_id){
-        return {result: 9101}
-    }
-    try{
-        result = await partner.checkState910(partner_id);
-        if(result.result != define.const_SUCCESS){
-            return res.json(result);
-        }
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: P910 - checkState912/' + err);
-        result.result = -9101;
-        return res.json(result);
-    }
-})
-
-
-router.post('/postUpdateToken910', async (req, res) =>{
+router.post('/postUpdateToken909', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
@@ -298,24 +277,24 @@ router.post('/postUpdateToken910', async (req, res) =>{
     catch(err){
         console.log('router ERROR: P009 - postUpdateToken909/' + err);
         result.result = -928;
-        return res.json(result);
+        return res.status(400).json(result);
     }
 });
 
-router.post('/postLogout911', async (req, res) =>{
+router.post('/postLogout910', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
         result = await partner.PartnerLogout910(partner_id);
         if(result.result != define.const_SUCCESS){
-            return res.json(result);
+            return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: P910 - postLogout910/' + err);
         result.result = -929;
-        return res.json(result);
+        return res.status(400).json(result);
     }
 });
 
@@ -325,14 +304,14 @@ router.post('/postShutAccount911', async (req, res) =>{
     try{
         result = await partner.PartnerShutAccount911(partner_id);
         if(result.result != define.const_SUCCESS){
-            return res.json(result);
+            return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: P911 - postShutAccount911/' + err);
         result.result = -930;
-        return res.json(result);
+        return res.status(400).json(result);
     }
 });
 

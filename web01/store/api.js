@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const app = express();
 
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit:'50mb', extended: false }));
+router.use(express.json({limit: '50mb'}));
+router.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const define = require('../../definition/define')
-const store = require('../db_layer/query_storeAuction')
-const myPage = require('../db_layer/query_myPage')
-
+const store = require('../common/query_storeAuction')
+const myPage = require('../common/query_myPage');
+const {helper, comparePassword} = require('../../controller/validate');
 
 router.get('/S101HomepageInfo', async (req, res) =>{
     var result ={};
@@ -40,6 +39,7 @@ router.get('/S101HomepageInfo', async (req, res) =>{
         return res.json(result);
     }
 });
+
 router.get('/S201SearchAuction', async (req, res) =>{
     var result ={};
     try{
@@ -165,7 +165,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         result.result = -708;
         return res.json(result);
     }
-})
+});
 
 router.get('/S301MyOngoingDeal', async (req, res) =>{
     var result ={};
@@ -218,6 +218,7 @@ router.get('/S303MyDealDetail', async (req, res) =>{
     }
 });
 
+// store myPage
 
 router.get('/myPageNeededInfo801', async(req,res) =>{
     var result ={};
