@@ -64,7 +64,7 @@ router.post('/Login901', async (req, res) =>{
         }
         else if(dbResponse.data.state === 2){
             await partner.updatePushTokenPartner(login_id, device_token)
-            result.result = 9012;
+            result.result = 9011;
         }
         else if(dbResponse.data.state === 3){
             await partner.updatePushTokenStore(login_id, device_token);
