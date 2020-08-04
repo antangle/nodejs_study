@@ -418,13 +418,13 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 create_time, dupinfo
             )
             VALUES(
-                $1, $2, 
-                $3, $4, 
-                $5, $6, 
+                $1, $2,
+                $3, $4,
+                $5, $6,
                 1, 1,
                 current_timestamp, $7
             )
-            ON CONFLICT (login_id) DO NOTHING
+            ON CONFLICT (login_id, dupinfo) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());

@@ -114,7 +114,7 @@ router.post('/checkDupinfo', async(req, res) =>{
     var result = {};
     var {info} = req.body;
     if (!info) {
-        return res.json({result: 90231});
+        return res.json({result: -90234});
     }
     var {dupinfo} = jwt.decode(info);        
     try{
@@ -167,9 +167,17 @@ router.post('/SignIn904', async (req, res) =>{
         return res.json({result: -9041});
     }
     try{
+        //hash password
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
+        //jwt decode
         var store_info = jwt.decode(info);
+
+        var check = await partner.checkDupinfoPartner(dupinfo);
+        if(check.result !== define.const_SUCCESS){
+            return res.json({result: 9042});
+        }
+        
         result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
