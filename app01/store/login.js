@@ -110,6 +110,27 @@ router.post('/toJWT902', async(req, res) =>{
     }
 });
 
+router.post('/checkDupinfo', async(req, res) =>{
+    var result = {};
+    var {info} = req.body;
+    if (!info) {
+        return res.json({result: 90231});
+    }
+    var {dupinfo} = jwt.decode(info);        
+    try{
+        result = await partner.checkDupinfoPartner(dupinfo);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: P902 - toJWT902/' + err);
+        result.result = -90231;
+        return res.status(400).json(result);
+    }
+});
+
 router.post('/CheckId904', async (req, res) =>{
     var result = {};
     var {login_id} = req.body;
