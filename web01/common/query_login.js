@@ -348,7 +348,34 @@ const getP001GetPassword = async(login_id, push_token)=>{
         return result;
     }
 };
-
+const checkDupinfoPartner = async(dupinfo) => {
+    var result = {};
+    try{
+        const querytext = `
+        SELECT 1 FROM partner
+        WHERE dupinfo = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [dupinfo], -90232);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: 1};
+        }
+        if(rowCount === 1){
+            return {result: 90231};    
+        }
+        if(rowcount > 1){
+            return {result:-90234}
+        }
+        return result;
+    }
+    catch(err){
+        result.result = -90231;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
 const postP004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
@@ -391,13 +418,13 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 create_time, dupinfo
             )
             VALUES(
-                $1, $2, 
-                $3, $4, 
-                $5, $6, 
+                $1, $2,
+                $3, $4,
+                $5, $6,
                 1, 1,
                 current_timestamp, $7
             )
-            ON CONFLICT (login_id) DO NOTHING
+            ON CONFLICT (login_id, dupinfo) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());
@@ -753,6 +780,7 @@ module.exports = {
     UserShutAccount008,
     //partner login query
     getP001GetPassword,
+    checkDupinfoPartner,
     postP004LoginIdCheck,
     postP004IdPassword,
     postP007LocationCode,

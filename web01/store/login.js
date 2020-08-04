@@ -101,11 +101,33 @@ router.post('/toJWT902', async(req, res) =>{
         if(encryptedData === -9022){
             return res.json({result: encryptedData})
         }
+        console.log(encryptedData);
         return res.json({result:1, encryptedData: encryptedData});
     }
     catch(err){
         console.log('router ERROR: P902 - toJWT902/' + err);
         result.result = -9021;
+        return res.status(400).json(result);
+    }
+});
+
+router.post('/checkDupinfo', async(req, res) =>{
+    var result = {};
+    var {info} = req.body;
+    if (!info) {
+        return res.json({result: -90234});
+    }
+    var {dupinfo} = jwt.decode(info);        
+    try{
+        result = await partner.checkDupinfoPartner(dupinfo);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: P902 - toJWT902/' + err);
+        result.result = -90231;
         return res.status(400).json(result);
     }
 });
@@ -146,9 +168,17 @@ router.post('/SignIn904', async (req, res) =>{
         return res.json({result: -9041});
     }
     try{
+        //hash password
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
+        //jwt decode
         var store_info = jwt.decode(info);
+
+        var check = await partner.checkDupinfoPartner(dupinfo);
+        if(check.result !== define.const_SUCCESS){
+            return res.json({result: 9042});
+        }
+
         result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
