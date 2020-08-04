@@ -36,9 +36,6 @@ router.post('/Login901', async (req, res) =>{
     if (!login_id || !req.body.login_pwd) {
         return res.json({result: -9011});
     }
-    if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd)){
-        return res.json({result: -9011})
-    }
     try{
         var dbResponse = await partner.getP001GetPassword(login_id);
         if(dbResponse.result !== 1){
