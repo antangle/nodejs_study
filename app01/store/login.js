@@ -101,6 +101,7 @@ router.post('/toJWT902', async(req, res) =>{
         if(encryptedData === -9022){
             return res.json({result: encryptedData})
         }
+        console.log(encryptedData);
         return res.json({result:1, encryptedData: encryptedData});
     }
     catch(err){
@@ -177,7 +178,7 @@ router.post('/SignIn904', async (req, res) =>{
         if(check.result !== define.const_SUCCESS){
             return res.json({result: 9042});
         }
-        
+
         result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
