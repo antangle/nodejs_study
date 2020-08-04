@@ -424,7 +424,7 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 1, 1,
                 current_timestamp, $7
             )
-            ON CONFLICT (login_id, dupinfo) DO NOTHING
+            ON CONFLICT (login_id) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());
