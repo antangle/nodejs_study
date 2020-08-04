@@ -10,28 +10,7 @@ pool.on('error', function (err, client) {
 
 //partner login query(P001~P007)
 
-
-const test = async(partner_id)=>{
-    var result = {};
-    try{
-        const querytext = `
-            SELECT name
-            FROM partner
-            WHERE partner.id = $1
-        `;
-        var {rows, rowCount} = await query(querytext, [partner_id]);
-        if(rowCount !== 1){
-            return {result: -9000}
-        }
-        result = {result: define.const_SUCCESS, name: rows[0].name};
-        return result;
-    }
-    catch(err){
-        result.result = -9000;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
+//#region user
 
 // user login query
 const get001GetPassword = async(login_id)=>{
@@ -315,8 +294,9 @@ const UserShutAccount008 = async(user_id) =>{
         return result;
     }
 };
+//#endregion
 
-//store LOGIN
+//#region store
 const getP001GetPassword = async(login_id, push_token)=>{
     var result = {};
     try{
@@ -766,8 +746,52 @@ const updatePushTokenStore = async(login_id, device_token)=>{
     }
 };
 
+const whoSaidMakeMeStore = async()=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT id AS partner_id
+            FROM partner
+            WHERE state = 2
+        `;
+        var {rows, rowCount} = await query(querytext, []);
+        console.log(rowCount);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const test = async(partner_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT name
+            FROM partner
+            WHERE partner.id = $1
+        `;
+        var {rows, rowCount} = await query(querytext, [partner_id]);
+        if(rowCount !== 1){
+            return {result: -9000}
+        }
+        result = {result: define.const_SUCCESS, name: rows[0].name};
+        return result;
+    }
+    catch(err){
+        result.result = -9000;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+//#endregion
 module.exports = {
-    test,
     //user login query
     get001GetPassword,
     post004LoginIdCheck,
@@ -798,5 +822,6 @@ module.exports = {
     PartnerLogout910,
     //partner shut account
     PartnerShutAccount911,
-    checkState910
+    checkState910,
+    test,
 };

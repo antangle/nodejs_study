@@ -42,7 +42,7 @@ router.post('/Login901', async (req, res) =>{
     try{
         var dbResponse = await partner.getP001GetPassword(login_id);
         if(dbResponse.result !== 1){
-            return res.json({result: -9012});
+            return res.json({result: dbResponse.result});
         }
         if(!dbResponse.data.hash_pwd){
             return res.json({result: 9013});
