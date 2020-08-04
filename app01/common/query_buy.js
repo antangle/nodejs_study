@@ -97,6 +97,7 @@ const countAuctions = async(user_id) =>{
     const querytext = `
       SELECT count(user_id) FROM auction
       WHERE user_id = $1
+      AND DATE(create_time) = current_date
       `;
     var {rows, rowCount, errcode} = await query(querytext, [user_id], -10012);
     if(errcode){
@@ -277,25 +278,33 @@ const checkIsFirstAuction = async(user_id)=>{
   try{
     var result = {};
     const querytext = `
-    SELECT
-    COALESCE(
-      (SELECT device_id FROM auction_temp 
-      WHERE user_id = $1), -2) AS device_id, 
-    COALESCE(
-      (SELECT state FROM auction_temp
-      WHERE user_id = $1), -2) AS state
+      SELECT temp.device_id, temp.state FROM auction_temp AS temp
+      WHERE EXISTS(
+        SELECT 1 FROM device
+        WHERE device.id = temp.device_id
+      )
+      AND temp.user_id = $1
       `;
     var {rows, rowCount, errcode} = await query(querytext, [user_id], -10122);
     if(errcode){
       return {result: errcode};
     }
-    if(rowCount === 0){
+    if(rowCount > 1){
       return {result: -10123}
     }
-    result = {
-      state: rows[0].state, 
-      temp_device_id: rows[0].device_id,
-      result: define.const_SUCCESS
+    else if (rowCount === 1){
+      result = {
+        state: rows[0].state, 
+        temp_device_id: rows[0].device_id,
+        result: define.const_SUCCESS
+      }
+    }
+    else{
+      result = {
+        state: define.const_NULL,
+        temp_device_id: define.const_NULL,
+        result: define.const_SUCCESS
+      }
     }
     return result;
   }
@@ -559,15 +568,18 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
       ON device.id = official.device_id
       AND device.id = detail.device_id
     `;
-    var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, payment_id]);
+    var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, payment_id], -10322);
+    if(errcode){
+      return {result: errcode};
+    }
     if(rowCount === 0){
-      return {result: -1223}
+      return {result: -10323};
     }
     result = {discount_official: rows[0].discount_official, result: 1}
     return result;
   }
   catch(err){
-    result.result = -1222;
+    result.result = -10321;
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
@@ -577,15 +589,19 @@ const postStep3Update = async(check, postInput)=>{
   var result = {};
   try{
     if(check.state == -1 || check.state == define.const_NULL){
-      result.result = -1231;
-      console.log('this user\'s temp_auction record is either NULL or DEAD');
+      return {result: 10333};
     }
     else if(check.temp_device_id == define.const_NULL || check.device_detail_id == define.const_NULL){
-      result.result = -1232;
-      console.log('this user hasen\'t selected a device yet');
+      return {result: 10334};
     }
     else{
       const querytext = `
+        WITH cte AS(
+          UPDATE auction_temp
+          SET state = -1,
+          step = 3
+          WHERE user_id = $1
+        )
         INSERT INTO auction(user_id,
           device_detail_id,
           device_id,
@@ -612,21 +628,28 @@ const postStep3Update = async(check, postInput)=>{
         postInput.agency_use, postInput.agency_hope, 
         postInput.period, postInput.contract_list
       ]
-      var {rows, rowCount, errcode} = await query(querytext, inputarray);
+      var {rows, rowCount, errcode} = await query(querytext, inputarray, -10334);
+      if(errcode){
+        return {result: errcode};
+      }
       if(rowCount === 0){
-        throw('PostStep3 query error');
+        return {result: -10335};
+      }
+      else if(rowCount > 1){
+        return {result: -10336};
       }
       result.result = define.const_SUCCESS;
     }
     return result;
   }
   catch(err){
-    result.result = -1234;
+    result.result = -10331;
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
 };
 
+//필요없어짐
 const killAuctionTempState = async(user_id)=>{
   var result = {};
   try{
@@ -635,7 +658,16 @@ const killAuctionTempState = async(user_id)=>{
       SET state = -1
       WHERE user_id = $1
       `;
-    await query(querytext, [user_id]);
+    var {rows, rowCount, errcode} = await query(querytext, [user_id]);
+    if(errcode){
+      return {result: errcode};
+    }
+    if(rowCount === 0){
+      return {result: -10335};
+    }
+    else if(rowCount > 1){
+      return {result: -10336};
+    }
     result.result = define.const_SUCCESS;
     return result;
   }
@@ -661,17 +693,25 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
       (SELECT device_detail_id FROM auction_temp
       WHERE user_id = $1), -2) AS device_detail_id
       `;
-    var {rows, rowCount, errcode} = await query(querytext, [user_id]);
-    result = {
-      "state": rows[0].state, 
-      "temp_device_id":rows[0].device_id,
-      "device_detail_id":rows[0].device_detail_id,
-      "result": 1
+    var {rows, rowCount, errcode} = await query(querytext, [user_id], -10412);
+    if(errcode){
+      return {result: errcode};
     }
+    if(rowCount === 0){
+      return {result: -10413};
+    }
+    else if(rowCount > 1){
+      return {result: -10414};
+    }
+    result = {
+      state: rows[0].state, 
+      temp_device_id: rows[0].device_id,
+      device_detail_id: rows[0].device_detail_id,
+      result: define.const_SUCCESS
+    };
     //error handling when state, device_id, device_detail_id is null
-    if(result.state != -1){
-      var errMessage = 'state is not -1'
-      throw(errMessage)
+    if(result.state !== -1){
+      return {result: -10415};
     }
     const querytext2 = `
     SELECT device.name AS device_name,
@@ -690,13 +730,22 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
       INNER JOIN device_detail AS detail
       ON detail.id = $2
     `;
-    var {rows, rowCount, errcode} = await query(querytext2, [result.temp_device_id, result.device_detail_id]);
+    var {rows, rowCount, errcode} = await query(querytext2, [result.temp_device_id, result.device_detail_id], -10416);
+    if(errcode){
+      return {result: errcode};
+    }
+    if(rowCount === 0){
+      return {result: -10417};
+    }
+    else if(rowCount > 1){
+      return {result: -10418};
+    }
     result.selected_device_array = rows;
     result.result = define.const_SUCCESS;
     return result;
   }
   catch(err){
-    result.result = -1311;
+    result.result = -10411;
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }

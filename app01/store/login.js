@@ -86,14 +86,15 @@ router.post('/Login901', async (req, res) =>{
 
 router.post('/toJWT902', async(req, res) =>{
     var result = {};
-    var {name, mobileno, birthdate} = req.body;
-    if (!name|| !mobileno || !birthdate) {
+    var {name, mobileno, birthdate, dupinfo} = req.body;
+    if (!name|| !mobileno || !birthdate || !dupinfo) {
         return res.json({result: 9021});
     }
     var json = {
         name: name, 
         mobileno: mobileno, 
-        birthdate: birthdate
+        birthdate: birthdate,
+        dupinfo: dupinfo
     };
     try{
         var encryptedData = helper.encryptJson(json);
@@ -103,7 +104,7 @@ router.post('/toJWT902', async(req, res) =>{
         return res.json({result:1, encryptedData: encryptedData});
     }
     catch(err){
-        console.log('router ERROR: P904 - CheckId904/' + err);
+        console.log('router ERROR: P902 - toJWT902/' + err);
         result.result = -9021;
         return res.status(400).json(result);
     }
@@ -136,6 +137,9 @@ router.post('/SignIn904', async (req, res) =>{
     var result = {};
     var {login_id, info} = req.body;
     if(!info){
+        return res.json({result: 9041});
+    }
+    if(!login_id || !req.body.login_pwd) {
         return res.json({result: 9041});
     }
     if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd)){

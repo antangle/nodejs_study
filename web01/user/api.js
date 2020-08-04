@@ -49,68 +49,55 @@ router.get('/getHomepageDevice', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 100/' + err);
-        result.result = -100;
-        return res.json(result);
+        console.log('router ERROR: getHomepageDevice/' + err);
+        return res.json({result: -10001});
     }
 });
 
-router.get('/countAuction', async (req, res) =>{
+router.post('/getStep1Latest', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
-        result = await buy.countAuctions(user_id); 
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+        var {user_id, device_id} = req.body;
+        if(!user_id && !device_id){
+            return res.json({result: 10101});
         }
-        return res.json(result);
-        }
-    catch(err){
-        console.log('router ERROR: 100/' + err);
-        result.result = -100;
-        return res.json(result);
-    }
-});
-
-router.get('/getStep1Latest', async(req,res) =>{
-    var result ={};
-    try{
-        var {user_id, device_id} = req.query;
         result = await buy.getAuctionTempWithUser(user_id, device_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         var latestDevices = await buy.getStep1Latest6();
-        if(latestDevices.result != define.const_SUCCESS)
-            throw latestDevices.result;
+        if(latestDevices.result !== define.const_SUCCESS){
+            return res.json(latestDevices.result);
+        }
         result.device_array = latestDevices.device_array;
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 101/' + err);
-        result.result = -101;
-        return res.json(result);
+        console.log('router ERROR: getStep1Latest/' + err);
+        return res.json({result: -10101});
     }
 });
 
-router.get('/getStep1WithBrand', async(req, res) => {
+router.post('/getStep1WithBrand', async(req, res) => {
     var result ={};
     try{
-        var {user_id, device_id, brand_id} = req.query;
+        var {user_id, device_id, brand_id} = req.body;
+        if(!user_id || !device_id || !brand_id){
+            return res.json({result: 10111});
+        }
         result = await buy.getAuctionTempWithUser(user_id, device_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         result = await buy.getStep1DeviceByBrand(brand_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 102/' + err);
-        result.result = -102;
-        return res.json(result);
+        console.log('router ERROR: getStep1WithBrand/' + err);
+        return res.json({result: -10111});
     }
 });
 
@@ -118,52 +105,60 @@ router.post('/postSaveStep1', async(req, res) =>{
     var result ={};
     try{
         var {user_id, device_id} = req.body;
-        var {state, temp_device_id} = await buy.checkIsFirstAuction(user_id);
+        if(!user_id || !device_id){
+            return res.json({result: 10121});
+        }
+        var check = await buy.checkIsFirstAuction(user_id);
+        if(check.result !== define.const_SUCCESS){
+            return res.json(check);
+        }
+        var state = check.state;
+        var temp_device_id = check.temp_device_id;
         if(state === define.const_DEAD || temp_device_id !== define.const_NULL){
-            const postInfo = await buy.postStep1Update(user_id, device_id);
-            if(postInfo.result != define.const_SUCCESS)
-                throw(postInfo.result);
-            result.result = define.const_SUCCESS;
+            var result = await buy.postStep1Update(user_id, device_id);
+            if(result.result != define.const_SUCCESS){
+                return res.json({result: result.result});
+            }
         }
         if (temp_device_id === define.const_NULL){
-            const postInfo = await buy.postStep1Insert(user_id, device_id);
-            if(postInfo.result != define.const_SUCCESS)
-                throw(postInfo.result);
-            result.result = define.const_SUCCESS;
+            var result = await buy.postStep1Insert(user_id, device_id);
+            if(result.result != define.const_SUCCESS){
+                return res.json({result: result.result});
+            }
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 103/' + err);
-        result.result = -103;
-        return res.json(result);
+        console.log('router ERROR: postSaveStep1/' + err);
+        return res.json({result: -10121});
     }
 });
 
 //step:2
-router.get('/getStep2ColorVolume', async(req,res) =>{
+router.post('/getStep2ColorVolume', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.body;
+        if(!user_id){
+            return res.json({result: 10211});
+        }
         result = await buy.getAuctionTempWithUser(user_id);
-        if(result.state === define.const_DEAD || result.temp_device_id === define.const_NULL){
-            result.result = -1111;
-            console.log('this user\'s state or device_id is either NULL or DEAD');
-            throw(result.result)
+        if(result.result !== define.const_SUCCESS){
+            return res.json({result: -10212});
         }
         var device_id = result.temp_device_id;
+
         var data = await buy.getStep2ColorVolume(device_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
         result.rowCount = data.rowCount;
         result.data = data.data;
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result)
-        }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 111/' + err);
-        result.result = -111;
-        return res.json(result);
+        console.log('router ERROR: getStep2ColorVolume/' + err);
+        return res.json({result: -10211});
     }
 });
 
@@ -171,53 +166,63 @@ router.post('/postSaveStep2', async (req, res) =>{
     var result ={};
     try{
         var {user_id, device_detail_id} = req.body;
+        if(!user_id || !device_detail_id){
+            return res.json({result: 10221});
+        }
+        //TODO: also have to check if device_detail_id matches device_id
         //check if auction_temp has that user_id
         var check = await buy.getAuctionTempWithUser(user_id);
+        if(check.result !== define.const_SUCCESS){
+            return res.json({result: -10222});
+        }
         result = await buy.postStep2Update(user_id, device_detail_id, check);
-        if(result.result !== define.const_SUCCESS)
-            throw(isError.result);
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: 112/' + err);
-        result.result = -112;
-        return res.json(result);
-    }
-});
-
-//step:3
-router.get('/getStep3Info', async(req,res) =>{
-    var result ={};
-    try{
-        var {user_id} = req.query;
-        result = await buy.getAuctionTempWithUserStep3(user_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 121/' + err);
-        result.result = -121;
+        console.log('router ERROR: postSaveStep2/' + err);
+        return res.json({result: -10221});
+    }
+});
+
+//step:3
+router.post('/getStep3Info', async(req,res) =>{
+    var result ={};
+    try{
+        var {user_id} = req.body;
+        if(!user_id){
+            return res.json({result: 10301})
+        }
+        result = await buy.getAuctionTempWithUserStep3(user_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
         return res.json(result);
     }
-    
+    catch(err){
+        console.log('router ERROR: getStep3Info/' + err);
+        return res.json({result: -10301});
+    }
 });
 
 router.get('/getStep3PaymentInfo', async(req,res) =>{
     var result ={};
     try{
-        var {agency, generation} = req.query;
-        result = await buy.getStep3PaymentInfo(agency, generation);
+        var {agency, generation, device_detail_id} = req.query;
+        if(!agency || !generation || !device_detail_id){
+            return res.json({result: 10311});
+        }
+        result = await buy.getStep3PaymentInfo(agency, generation, device_detail_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 122/' + err);
-        result.result = -122;
-        return res.json(result);
+        console.log('router ERROR: getStep3PaymentInfo/' + err);
+        return res.json({result: -10311});
     }
 });
 
@@ -225,15 +230,34 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
     var result ={};
     try{
         var {device_detail_id, payment_id} = req.query;
+        if(!device_detail_id || !payment_id){
+            return res.json({result: 10321})
+        }
         result = await buy.getSelectedPayment(device_detail_id, payment_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);                               
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 122/' + err);
-        result.result = -122;
+        console.log('router ERROR: getStep3OfficialInfo/' + err);
+        return res.json({result: -10321});
+    }
+});
+
+router.post('/countAuction', async (req, res) =>{
+    var result ={};
+    try{
+        var {user_id} = req.body;
+        result = await buy.countAuctions(user_id); 
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result)
+        }
+        return res.json(result);
+        }
+    catch(err){
+        console.log('router ERROR: countAuction/' + err);
+        result.result = -10001;
         return res.json(result);
     }
 });
@@ -242,52 +266,77 @@ router.post('/postSaveStep3', async (req, res) =>{
     var result ={};
     try{
         var postInput = req.body;
+        /*
+        postInput = {
+            user_id, payment_id,
+            agency_use, agency_hope, 
+            period, contract_list
+        }
+        check = {
+            device_detail_id, 
+            temp_device_id
+        }
+        */
+        //TODO: contract_list 에 대한 정규식 필요함
+        if(!postInput.user_id || !postInput.payment_id ||
+            !postInput.agency_use || !postInput.agency_hope || 
+            !postInput.period || !postInput.contract_list){
+                return res.json({result: 10331});
+            };
+        //TODO: 쿼리 단순화/ 분기해야한다
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
-        if(check.result != define.const_SUCCESS)
-            throw(check.result);
-        count = await buy.countAuctions(postInput.user_id);
-        if(count.result != define.const_SUCCESS)
-            throw(count.result);
+        if(check.result !== define.const_SUCCESS){
+            return res.json({result: -10332});
+        }
+        var count = await buy.countAuctions(postInput.user_id);
+        if(count.result !== define.const_SUCCESS){
+            return res.json({result: -10333});
+        }
         if(count.count >= 3){
-            result.result = -1233
-            throw(result.result)
+            return res.json({result: 10332});
         }
         //check returning device_id, state, device_detail_id
         //postInput has all the info of step 3
         result = await buy.postStep3Update(check, postInput);
         result.count = Number(count.count) + 1;
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
+        /* 그냥 step3Update 에 끼워넣음
         var kill = await buy.killAuctionTempState(postInput.user_id);
-        if(kill.result != define.const_SUCCESS)
-            throw(kill.result);
+        if(kill.result !== define.const_SUCCESS){
+            return res.json(kill);
+        }
+        */
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 123/' + err);
-        result.result = -123;
-        return res.json(result);
+        console.log('router ERROR: postSaveStep3/' + err);
+        return res.json({result: -10331});
     }
 });
 
-router.get('/finish', async(req,res) =>{
+router.post('/finish', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.body;
+        if(!user_id){
+            return res.json({result: 10411})
+        }
         result = await buy.finishAuctionTempDeviceInfo(user_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 131/' + err);
-        result.result = -131;
+        console.log('router ERROR: finish/' + err);
+        result.result = -10411;
         return res.json(result);
     }
 });
 
+//현재 진행중인 auction
 router.get('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
     var array =[]
@@ -331,7 +380,7 @@ router.post('/get201StateUpdate', async (req, res) =>{
             result= {result: define.const_SUCCESS, state: 1}
         }
         else{
-            throw('undefined ERROR')
+            result = {result: -20312}
         }
         return res.json(result);
     }

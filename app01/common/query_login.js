@@ -80,15 +80,16 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
     var result = {};
     try{
         const querytext = `
-            INSERT INTO users(id, login_id, login_pwd)
-            VALUES($1, $2, $3)
+            INSERT INTO users(id, login_id, login_pwd, hidden_login_id)
+            VALUES($1, $2, $3, $4)
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());
-        //cut strDate 0.001sec part and change type to Integer
-        var date = strDate.substr(0,12)
-        var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd]);
+        //cut strDate 0.001sec part
+        var date = strDate.substr(0,12);
+        var hidden_id = strDate.substr(0,2) + '*****';
+        var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd, hidden_id]);
         if(rowCount === 0){
             throw('please do ID check first');
         }

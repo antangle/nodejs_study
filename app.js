@@ -38,7 +38,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use('/landing', landingwebRouter);
 
 //web
-const web01Router = require('./api_web/login');
+const web01Router = require('./web01/index');
 app.use('/web01', web01Router);
 
 //app

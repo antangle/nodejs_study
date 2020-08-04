@@ -50,25 +50,7 @@ router.get('/getHomepageDevice', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: getHomepageDevice/' + err);
-        result.result = -10001;
-        return res.json(result);
-    }
-});
-
-router.post('/countAuction', async (req, res) =>{
-    var result ={};
-    try{
-        var {user_id} = req.body;
-        result = await buy.countAuctions(user_id); 
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result)
-        }
-        return res.json(result);
-        }
-    catch(err){
-        console.log('router ERROR: countAuction/' + err);
-        result.result = -10001;
-        return res.json(result);
+        return res.json({result: -10001});
     }
 });
 
@@ -76,12 +58,12 @@ router.post('/getStep1Latest', async(req,res) =>{
     var result ={};
     try{
         var {user_id, device_id} = req.body;
-        if(!user_id || !device_id){
+        if(!user_id && !device_id){
             return res.json({result: 10101});
         }
         result = await buy.getAuctionTempWithUser(user_id, device_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result.result);
+            return res.json(result);
         }
         var latestDevices = await buy.getStep1Latest6();
         if(latestDevices.result !== define.const_SUCCESS){
@@ -92,8 +74,7 @@ router.post('/getStep1Latest', async(req,res) =>{
     }
     catch(err){
         console.log('router ERROR: getStep1Latest/' + err);
-        result.result = -10101;
-        return res.json(result);
+        return res.json({result: -10101});
     }
 });
 
@@ -116,8 +97,7 @@ router.post('/getStep1WithBrand', async(req, res) => {
     }
     catch(err){
         console.log('router ERROR: getStep1WithBrand/' + err);
-        result.result = -10111;
-        return res.json(result);
+        return res.json({result: -10111});
     }
 });
 
@@ -130,31 +110,27 @@ router.post('/postSaveStep1', async(req, res) =>{
         }
         var check = await buy.checkIsFirstAuction(user_id);
         if(check.result !== define.const_SUCCESS){
-            return res.json(result);
+            return res.json(check);
         }
-
         var state = check.state;
         var temp_device_id = check.temp_device_id;
-
         if(state === define.const_DEAD || temp_device_id !== define.const_NULL){
-
-            const postInfo = await buy.postStep1Update(user_id, device_id);
-            if(postInfo.result != define.const_SUCCESS){
-                return res.json({result: postInfo.result});
+            var result = await buy.postStep1Update(user_id, device_id);
+            if(result.result != define.const_SUCCESS){
+                return res.json({result: result.result});
             }
         }
         if (temp_device_id === define.const_NULL){
-            const postInfo = await buy.postStep1Insert(user_id, device_id);
-            if(postInfo.result != define.const_SUCCESS){
-                return res.json({result: postInfo.result});
+            var result = await buy.postStep1Insert(user_id, device_id);
+            if(result.result != define.const_SUCCESS){
+                return res.json({result: result.result});
             }
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: postSaveStep1/' + err);
-        result.result = -10121;
-        return res.json(result);
+        return res.json({result: -10121});
     }
 });
 
@@ -182,8 +158,7 @@ router.post('/getStep2ColorVolume', async(req,res) =>{
     }
     catch(err){
         console.log('router ERROR: getStep2ColorVolume/' + err);
-        result.result = -10211;
-        return res.json(result);
+        return res.json({result: -10211});
     }
 });
 
@@ -194,6 +169,7 @@ router.post('/postSaveStep2', async (req, res) =>{
         if(!user_id || !device_detail_id){
             return res.json({result: 10221});
         }
+        //TODO: also have to check if device_detail_id matches device_id
         //check if auction_temp has that user_id
         var check = await buy.getAuctionTempWithUser(user_id);
         if(check.result !== define.const_SUCCESS){
@@ -207,8 +183,7 @@ router.post('/postSaveStep2', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: postSaveStep2/' + err);
-        result.result = -10221;
-        return res.json(result);
+        return res.json({result: -10221});
     }
 });
 
@@ -216,7 +191,10 @@ router.post('/postSaveStep2', async (req, res) =>{
 router.post('/getStep3Info', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.body;
+        if(!user_id){
+            return res.json({result: 10301})
+        }
         result = await buy.getAuctionTempWithUserStep3(user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -225,8 +203,7 @@ router.post('/getStep3Info', async(req,res) =>{
     }
     catch(err){
         console.log('router ERROR: getStep3Info/' + err);
-        result.result = -10301;
-        return res.json(result);
+        return res.json({result: -10301});
     }
 });
 
@@ -245,8 +222,7 @@ router.get('/getStep3PaymentInfo', async(req,res) =>{
     }
     catch(err){
         console.log('router ERROR: getStep3PaymentInfo/' + err);
-        result.result = -10311;
-        return res.json(result);
+        return res.json({result: -10311});
     }
 });
 
@@ -254,6 +230,9 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
     var result ={};
     try{
         var {device_detail_id, payment_id} = req.query;
+        if(!device_detail_id || !payment_id){
+            return res.json({result: 10321})
+        }
         result = await buy.getSelectedPayment(device_detail_id, payment_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -262,7 +241,23 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
     }
     catch(err){
         console.log('router ERROR: getStep3OfficialInfo/' + err);
-        result.result = -122;
+        return res.json({result: -10321});
+    }
+});
+
+router.post('/countAuction', async (req, res) =>{
+    var result ={};
+    try{
+        var {user_id} = req.body;
+        result = await buy.countAuctions(user_id); 
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result)
+        }
+        return res.json(result);
+        }
+    catch(err){
+        console.log('router ERROR: countAuction/' + err);
+        result.result = -10001;
         return res.json(result);
     }
 });
@@ -271,52 +266,77 @@ router.post('/postSaveStep3', async (req, res) =>{
     var result ={};
     try{
         var postInput = req.body;
+        /*
+        postInput = {
+            user_id, payment_id,
+            agency_use, agency_hope, 
+            period, contract_list
+        }
+        check = {
+            device_detail_id, 
+            temp_device_id
+        }
+        */
+        //TODO: contract_list 에 대한 정규식 필요함
+        if(!postInput.user_id || !postInput.payment_id ||
+            !postInput.agency_use || !postInput.agency_hope || 
+            !postInput.period || !postInput.contract_list){
+                return res.json({result: 10331});
+            };
+        //TODO: 쿼리 단순화/ 분기해야한다
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
-        if(check.result != define.const_SUCCESS)
-            throw(check.result);
-        count = await buy.countAuctions(postInput.user_id);
-        if(count.result != define.const_SUCCESS)
-            throw(count.result);
+        if(check.result !== define.const_SUCCESS){
+            return res.json({result: -10332});
+        }
+        var count = await buy.countAuctions(postInput.user_id);
+        if(count.result !== define.const_SUCCESS){
+            return res.json({result: -10333});
+        }
         if(count.count >= 3){
-            result.result = -1233
-            throw(result.result)
+            return res.json({result: 10332});
         }
         //check returning device_id, state, device_detail_id
         //postInput has all the info of step 3
         result = await buy.postStep3Update(check, postInput);
         result.count = Number(count.count) + 1;
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
+        /* 그냥 step3Update 에 끼워넣음
         var kill = await buy.killAuctionTempState(postInput.user_id);
-        if(kill.result != define.const_SUCCESS)
-            throw(kill.result);
+        if(kill.result !== define.const_SUCCESS){
+            return res.json(kill);
+        }
+        */
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 123/' + err);
-        result.result = -123;
-        return res.json(result);
+        console.log('router ERROR: postSaveStep3/' + err);
+        return res.json({result: -10331});
     }
 });
 
-router.get('/finish', async(req,res) =>{
+router.post('/finish', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.body;
+        if(!user_id){
+            return res.json({result: 10411})
+        }
         result = await buy.finishAuctionTempDeviceInfo(user_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 131/' + err);
-        result.result = -131;
+        console.log('router ERROR: finish/' + err);
+        result.result = -10411;
         return res.json(result);
     }
 });
 
+//현재 진행중인 auction
 router.get('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
     var array =[]
@@ -360,7 +380,7 @@ router.post('/get201StateUpdate', async (req, res) =>{
             result= {result: define.const_SUCCESS, state: 1}
         }
         else{
-            throw('undefined ERROR')
+            result = {result: -20312}
         }
         return res.json(result);
     }

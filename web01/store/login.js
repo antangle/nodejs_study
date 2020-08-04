@@ -32,7 +32,7 @@ router.get('/test', async(req, res) =>{
 //partner login/signup API
 router.post('/Login901', async (req, res) =>{
     var result = {};
-    var {login_id, device_token} = req.body;
+    var {login_id, push_token} = req.body;
     if (!login_id || !req.body.login_pwd) {
         return res.json({result: -9011});
     }
@@ -64,7 +64,7 @@ router.post('/Login901', async (req, res) =>{
         }
         else if(dbResponse.data.state === 2){
             await partner.updatePushTokenPartner(login_id, device_token)
-            result.result = 9012;
+            result.result = 9011;
         }
         else if(dbResponse.data.state === 3){
             await partner.updatePushTokenStore(login_id, device_token);
@@ -86,14 +86,15 @@ router.post('/Login901', async (req, res) =>{
 
 router.post('/toJWT902', async(req, res) =>{
     var result = {};
-    var {name, mobileno, birthdate} = req.body;
-    if (!name|| !mobileno || !birthdate) {
+    var {name, mobileno, birthdate, dupinfo} = req.body;
+    if (!name|| !mobileno || !birthdate || !dupinfo) {
         return res.json({result: 9021});
     }
     var json = {
         name: name, 
         mobileno: mobileno, 
-        birthdate: birthdate
+        birthdate: birthdate,
+        dupinfo: dupinfo
     };
     try{
         var encryptedData = helper.encryptJson(json);
@@ -103,7 +104,7 @@ router.post('/toJWT902', async(req, res) =>{
         return res.json({result:1, encryptedData: encryptedData});
     }
     catch(err){
-        console.log('router ERROR: P904 - CheckId904/' + err);
+        console.log('router ERROR: P902 - toJWT902/' + err);
         result.result = -9021;
         return res.status(400).json(result);
     }
@@ -138,6 +139,9 @@ router.post('/SignIn904', async (req, res) =>{
     if(!info){
         return res.json({result: 9041});
     }
+    if(!login_id || !req.body.login_pwd) {
+        return res.json({result: 9041});
+    }
     if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd)){
         return res.json({result: -9041});
     }
@@ -163,7 +167,7 @@ router.post('/SignIn904', async (req, res) =>{
 
 router.get('/GetSdCode907', async (req, res) =>{
     var result ={};
-    try{
+    try{     
         result = await partner.get007SdCode();
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -181,7 +185,7 @@ router.get('/GetSggCode907', async (req, res) =>{
     var result ={};
     var {sido_code} = req.query;
     if(sido_code <100){
-        return res.json({result: -90711});
+        return res.json({result: 90711});
     }
     try{
         result = await partner.get007SggCode(sido_code);
@@ -201,7 +205,7 @@ router.post('/postLocationCode907', async (req, res) =>{
     var result ={};
     var {partner_id, sido_code, sgg_code} = req.body;
     if(!sido_code || !sgg_code || !partner_id || sido_code <100|| sgg_code < 100){
-        return res.json({result: -90721});
+        return res.json({result: 90721});
     }
     try{
         result = await partner.postP007LocationCode(sido_code, sgg_code, partner_id);
@@ -228,7 +232,7 @@ router.post('/makeMeStore908', async(req, res) =>{
         }
     */
     if(!store_info.partner_id || !store_info.uuid || !store_info.name || !store_info.phone){
-        return res.json({result: -9083})
+        return res.json({result: 9081})
     }
     try{
         result = await partner.makeMeStore908(store_info);
@@ -248,7 +252,7 @@ router.post('/partnerToStore909', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
     if(!partner_id){
-        return res.json({result: -9093})
+        return res.json({result: 9091})
     }
     try{
         result = await partner.PartnerToStore909(partner_id);
@@ -264,7 +268,28 @@ router.post('/partnerToStore909', async(req, res) =>{
     }
 });
 
-router.post('/postUpdateToken909', async (req, res) =>{
+router.post('/checkState910', async(req, res) =>{
+    var result ={};
+    var {partner_id} = req.body;
+    if(!partner_id){
+        return {result: 9101}
+    }
+    try{
+        result = await partner.checkState910(partner_id);
+        if(result.result != define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: P910 - checkState912/' + err);
+        result.result = -9101;
+        return res.json(result);
+    }
+})
+
+
+router.post('/postUpdateToken910', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
@@ -277,24 +302,24 @@ router.post('/postUpdateToken909', async (req, res) =>{
     catch(err){
         console.log('router ERROR: P009 - postUpdateToken909/' + err);
         result.result = -928;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
-router.post('/postLogout910', async (req, res) =>{
+router.post('/postLogout911', async (req, res) =>{
     var result ={};
     var {partner_id, token} = req.body;
     try{
         result = await partner.PartnerLogout910(partner_id);
         if(result.result != define.const_SUCCESS){
-            return res.status(400).json(result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: P910 - postLogout910/' + err);
         result.result = -929;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -304,14 +329,14 @@ router.post('/postShutAccount911', async (req, res) =>{
     try{
         result = await partner.PartnerShutAccount911(partner_id);
         if(result.result != define.const_SUCCESS){
-            return res.status(400).json(result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: P911 - postShutAccount911/' + err);
         result.result = -930;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 

@@ -80,15 +80,16 @@ const post004IdPassword = async(login_id, hash_pwd)=>{
     var result = {};
     try{
         const querytext = `
-            INSERT INTO users(id, login_id, login_pwd)
-            VALUES($1, $2, $3)
+            INSERT INTO users(id, login_id, login_pwd, hidden_login_id)
+            VALUES($1, $2, $3, $4)
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());
-        //cut strDate 0.001sec part and change type to Integer
-        var date = strDate.substr(0,12)
-        var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd]);
+        //cut strDate 0.001sec part
+        var date = strDate.substr(0,12);
+        var hidden_id = strDate.substr(0,2) + '*****';
+        var {rows, rowCount} = await query(querytext, [date, login_id, hash_pwd, hidden_id]);
         if(rowCount === 0){
             throw('please do ID check first');
         }
@@ -178,7 +179,7 @@ const get007SdCode = async()=>{
             return {result: errcode};
         }
         if(rowCount < 1){
-            return {result: -90704}
+            return {result: -90703}
         }
         result = {result: define.const_SUCCESS, sd: rows};
         return result;
@@ -203,7 +204,7 @@ const get007SggCode = async(sido_code)=>{
             return {result: errcode}
         }
         if(rowCount <1){
-            return {result: -90715}
+            return {result: -90714}
         }
         result ={result: define.const_SUCCESS, sgg: rows};
         return result;
@@ -316,16 +317,19 @@ const UserShutAccount008 = async(user_id) =>{
 };
 
 //store LOGIN
-
-const getP001GetPassword = async(login_id)=>{
+const getP001GetPassword = async(login_id, push_token)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
-            FROM partner
-            WHERE login_id = $1
+        WITH cte AS(
+            UPDATE partner SET
+            push_token = $2
+        )
+        SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
+        FROM partner
+        WHERE login_id = $1
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [login_id], -9012);
+        var {rows, rowCount, errcode} = await query(querytext, [login_id, push_token], -9012);
         if(errcode){
             return {result: errcode};
         }
@@ -339,7 +343,7 @@ const getP001GetPassword = async(login_id)=>{
         return result;
     }
     catch(err){
-        result.result = -9012;
+        result.result = -9013;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -384,14 +388,14 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 login_pwd, name, 
                 phone, birth, 
                 state, term,
-                create_time
+                create_time, dupinfo
             )
             VALUES(
                 $1, $2, 
                 $3, $4, 
                 $5, $6, 
                 1, 1,
-                current_timestamp
+                current_timestamp, $7
             )
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
@@ -406,7 +410,8 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
             hash_pwd,
             decode.name,
             decode.mobileno,
-            decode.birthdate
+            decode.birthdate,
+            decode.dupinfo
         ];
         var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
         if(errcode){
@@ -569,8 +574,11 @@ const PartnerToStore909 = async(partner_id)=>{
         if(errcode){
             return {result: errcode};
         }
-        if(rowCount === 0){
-            return {result: -9092}
+        if(rowCount < 1){
+            return {result: -9093};
+        }
+        else if (rowCount > 1){
+            return {result: -9094};
         }
         result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
         return result;
@@ -582,6 +590,37 @@ const PartnerToStore909 = async(partner_id)=>{
     }
 };
 
+const checkState910 = async(partner_id) =>{
+    var result = {};
+    try{
+        const querytext = `
+        SELECT state, id AS partner_id, store_id FROM partner
+        WHERE id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9102);
+        if(errcode){ 
+            return {result: errcode};
+        }
+        if(rowCount < 1){
+            return {result: -9103};
+        }
+        else if(rowCount > 1){
+            return {result: -9104};    
+        }
+        result = {
+            result: define.const_SUCCESS, 
+            state: rows[0].state,
+            partner_id: rows[0].partner_id,
+            store_id: rows[0].store_id
+        };
+        return result;
+    }
+    catch(err){
+        result.result = -9101;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
 
 const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
@@ -696,7 +735,6 @@ const updatePushTokenStore = async(login_id, device_token)=>{
     }
 };
 
-
 module.exports = {
     test,
     //user login query
@@ -728,4 +766,5 @@ module.exports = {
     PartnerLogout910,
     //partner shut account
     PartnerShutAccount911,
+    checkState910
 };
