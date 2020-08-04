@@ -543,13 +543,17 @@ const makeMeStore908 = async(store_info)=>{
                 -2,
                 current_timestamp, 0,
                 0, 0,
-                sgg.name
+                '9999'
             FROM partner
-            INNER JOIN location_sgg AS sgg
-            ON partner.id = $2
-            AND sgg.code = partner.sgg_code
             RETURNING id AS store_id
         `;
+        /*
+        sgg.name
+            
+        INNER JOIN location_sgg AS sgg
+        ON partner.id = $2
+        AND sgg.code = partner.sgg_code
+        */  
         //여기서 store_id 줘야되나???? 필요없지 않나?
         var strDate = String(Date.now());
         //cut strDate 0.001sec part and change type to Integer
