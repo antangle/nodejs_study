@@ -314,10 +314,10 @@ const getP001GetPassword = async(login_id, push_token)=>{
             return {result: errcode};
         }
         if(rowCount < 1){
-            return {result: -9014};
+            return {result: 9013};
         }
         else if(rowCount > 1){
-            return {result: -9015};    
+            return {result: -9014};    
         }
         result = {result: define.const_SUCCESS, data: rows[0]};
         return result;
