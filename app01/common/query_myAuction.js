@@ -62,17 +62,25 @@ const get201AuctionInfo = async(user_id)=>{
     var result = {};
     try{
       const querytext = `
-      SELECT auc.id as auction_id, auc.device_detail_id, 
-      auc.payment_id, auc.agency_use,
-      auc.agency_hope, auc.finish_time,
-      auc.now_discount_price, auc.state, auc.win_state,
-      auc.win_deal_id, payment.alias
+      SELECT auc.id as auction_id, auc.device_detail_id,
+        auc.payment_id, auc.agency_use,
+        auc.agency_hope, auc.finish_time,
+        auc.now_discount_price, auc.state, auc.win_state,
+        auc.win_deal_id, payment.alias,
+        device.name, detail.color_name,
+        detail.volume, image.url_2x
       FROM auction AS auc
       INNER JOIN payment
-      ON auc.user_id = $1
-      AND auc.win_state = 1
-      AND(auc.state = 1 OR auc.state = 2)
-      AND payment.id = auc.payment_id
+        ON auc.user_id = $1
+        AND auc.win_state = 1
+        AND(auc.state = 1 OR auc.state = 2)
+        AND payment.id = auc.payment_id
+      INNER JOIN device
+        ON device.id = auc.device_id
+      INNER JOIN device_detail AS detail
+        ON detail.id = auc.device_detail_id
+      INNER JOIN image
+        ON image.id = device.image_id
       ORDER BY auc.finish_time
     `;
       var {rows, rowCount} = await query(querytext, [user_id]);

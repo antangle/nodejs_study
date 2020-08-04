@@ -342,21 +342,15 @@ router.post('/finish', async(req,res) =>{
 });
 
 //현재 진행중인 auction
-router.get('/get201MyAuctionOn', async (req, res) =>{
+router.post('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
-    var array =[]
-    var {user_id} = req.query;
+    var array =[];
+    var {user_id} = req.body;
     try{
         await auction.update201AuctionState(user_id);
-        result = await auction.get201AuctionInfo(user_id)
+        result = await auction.get201AuctionInfo(user_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
-        }
-        for(var i=0; i<result.rowCount; ++i){
-            var data = await auction.getDeviceInfoWithDetail_Id(result.auction[i].device_detail_id);
-            if(data.result !== define.const_SUCCESS)
-                throw(data.result);
-            array.push(data.rows[0]);
+            return res.json(result);
         }
         result.selected_device_data = array;
         return res.json(result);

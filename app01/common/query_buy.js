@@ -534,7 +534,7 @@ const getStep3PaymentInfo = async(agency, generation, device_detail_id) =>{
       )
       ORDER BY limitation ASC, price DESC
       `;
-    var {rows, rowCount, errcode} = await query(querytext, [agency, generation, device_id, device_detail_id], -10312);
+    var {rows, rowCount, errcode} = await query(querytext, [agency, generation, device_detail_id], -10312);
     if(errcode){
       return {result: errcode};
     }
