@@ -401,7 +401,7 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
                 $1, $2,
                 $3, $4,
                 $5, $6,
-                1, 1,
+                3, 1,
                 current_timestamp, $7
             )
             ON CONFLICT (login_id) DO NOTHING
@@ -574,7 +574,7 @@ const PartnerToStore909 = async(partner_id)=>{
             )
             UPDATE partner SET
             store_id = store.id,
-            state = 3
+            state = 1
             FROM store
             WHERE partner.id = $1
             AND store.partner_id = $1
