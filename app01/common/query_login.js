@@ -363,7 +363,7 @@ const checkDupinfoPartner = async(dupinfo) => {
             return {result: 1};
         }
         if(rowCount === 1){
-            return {result: 90232};    
+            return {result: 90231};    
         }
         if(rowcount > 1){
             return {result:-90234}
