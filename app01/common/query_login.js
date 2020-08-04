@@ -523,7 +523,7 @@ const makeMeStore908 = async(store_info)=>{
                 -2,
                 current_timestamp, 0,
                 0, 0,
-                '9999'
+                9999
             FROM partner
             RETURNING id AS store_id
         `;
