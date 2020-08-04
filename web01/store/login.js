@@ -101,7 +101,6 @@ router.post('/toJWT902', async(req, res) =>{
         if(encryptedData === -9022){
             return res.json({result: encryptedData})
         }
-        console.log(encryptedData);
         return res.json({result:1, encryptedData: encryptedData});
     }
     catch(err){
