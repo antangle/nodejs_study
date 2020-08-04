@@ -174,7 +174,7 @@ router.post('/SignIn904', async (req, res) =>{
         //jwt decode
         var store_info = jwt.decode(info);
 
-        var check = await partner.checkDupinfoPartner(dupinfo);
+        var check = await partner.checkDupinfoPartner(store_info.dupinfo);
         if(check.result !== define.const_SUCCESS){
             return res.json({result: 9042});
         }
