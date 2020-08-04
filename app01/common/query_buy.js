@@ -118,7 +118,7 @@ const countAuctions = async(user_id) =>{
 };
 
 //auction step: 1
-const getAuctionTempWithUser = async(user_id, device_id)=>{
+const getAuctionTempWithUser = async(user_id)=>{
   try{
     var result = {};
     const querytext = `
@@ -143,8 +143,8 @@ const getAuctionTempWithUser = async(user_id, device_id)=>{
       result : define.const_SUCCESS
     };
     // when the user already selected the device, print out device info
-    if(result.temp_device_id !== define.const_NULL || device_id !== undefined){
-      var temp_device_id = device_id || result.temp_device_id;
+    if(result.temp_device_id !== define.const_NULL){
+      var temp_device_id = result.temp_device_id;
       const querytext2 = `
         SELECT device.name AS device_name,
         device.id AS device_id,

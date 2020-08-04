@@ -57,11 +57,15 @@ router.get('/getHomepageDevice', async (req, res) =>{
 router.post('/getStep1Latest', async(req,res) =>{
     var result ={};
     try{
-        var {user_id, device_id} = req.body;
-        if(!user_id && !device_id){
+        var {user_id} = req.body;
+        if(!user_id){
             return res.json({result: 10101});
         }
-        result = await buy.getAuctionTempWithUser(user_id, device_id);
+        var count = await buy.countAuctions(user_id);
+        if(count.result !== define.const_SUCCESS){
+            return res.json({result: -10108})
+        }
+        result = await buy.getAuctionTempWithUser(user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -70,6 +74,7 @@ router.post('/getStep1Latest', async(req,res) =>{
             return res.json(latestDevices.result);
         }
         result.device_array = latestDevices.device_array;
+        result.count = count.count;
         return res.json(result);
     }
     catch(err){
@@ -81,11 +86,11 @@ router.post('/getStep1Latest', async(req,res) =>{
 router.post('/getStep1WithBrand', async(req, res) => {
     var result ={};
     try{
-        var {user_id, device_id, brand_id} = req.body;
-        if(!user_id || !device_id || !brand_id){
+        var {user_id, brand_id} = req.body;
+        if(!user_id || !brand_id){
             return res.json({result: 10111});
         }
-        result = await buy.getAuctionTempWithUser(user_id, device_id);
+        result = await buy.getAuctionTempWithUser(user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
