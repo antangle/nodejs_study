@@ -46,7 +46,8 @@ const update201AuctionState = async(user_id)=>{
             END
         )
         WHERE user_id = $1
-    `;
+        RETURNING state
+        `;
         var {rows, rowCount, errcode} =await query(querytext, [user_id], -20112);
         if(errcode){
             return {result: errcode};
@@ -56,6 +57,16 @@ const update201AuctionState = async(user_id)=>{
         }
         else if(rowCount > 3){
             return {result: -20114}   
+        }
+        var count = 0;
+        //state가 전부 -1이면 출력값 없어야함.
+        for(var i=0; i<rowCount; ++i){
+            if(rows[i].state !== -1){
+                count = count + 1;
+            }
+        }
+        if(count === 0){
+            return {result: 20112};
         }
         result.result = define.const_SUCCESS;
         return result;
@@ -104,6 +115,43 @@ const get201AuctionInfo = async(user_id)=>{
         }
         result = {auction: rows, rowCount: rowCount};
         result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+        result.result = -20111;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const post201StateUpdate = async(auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        UPDATE auction SET state = (
+            CASE WHEN finish_time + interval '1 hour' < current_timestamp
+            THEN -1
+            WHEN finish_time < current_timestamp
+            THEN 2
+            WHEN finish_time >= current_timestamp
+            THEN 1
+            END
+        )
+        WHERE id = $1
+        RETURNING state
+        `;
+        var {rows, rowCount, errcode} =await query(querytext, [auction_id], -20122);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20123}
+        }
+        else if(rowCount > 1){
+            return {result: -20124}   
+        }
+        result.result = define.const_SUCCESS;
+        result.state = rows[0].state
         return result;
     }
     catch(err){
@@ -526,6 +574,7 @@ module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
     get201AuctionInfo,
+    post201StateUpdate,
     get202AuctionInfo,
     get203AuctionDeals,
     get204AuctionDealsFinish,

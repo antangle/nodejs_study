@@ -7,6 +7,7 @@ const query = Pool.query;
 pool.on('error', function (err, client) {
     console.error('idle client error', err.message, err.stack);
 });
+
 const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
     var result = {};
     try{
@@ -14,12 +15,12 @@ const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
       SELECT device.name, detail.color_name, detail.volume, image.url_2x
       FROM device_detail AS detail
       INNER JOIN device
-      ON detail.id = $1
-      AND detail.device_id = device.id
+        ON detail.id = $1
+        AND detail.device_id = device.id
       INNER JOIN image
-      ON device.image_id = image.id
+        ON device.image_id = image.id
     `;
-      var {rows} = await query(querytext, [device_detail_id]);
+      var {rows, rowCount, errcode} = await query(querytext, [device_detail_id]);
       result = {rows};
       result.result = define.const_SUCCESS;
       return result;
@@ -29,12 +30,12 @@ const getDeviceInfoWithDetail_Id = async(device_detail_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
+
 const update201AuctionState = async(user_id)=>{
     var result = {};
     try{
-      const querytext = `
+        const querytext = `
         UPDATE auction SET state = (
             CASE WHEN finish_time + interval '1 hour' < current_timestamp
             THEN -1
@@ -46,56 +47,120 @@ const update201AuctionState = async(user_id)=>{
         )
         WHERE user_id = $1
         RETURNING state
-    `;
-      await query(querytext, [user_id]);
-      result.result = define.const_SUCCESS;
-      return result;
+        `;
+        var {rows, rowCount, errcode} =await query(querytext, [user_id], -20112);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20113}
+        }
+        else if(rowCount > 3){
+            return {result: -20114}   
+        }
+        var count = 0;
+        //state가 전부 -1이면 출력값 없어야함.
+        for(var i=0; i<rowCount; ++i){
+            if(rows[i].state !== -1){
+                count = count + 1;
+            }
+        }
+        if(count === 0){
+            return {result: 20112};
+        }
+        result.result = define.const_SUCCESS;
+        return result;
     }
     catch(err){
-      result.result = -2001;
-      console.log(`ERROR: ${result.result}/` + err);
-      return result;
+        result.result = -20111;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
     }
-    
 };
+
 const get201AuctionInfo = async(user_id)=>{
     var result = {};
     try{
-      const querytext = `
-      SELECT auc.id as auction_id, auc.device_detail_id,
-        auc.payment_id, auc.agency_use,
-        auc.agency_hope, auc.finish_time,
-        auc.now_discount_price, auc.state, auc.win_state,
-        auc.win_deal_id, payment.alias,
-        device.name, detail.color_name,
-        detail.volume, image.url_2x
-      FROM auction AS auc
-      INNER JOIN payment
-        ON auc.user_id = $1
-        AND auc.win_state = 1
-        AND(auc.state = 1 OR auc.state = 2)
-        AND payment.id = auc.payment_id
-      INNER JOIN device
-        ON device.id = auc.device_id
-      INNER JOIN device_detail AS detail
-        ON detail.id = auc.device_detail_id
-      INNER JOIN image
-        ON image.id = device.image_id
-      ORDER BY auc.finish_time
-    `;
-      var {rows, rowCount} = await query(querytext, [user_id]);
-      
-      result = {auction: rows, rowCount: rowCount};
-      result.result = define.const_SUCCESS;
-      return result;
+        const querytext = `
+        SELECT auc.id as auction_id, auc.device_detail_id,
+            auc.payment_id, auc.agency_use,
+            auc.agency_hope, auc.finish_time,
+            auc.now_discount_price, auc.state, auc.win_state,
+            auc.win_deal_id, payment.alias,
+            device.name, detail.color_name,
+            detail.volume, image.url_2x
+        FROM auction AS auc
+        INNER JOIN payment
+            ON auc.user_id = $1
+            AND auc.win_state = 1
+            AND (auc.state = 1 OR auc.state = 2)
+            AND payment.id = auc.payment_id
+        INNER JOIN device
+            ON device.id = auc.device_id
+        INNER JOIN device_detail AS detail
+            ON detail.id = auc.device_detail_id
+        INNER JOIN image
+            ON image.id = device.image_id
+        ORDER BY auc.finish_time
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [user_id], -20115);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20116}
+        }
+        else if(rowCount > 3){
+            return {result: -20117}
+        }
+        result = {auction: rows, rowCount: rowCount};
+        result.result = define.const_SUCCESS;
+        return result;
     }
     catch(err){
-      result.result = -2011;
-      console.log(`ERROR: ${result.result}/` + err);
-      return result;
+        result.result = -20111;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
     }
-    
 };
+
+const post201StateUpdate = async(auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        UPDATE auction SET state = (
+            CASE WHEN finish_time + interval '1 hour' < current_timestamp
+            THEN -1
+            WHEN finish_time < current_timestamp
+            THEN 2
+            WHEN finish_time >= current_timestamp
+            THEN 1
+            END
+        )
+        WHERE id = $1
+        RETURNING state
+        `;
+        var {rows, rowCount, errcode} =await query(querytext, [auction_id], -20122);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20123}
+        }
+        else if(rowCount > 1){
+            return {result: -20124}   
+        }
+        result.result = define.const_SUCCESS;
+        result.state = rows[0].state
+        return result;
+    }
+    catch(err){
+        result.result = -20111;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 const get202AuctionInfo = async(user_id)=>{
     var result = {};
     try{
@@ -120,7 +185,7 @@ const get202AuctionInfo = async(user_id)=>{
       ON score.deal_id = auc.win_deal_id
       ORDER BY auc.finish_time
     `;
-      var {rows, rowCount} = await query(querytext, [user_id]);
+      var {rows, rowCount, errcode} = await query(querytext, [user_id]);
       result = {auction: rows, rowCount: rowCount};
       result.result = define.const_SUCCESS;
       return result;
@@ -130,8 +195,8 @@ const get202AuctionInfo = async(user_id)=>{
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
-    
 };
+
 const get203AuctionDeals = async(auction_id)=>{
     var result = {};
     try{
@@ -161,7 +226,7 @@ const get203AuctionDeals = async(auction_id)=>{
             ON deal.device_id = device.id
             ORDER BY deal.discount_price
         `;
-        var {rows, rowCount} = await query(querytext, [auction_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id]);
         result = {auction: rows, result: define.const_SUCCESS, rowCount: rowCount};
         return result;
     }
@@ -202,7 +267,7 @@ const get204AuctionDealsFinish = async(auction_id)=>{
             ORDER BY deal.discount_price
             LIMIT 5
         `;
-        var {rows} = await query(querytext, [auction_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id]);
         result = {auction: rows, result: define.const_SUCCESS};
         return result;
     }
@@ -245,7 +310,7 @@ const get205DealDetail = async(deal_id)=>{
             AND official.payment_id = payment.id
             AND official.device_volume = detail.volume
         `;
-        var {rows} = await query(querytext, [deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
         return result;
     }
@@ -267,7 +332,7 @@ const Update208DealConfirmation = async(deal_id)=>{
             (SELECT auction_id FROM deal WHERE id = $1)
             RETURNING win_deal_id
         `;
-        var {rows} = await query(querytext1, [deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext1, [deal_id]);
         result.win_deal_id = rows[0].win_deal_id;
         const querytext2 = `
             UPDATE deal
@@ -302,7 +367,7 @@ const get209ConfirmedAuction = async(deal_id)=>{
             INNER JOIN payment
             ON payment.id = deal.payment_id
         `;
-        var {rows} = await query(querytext, [deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id]);
         result = {deal: rows, result: define.const_SUCCESS};
         return result;
     }
@@ -327,7 +392,7 @@ const get210InfoForReview = async(deal_id)=>{
             INNER JOIN device
             ON deal.device_id = device.id
         `;
-        var {rows} = await query(querytext, [deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id]);
         result = {info: rows, result: define.const_SUCCESS};
         return result;
     }
@@ -360,7 +425,7 @@ const insert210Review = async(jsondata)=>{
             RETURNING (select cte.score from cte)
         `;
         var {score, comment, deal_id} = jsondata;
-        var {rows} = await query(querytext, [score, comment, deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [score, comment, deal_id]);
         var isScoreNull;
         if(!rows[0].score){
             isScoreNull = true;
@@ -429,7 +494,7 @@ const get211StoreDetails = async(deal_id)=>{
             ON users.id = score.user_id
             ORDER BY score.create_date DESC
             `;
-        var {rows} = await query(querytext, [deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id]);
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, store: rows[0]};
         return result;
@@ -465,7 +530,7 @@ const get212AllStoreReviews = async(store_id)=>{
             INNER JOIN device
             ON deal.device_id = device.id
             `;
-        var {rows} = await query(querytext, [store_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id]);
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, review: rows};
         return result;
@@ -509,6 +574,7 @@ module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
     get201AuctionInfo,
+    post201StateUpdate,
     get202AuctionInfo,
     get203AuctionDeals,
     get204AuctionDealsFinish,

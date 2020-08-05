@@ -346,46 +346,42 @@ router.post('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
     var array =[];
     var {user_id} = req.body;
+    if(!user_id){
+        return res.json({result: 20111});
+    }
     try{
-        await auction.update201AuctionState(user_id);
+        //user_id 받아서 관련 auction state 모두 update
+        result = await auction.update201AuctionState(user_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
         result = await auction.get201AuctionInfo(user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result.selected_device_data = array;
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 201/' + err);
-        result.result = -201;
+        console.log('router ERROR: get201MyAuctionOn/' + err);
+        result.result = -20111;
         return res.json(result);
     }
 });
 
 router.post('/get201StateUpdate', async (req, res) =>{
     var result ={};
-    var {finish_time} = req.body;
+    var {auction_id} = req.body;
     try{
         //state, -1: unselected, 1: ongoing, 2: waiting selection
-        const currentTime = Date.now() + 32400000
-        const finishTime = new Date(finish_time).valueOf()
-        if(finishTime + 3600000 < currentTime){
-            result= {result: define.const_SUCCESS, state: -1}
-        }
-        else if(finishTime < currentTime){
-            result= {result: define.const_SUCCESS, state: 2}
-        }
-        else if(finishTime >= currentTime){
-            result= {result: define.const_SUCCESS, state: 1}
-        }
-        else{
-            result = {result: -20312}
+        result = await auction.post201StateUpdate(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 201a/' + err);
-        result.result = -201;
+        console.log('router ERROR: get201StateUpdate/' + err);
+        result.result = -20121;
         return res.json(result);
     }
 });
