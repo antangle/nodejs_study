@@ -180,6 +180,7 @@ router.post('/SignIn904', async (req, res) =>{
             return res.json(result);
         }
         const token = helper.generateToken(result.partner_id);
+        console.log(result);
         result.token = token
         return res.json(result);
     }
