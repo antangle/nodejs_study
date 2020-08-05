@@ -164,36 +164,54 @@ const post201StateUpdate = async(auction_id)=>{
 const get202AuctionInfo = async(user_id)=>{
     var result = {};
     try{
-      const querytext = `
-      SELECT auc.id as auction_id, auc.device_detail_id, 
-      auc.payment_id, auc.agency_use,
-      auc.agency_hope, auc.finish_time,
-      auc.now_discount_price, auc.state, auc.win_state,
-      auc.win_deal_id, payment.alias, store.phone, store.phone_1,
-      score.id AS score_id 
-      FROM auction AS auc
-      INNER JOIN payment
-      ON auc.user_id = $1
-      AND payment.id = auc.payment_id
-      AND(auc.win_state = 2 OR auc.state = -1)
-      LEFT JOIN deal
-      ON deal.id = auc.win_deal_id
-      LEFT JOIN store
-      ON store.id = deal.store_id
-      AND auc.win_time + interval '1 day' > current_timestamp
-      LEFT JOIN score
-      ON score.deal_id = auc.win_deal_id
-      ORDER BY auc.finish_time
+        const querytext = `
+        SELECT auc.id as auction_id, auc.device_detail_id, 
+            auc.payment_id, auc.agency_use,
+            auc.agency_hope, auc.finish_time,
+            auc.now_discount_price, auc.state, 
+            auc.win_state, auc.win_deal_id, 
+            payment.alias, store.phone, 
+            store.phone_1, score.id AS score_id,
+            device.name, detail.color_name, 
+            detail.volume, image.url_2x
+        FROM auction AS auc
+        INNER JOIN payment
+            ON auc.user_id = $1
+            AND payment.id = auc.payment_id
+            AND(auc.win_state = 2 OR auc.state = -1)
+        INNER JOIN device_detail AS detail
+            ON detail.id = auc.device_detail_id
+        INNER JOIN device
+            ON detail.id = auc.device_id
+        INNER JOIN image
+            ON image.id = device.image_id
+        LEFT JOIN deal
+            ON deal.id = auc.win_deal_id
+        LEFT JOIN store
+            ON store.id = deal.store_id
+            AND auc.win_time + interval '1 day' > current_timestamp
+        LEFT JOIN score
+            ON score.deal_id = auc.win_deal_id
+        ORDER BY auc.finish_time
     `;
-      var {rows, rowCount, errcode} = await query(querytext, [user_id]);
-      result = {auction: rows, rowCount: rowCount};
-      result.result = define.const_SUCCESS;
-      return result;
+        var {rows, rowCount, errcode} = await query(querytext, [user_id], -20212);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20213}
+        }
+        else if(rowCount > 3){
+            return {result: -20214}   
+        }
+        result = {auction: rows, rowCount: rowCount};
+        result.result = define.const_SUCCESS;
+        return result;
     }
     catch(err){
-      result.result = -2021;
-      console.log(`ERROR: ${result.result}/` + err);
-      return result;
+        result.result = -20211;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
     }
 };
 

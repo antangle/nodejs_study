@@ -390,23 +390,20 @@ router.get('/get202MyAuctionOff', async (req, res) =>{
     var result ={};
     var array =[]
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.post;
+        if(!user_id){
+            return {result: 20211}
+        }
         result = await auction.get202AuctionInfo(user_id)
         if(result.result !== define.const_SUCCESS){
             return res.json(result)
-        }
-        for(var i=0; i<result.rowCount; ++i){
-            var data = await auction.getDeviceInfoWithDetail_Id(result.auction[i].device_detail_id);
-            if(data.result !== define.const_SUCCESS)
-                throw(data.result);
-            array.push(data.rows[0]);
         }
         result.selected_device_data = array;
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 202/' + err);
-        result.result = -202;
+        result.result = -20211;
         return res.json(result);
     }
 });

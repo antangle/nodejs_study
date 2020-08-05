@@ -152,6 +152,7 @@ const get007SdCode = async()=>{
         const querytext = `
             SELECT code, name
             FROM location_sd
+            ORDER BY code ASC
             `;
         var {rows, rowCount, errcode} = await query(querytext, [], -90702);
         if(errcode){
@@ -177,6 +178,7 @@ const get007SggCode = async(sido_code)=>{
             SELECT code, name
             FROM location_sgg
             WHERE sido_code = $1
+            ORDER BY code ASC
             `;
         var {rows, rowCount, errcode} = await query(querytext, [sido_code], -90712);
         if(errcode){
