@@ -319,27 +319,25 @@ router.post('/partnerToStore909', async(req, res) =>{
     }
 });
 
-
 router.post('/partnerToStoreDeny909', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
     if(!partner_id){
-        return res.json({result: 9091})
+        return res.json({result: 90921})
     }
     try{
-        result = await partner.storeAcceptUpdatePartner(store_id, partner_id);
+        result = await partner.storeDenyUpdateStoreTemp(partner_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: p909Accept - partnerToStore909/' + err);
-        result.result = -90901;
+        console.log('router ERROR: p909Deny - partnerToStore909/' + err);
+        result.result = -90921;
         return res.json(result);
     }
 });
-
 
 router.post('/checkState910', async(req, res) =>{
     var result ={};

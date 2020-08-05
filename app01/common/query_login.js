@@ -698,21 +698,21 @@ const storeDenyUpdateStoreTemp = async(partner_id) => {
             WHERE partner_id = $1
         `;
 
-        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9092);
+        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -90922);
         if(errcode){
             return {result: errcode};
         }
-        if(rowCount < 1){
-            return {result: -9080};
+        if (rowCount > 1){
+            return {result: -90923};
         }
-        else if (rowCount > 1){
-            return {result: 9091};
+        else if(rowCount < 1){
+            return {result: -90924};
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
-        result.result = -9091;
+        result.result = -90921;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
