@@ -16,6 +16,7 @@ get201StateUpdate 함수에서 마감시간이 지나도 result를 1 항상 뱉�
 203, 204 재입찰할 경우 이전딜이 사라짐
 
 210 get210InfoForReview => store_id말고 store_nick 뱉어주삼
+
 210 postReview => 이상하게 잘 안됨, 가끔보면 전체리뷰 리스트에 새로 만든 딜이 있고, '리뷰 test입니당~'이라는 내용으로 들어가있음
 
 212 스토어 리뷰 리스트 - deal_id로 받게 만들고 deal의 store_nick은 리뷰가 없어도 따로 무조건 뱉고, writer_nick도 추가해주세용

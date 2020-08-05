@@ -344,7 +344,6 @@ router.post('/finish', async(req,res) =>{
 //현재 진행중인 auction
 router.post('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
-    var array =[];
     var {user_id} = req.body;
     if(!user_id){
         return res.json({result: 20111});
@@ -386,23 +385,26 @@ router.post('/get201StateUpdate', async (req, res) =>{
     }
 });
 
-router.get('/get202MyAuctionOff', async (req, res) =>{
+router.post('/get202MyAuctionOff', async (req, res) =>{
     var result ={};
-    var array =[]
     try{
-        var {user_id} = req.post;
+        var {user_id} = req.body;
         if(!user_id){
             return {result: 20211}
+        }
+        result = await auction.update202AuctionState(user_id);
+        if(result.result !== define.const_SUCCESS){
+            //코드 100차이만 나면 원하는 에러코드 부여 가능
+            return res.json({result: result.result + 100});
         }
         result = await auction.get202AuctionInfo(user_id)
         if(result.result !== define.const_SUCCESS){
             return res.json(result)
         }
-        result.selected_device_data = array;
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 202/' + err);
+        console.log('router ERROR: get202MyAuctionOff/' + err);
         result.result = -20211;
         return res.json(result);
     }
