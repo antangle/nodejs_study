@@ -345,6 +345,7 @@ router.post('/checkState910', async(req, res) =>{
     if(!partner_id){
         return {result: 9101}
     }
+    console.log(partner_id);
     try{
         result = await partner.checkState910(partner_id);
         if(result.result != define.const_SUCCESS){
