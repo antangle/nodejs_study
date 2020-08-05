@@ -261,7 +261,11 @@ router.post('/makeMeStore908', async(req, res) =>{
         return res.json({result: 9081})
     }
     try{
-        result = await partner.makeMeStore908(store_info);
+        result = await partner.StoreTempInsert908(store_info);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await partner.updatePartnerMakeMeStore(store_info.partner_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -269,7 +273,7 @@ router.post('/makeMeStore908', async(req, res) =>{
     }
     catch(err){
         console.log('router ERROR: p908 - makeMeStore908/' + err);
-        result.result = -9081;
+        result.result = -90811;
         return res.json(result);
     }
 });
@@ -281,18 +285,61 @@ router.post('/partnerToStore909', async(req, res) =>{
         return res.json({result: 9091})
     }
     try{
-        result = await partner.PartnerToStore909(partner_id);
-        if(result.result != define.const_SUCCESS){
+        let store_id;
+        result = await partner.storeAcceptCheckUUID(partner_id);
+        if(result.result === 1){
+            //uuid 중복 없을시
+            store = await partner.storeAcceptInsertStore(partner_id);
+            if(store.result !== define.const_SUCCESS){
+                return res.json(store);
+            }
+            store_id = store.store_id;
+        }
+        else if(result.result === 2){
+            //uuid 중복 있을시
+            store_id = result.store_id
+        }
+        else{
+            return res.json(result);
+        }
+        result = await partner.storeAcceptUpdateStoreTemp(partner_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await partner.storeAcceptUpdatePartner(store_id, partner_id);
+        if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: p909 - partnerToStore909/' + err);
-        result.result = -9091;
+        console.log('router ERROR: p909Accept - partnerToStore909/' + err);
+        result.result = -90901;
         return res.json(result);
     }
 });
+
+
+router.post('/partnerToStoreDeny909', async(req, res) =>{
+    var result ={};
+    var {partner_id} = req.body;
+    if(!partner_id){
+        return res.json({result: 9091})
+    }
+    try{
+        result = await partner.storeAcceptUpdatePartner(store_id, partner_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: p909Accept - partnerToStore909/' + err);
+        result.result = -90901;
+        return res.json(result);
+    }
+});
+
 
 router.post('/checkState910', async(req, res) =>{
     var result ={};
