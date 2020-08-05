@@ -390,7 +390,7 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
     try{
         var {user_id} = req.body;
         if(!user_id){
-            return {result: 20211}
+            return {result: 20211};
         }
         result = await auction.update202AuctionState(user_id);
         if(result.result !== define.const_SUCCESS){
@@ -399,7 +399,7 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
         }
         result = await auction.get202AuctionInfo(user_id)
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
@@ -413,8 +413,18 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
 router.post('/get203MyAuctionDetails', async (req, res) =>{
     var result ={};
     try{
-        var {auction_id} = req.body;
-        result = await auction.get203AuctionDeals(auction_id);
+        var {auction_id, user_id, now_order} = req.body;
+        if(!now_order){
+            now_order = 0;
+        }
+        if(!user_id || !auction_id){
+            return {result: 20311};
+        }
+        result = await auction.post201StateUpdate(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json({result: result.result - 190});
+        }
+        result = await auction.get203AuctionDeals(auction_id, user_id, now_order);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -422,46 +432,51 @@ router.post('/get203MyAuctionDetails', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: get203MyAuctionDetails/' + err);
-        result.result = -203;
+        result.result = -20311;
         return res.json(result);
     } 
 });
 
-router.get('/get204MyAuctionDetailsFinish', async (req, res) =>{
+router.post('/get204MyAuctionDetailsFinish', async (req, res) =>{
     var result ={};
     try{
-        var {auction_id} = req.query;
-        result = await auction.get204AuctionDealsFinish(auction_id);
+        var {auction_id, user_id} = req.body;
+        if(!user_id || !auction_id){
+            return {result: 20411};
+        }
+        result = await auction.post201StateUpdate(auction_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json({result: result.result - 290});
+        }
+        result = await auction.get204AuctionDealsFinish(auction_id, user_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 204/' + err);
-        result.result = -204;
+        console.log('router ERROR: get204MyAuctionDetailsFinish/' + err);
+        result.result = -20411;
         return res.json(result);
     } 
 });
 
-router.get('/get205DealDetails', async (req, res) =>{
+router.post('/get205DealDetails', async (req, res) =>{
     var result ={};
     try{
-        var {deal_id} = req.query;
-        result = await auction.get205DealDetail(deal_id);
+        var {deal_id, user_id} = req.body;
+        if(!deal_id || !user_id){
+            return res.json({result: 20511});
+        }
+        result = await auction.get205DealDetail(deal_id, user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        var data = await auction.getDeviceInfoWithDetail_Id(result.deal[0].device_detail_id);
-        if(data.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
-        result.selected_device_data = data.rows;
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 205/' + err);
-        result.result = -205;
+        console.log('router ERROR: get205DealDetails/' + err);
+        result.result = -20511;
         return res.json(result);
     }
 });
@@ -470,33 +485,39 @@ router.get('/get205DealDetails', async (req, res) =>{
 router.patch('/patch208ConfirmPopup', async (req, res) =>{
     var result ={};
     try{
-        var {deal_id} = req.body;
-        result = await auction.Update208DealConfirmation(deal_id);
+        var {deal_id, user_id} = req.body;
+        if(!deal_id || !user_id){
+            return res.json({result: 20811});
+        }
+        result = await auction.Update208DealConfirmation(deal_id, user_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 208/' + err);
-        result.result = -208;
+        console.log('router ERROR: patch208ConfirmPopup/' + err);
+        result.result = -20811;
         return res.json(result);
     }
 });
 
-router.get('/get209ConfirmedAuction', async (req, res) =>{
+router.post('/get209ConfirmedAuction', async (req, res) =>{
     var result ={};
     try{
-        var {deal_id} = req.query;
-        result = await auction.get209ConfirmedAuction(deal_id);
+        var {deal_id, user_id} = req.body;
+        if(!deal_id || !user_id){
+            return res.json({result: 20911})
+        }
+        result = await auction.get209ConfirmedAuction(deal_id, user_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 209/' + err);
-        result.result = -209;
+        console.log('router ERROR: get209ConfirmedAuction/' + err);
+        result.result = -20911;
         return res.json(result);
     }
 });
@@ -505,15 +526,18 @@ router.get('/get210InfoForReview', async (req, res) =>{
     var result ={};
     try{
         var {deal_id} = req.query;
+        if(!deal_id){
+            return res.json({result: 21011});
+        }
         result = await auction.get210InfoForReview(deal_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 210a/' + err);
-        result.result = -209;
+        result.result = -21011;
         return res.json(result);
     }
 });
@@ -521,32 +545,43 @@ router.get('/get210InfoForReview', async (req, res) =>{
 router.post('/post210DealReview', async(req,res) =>{
     var result ={};
     try{
-        var jsondata = req.body;
+        var {score, comment, deal_id, user_id} = req.body;
+        if(!score || !comment || !deal_id || !user_id){
+            return res.json({result: 21021});
+        }
+        else if(score > 5 || score < 0){
+            return res.json({result: 21022});
+        }
+
+        jsondata = {score, comment, deal_id, user_id};
+
         result = await auction.insert210Review(jsondata);
         if(result.result !== define.const_SUCCESS){
             return res.json(result)
         }
         jsondata.scoreGap = result.scoreGap;
+
         if(result.isScoreNull == true){
-            //isScoreNull true -> the review is new or deal doesnt exist
-            //doesnt matter when deal does not exist.
+            //isScoreNull true -> the review is new
             jsondata.weight = 1;
             //scoreGap, weight, deal_id is in jsondata
-            var store = await auction.update210StoreAfterReview(jsondata);
-            if(store.result !== define.const_SUCCESS)
-                throw(store.result);
+            result = await auction.update210StoreAfterReview(jsondata);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
         }
         else{
             jsondata.weight = 0;
-            var store = await auction.update210StoreAfterReview(jsondata);
-            if(store.result !== define.const_SUCCESS)
-                throw(store.result);
+            var result = await auction.update210StoreAfterReview(jsondata);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 210b/' + err);
-        result.result = -210;
+        result.result = -21021;
         return res.json(result);
     }
 });

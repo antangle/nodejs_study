@@ -11,7 +11,6 @@ dotenv.config();
 
 const {verifyToken} = require('./middleware/verify');
 
-
 const port = process.env.port || 9000;
 const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
