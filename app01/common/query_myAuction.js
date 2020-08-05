@@ -577,7 +577,7 @@ const insert210Review = async(jsondata)=>{
             SELECT 
                 user_id, store_id, 
                 $1, $2, 
-                $3, current_date
+                $3, current_timestamp
             FROM deal
             WHERE EXISTS(
                 SELECT 1 FROM deal
@@ -599,20 +599,24 @@ const insert210Review = async(jsondata)=>{
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -21023}
+            return {result: -21023};
         }
         else if(rowCount > 1){
-            return {result: -21024}
+            return {result: -21024};
         }
         var isScoreNull;
         if(!rows[0].score){
             isScoreNull = true;
+        }
+        else{
+            isScoreNull = false;
         }
         result = {
             isScoreNull: isScoreNull,
             scoreGap: score - rows[0].score,
             result: define.const_SUCCESS
         };
+        console.log(result);
         return result;
     }
     catch(err){
@@ -639,7 +643,7 @@ const update210StoreAfterReview = async(jsondata)=>{
             UPDATE store
             SET score_sum = score_sum + $1,
                 score_weight = score_weight + $2,
-                score = (score_sum+$1)*10 / ($2+ score_weight)
+                score = (score_sum+$1) / ($2+ score_weight)
             WHERE store.id IN(
                 SELECT store_id FROM deal
                 WHERE deal.id = $3
@@ -671,38 +675,48 @@ const get211StoreDetails = async(deal_id)=>{
     try{
         const querytext = `
             SELECT store.id AS store_id, store.score AS avg_score, 
-            store.score_weight AS review_count,
-            store.comment AS store_comment,
-            score.score AS user_score,
-            score.comment AS user_comment,
-            score.create_date,
-            device.name AS device_name,
-            deal.store_nick,
-            sd.name AS sido_name, sgg.name AS sgg_name,
-            users.nick AS user_nick
+                store.score_weight AS review_count,
+                store.comment AS store_comment,
+                score.score AS user_score,
+                score.comment AS user_comment,
+                score.create_date,
+                device.name AS device_name,
+                deal.store_nick,
+                sd.name AS sido_name, sgg.name AS sgg_name,
+                users.nick AS user_nick
             FROM deal
             INNER JOIN store
-            ON deal.id = $1
-            AND store.id = deal.store_id
+                ON deal.id = $1
+                AND store.id = deal.store_id
             INNER JOIN device
-            ON deal.device_id = device.id
+                ON deal.device_id = device.id
             INNER JOIN location_sd AS sd
-            ON store.sido_code = sd.code
+                ON store.sido_code = sd.code
             INNER JOIN location_sgg AS sgg
-            ON store.sgg_code = sgg.code
+                ON store.sgg_code = sgg.code
             LEFT JOIN score
-            ON score.store_id = deal.store_id
+                ON score.store_id = deal.store_id
             LEFT JOIN users
-            ON users.id = score.user_id
+                ON users.id = score.user_id
             ORDER BY score.create_date DESC
+            LIMIT 1
             `;
-        var {rows, rowCount, errcode} = await query(querytext, [deal_id]);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21112);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -21113}
+        }
+        else if(rowCount > 1){
+            return {result: -21114}
+        }
         //later on, gotta decide which review to look upon
         result ={result: define.const_SUCCESS, store: rows[0]};
         return result;
     }
     catch(err){
-        result.result = -2111;
+        result.result = -21111;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -732,13 +746,19 @@ const get212AllStoreReviews = async(store_id)=>{
             INNER JOIN device
             ON deal.device_id = device.id
             `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id]);
-        //later on, gotta decide which review to look upon
-        result ={result: define.const_SUCCESS, review: rows};
+        var {rows, rowCount, errcode} = await query(querytext, [store_id], -21212);
+        //TODO: later on, gotta decide which review to look upon
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -21213}
+        }
+        result = {result: define.const_SUCCESS, review: rows};
         return result;
     }
     catch(err){
-        result.result = -2121;
+        result.result = -21211;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }

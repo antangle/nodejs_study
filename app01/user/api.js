@@ -536,7 +536,7 @@ router.get('/get210InfoForReview', async (req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 210a/' + err);
+        console.log('router ERROR: get210InfoForReview/' + err);
         result.result = -21011;
         return res.json(result);
     }
@@ -552,7 +552,7 @@ router.post('/post210DealReview', async(req,res) =>{
         else if(score > 5 || score < 0){
             return res.json({result: 21022});
         }
-
+        score = Math.floor(10 * score);
         jsondata = {score, comment, deal_id, user_id};
 
         result = await auction.insert210Review(jsondata);
@@ -580,7 +580,7 @@ router.post('/post210DealReview', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 210b/' + err);
+        console.log('router ERROR: post210DealReview/' + err);
         result.result = -21021;
         return res.json(result);
     }
@@ -590,6 +590,9 @@ router.get('/get211StoreDetails', async(req,res) =>{
     var result ={};
     try{
         var {deal_id} = req.query;
+        if(!deal_id){
+            return res.json({result: 21111});
+        }
         result = await auction.get211StoreDetails(deal_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -597,16 +600,19 @@ router.get('/get211StoreDetails', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 211/' + err);
-        result.result = -211;
+        console.log('router ERROR: get211StoreDetails/' + err);
+        result.result = -21111;
         return res.json(result);
     }
 });
 
-router.get('/get212AllStoreReviews', async(req,res) =>{
+router.post('/get212AllStoreReviews', async(req,res) =>{
     var result ={};
     try{
-        var {store_id} = req.query;
+        var {store_id} = req.body;
+        if(!store_id){
+            return res.json({result: 21211})
+        }
         result = await auction.get212AllStoreReviews(store_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -614,8 +620,8 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 211/' + err);
-        result.result = -211;
+        console.log('router ERROR: get212AllStoreReviews/' + err);
+        result.result = -21211;
         return res.json(result);
     }
 });
