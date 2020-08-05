@@ -722,31 +722,31 @@ const get211StoreDetails = async(deal_id)=>{
     }
 };
 
-const get212AllStoreReviews = async(store_id)=>{
+const get212AllStoreReviews = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
             SELECT store.id AS store_id, store.score AS avg_score, 
-            store.score_weight AS review_count,
-            store.comment AS store_comment, 
-            score.score AS my_score, 
-            score.comment AS my_comment,
-            DATE(score.create_date),
-            device.name AS device_name,
-            detail.color_name,
-            detail.volume
-            FROM store
+                store.score_weight AS review_count,
+                store.comment AS store_comment, 
+                score.score AS my_score, 
+                score.comment AS my_comment,
+                DATE(score.create_date),
+                device.name AS device_name,
+                detail.color_name, 
+                detail.volume
+            FROM deal
+            INNER JOIN store
+                ON deal.id = $1
+                AND store.id = deal.store_id
             INNER JOIN score
-            ON store.id = $1
-            AND score.store_id = $1
-            INNER JOIN deal
-            ON deal.id = score.deal_id
+                ON score.store_id = deal.store_id
             INNER JOIN device_detail AS detail
-            ON deal.device_detail_id = detail.id
+                ON deal.device_detail_id = detail.id
             INNER JOIN device
-            ON deal.device_id = device.id
+                ON deal.device_id = device.id
             `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id], -21212);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21212);
         //TODO: later on, gotta decide which review to look upon
         if(errcode){
             return {result: errcode};

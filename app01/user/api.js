@@ -606,14 +606,14 @@ router.get('/get211StoreDetails', async(req,res) =>{
     }
 });
 
-router.post('/get212AllStoreReviews', async(req,res) =>{
+router.get('/get212AllStoreReviews', async(req,res) =>{
     var result ={};
     try{
-        var {store_id} = req.body;
-        if(!store_id){
+        var {deal_id} = req.query;
+        if(!deal_id){
             return res.json({result: 21211})
         }
-        result = await auction.get212AllStoreReviews(store_id);
+        result = await auction.get212AllStoreReviews(deal_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }

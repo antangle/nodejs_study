@@ -23,8 +23,10 @@ get201StateUpdate 함수에서 마감시간이 지나도 result를 1 항상 뱉�
 @해결
 
 210 postReview => 이상하게 잘 안됨, 가끔보면 전체리뷰 리스트에 새로 만든 딜이 있고, '리뷰 test입니당~'이라는 내용으로 들어가있음
+@해결, 원래 그거 나오게 test 자료 하나 만든거임.
 
 212 스토어 리뷰 리스트 - deal_id로 받게 만들고 deal의 store_nick은 리뷰가 없어도 따로 무조건 뱉고, writer_nick도 추가해주세용
+@writer_nick 가아닌 user_nick으로 하겠음, 
 
 200번대에서 신고하기 기능?
 
