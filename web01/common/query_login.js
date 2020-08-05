@@ -794,7 +794,7 @@ const checkState910 = async(partner_id) =>{
     try{
         const querytext = `
         SELECT state, id AS partner_id, store_id FROM partner
-        WHERE id = $1
+        WHERE partner_id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9102);
         if(errcode){ 

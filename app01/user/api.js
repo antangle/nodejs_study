@@ -326,7 +326,7 @@ router.post('/finish', async(req,res) =>{
     try{
         var {user_id} = req.body;
         if(!user_id){
-            return res.json({result: 10411})
+            return res.json({result: 10411});
         }
         result = await buy.finishAuctionTempDeviceInfo(user_id);
         if(result.result !== define.const_SUCCESS){
@@ -395,7 +395,7 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
         result = await auction.update202AuctionState(user_id);
         if(result.result !== define.const_SUCCESS){
             //코드 100차이만 나면 원하는 에러코드 부여 가능
-            return res.json({result: result.result + 100});
+            return res.json(result);
         }
         result = await auction.get202AuctionInfo(user_id)
         if(result.result !== define.const_SUCCESS){
@@ -410,18 +410,18 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
     }
 });
 
-router.get('/get203MyAuctionDetails', async (req, res) =>{
+router.post('/get203MyAuctionDetails', async (req, res) =>{
     var result ={};
     try{
-        var {auction_id} = req.query;
+        var {auction_id} = req.body;
         result = await auction.get203AuctionDeals(auction_id);
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: 203/' + err);
+        console.log('router ERROR: get203MyAuctionDetails/' + err);
         result.result = -203;
         return res.json(result);
     } 
