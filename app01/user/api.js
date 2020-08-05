@@ -346,8 +346,15 @@ router.post('/get201MyAuctionOn', async (req, res) =>{
     var result ={};
     var array =[];
     var {user_id} = req.body;
+    if(!user_id){
+        return res.json({result: 20111});
+    }
     try{
-        await auction.update201AuctionState(user_id);
+        //user_id 받아서 관련 auction state 모두 update
+        result = await auction.update201AuctionState(user_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
         result = await auction.get201AuctionInfo(user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -357,14 +364,14 @@ router.post('/get201MyAuctionOn', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: 201/' + err);
-        result.result = -201;
+        result.result = -20111;
         return res.json(result);
     }
 });
 
 router.post('/get201StateUpdate', async (req, res) =>{
     var result ={};
-    var {finish_time} = req.body;
+    var {auction_id} = req.body;
     try{
         //state, -1: unselected, 1: ongoing, 2: waiting selection
         const currentTime = Date.now() + 32400000
