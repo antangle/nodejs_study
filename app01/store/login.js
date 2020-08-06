@@ -295,6 +295,7 @@ router.post('/makeMeStore908', async(req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        result.partner_id = store_info.partner_id;
         return res.json(result);
     }
     catch(err){

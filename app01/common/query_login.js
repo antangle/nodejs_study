@@ -43,6 +43,7 @@ const checkDupinfoUser = async(dupinfo) => {
         const querytext = `
         SELECT 1 FROM users
         WHERE dupinfo = $1
+        AND state != -1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [dupinfo], -92232);
         if(errcode){
@@ -833,7 +834,6 @@ const storeDenyUpdateStoreTemp = async(partner_id) => {
         return result;
     }
 }
-
 
 const storeDenyUpdatePartner = async(partner_id) => {
     try{
