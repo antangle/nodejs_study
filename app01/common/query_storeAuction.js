@@ -12,7 +12,8 @@ const get501StoreAuction = async(store_id)=>{
     var result = {};
     try{
     const querytext = `
-        SELECT deal.id AS deal_id, deal.agency, deal.contract_list,
+        SELECT deal.id AS deal_id, deal.agency, 
+            deal.contract_list, deal.state,
             auction.agency_use, auction.agency_hope, auction.finish_time,
             device.name, detail.volume, detail.color_hex, detail.color_name,
             image.url_2x, payment.alias
@@ -33,10 +34,10 @@ const get501StoreAuction = async(store_id)=>{
     `;
     var {rows, rowCount, errcode} = await query(querytext, [store_id], -50112);
     if(errcode){
-        return {result: errcode};
+        return {result: errcode, myDeal: []};
     }
     if(rowCount === 0){
-        return {result: -50113}
+        return {result: 50112, myDeal: []}
     }
     result = {myDeal: rows};
     result.result = define.const_SUCCESS;
@@ -81,10 +82,10 @@ const get501Search = async(store_id)=>{
     `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id], -50114);
         if(errcode){
-            return {result: errcode};
+            return {result: errcode, auction: []};
         }
         if(rowCount === 0){
-            return {result: -50115}
+            return {result: 50113, auction: []};
         }
         result = {auction: rows};
         result.result = define.const_SUCCESS;
@@ -114,10 +115,10 @@ const get501Reviews = async(store_id)=>{
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id], -50116);
         if(errcode){
-            return {result: errcode};
+            return {result: errcode, review: []};
         }
         if(rowCount === 0){
-            return {result: -50117}
+            return {result: 50114, review: []}
         }
         result = {review: rows};
         result.result = define.const_SUCCESS;
@@ -130,68 +131,105 @@ const get501Reviews = async(store_id)=>{
     }
 };
 
-const get701Search = async(store_id)=>{
+const get601Search = async(store_id)=>{
     var result = {};
     try{
-      const querytext = `
-      SELECT 
-      auction.id AS auction_id,
-      auction.agency_use, auction.agency_hope, auction.period,
-      auction.contract_list, auction.finish_time, 
-      auction.now_discount_price,
-      device.name, detail.volume, detail.color_hex, detail.color_name,
-      image.url_2x, payment.alias
-      FROM auction
-      INNER JOIN device_detail AS detail
-      ON auction.device_detail_id = detail.id
-      AND auction.finish_time > current_timestamp
-      AND auction.win_state = 1
-      AND auction.id NOT IN (
-          SELECT cut.auction_id 
-          FROM cut
-          WHERE cut.store_id = $1)
-      INNER JOIN device
-      ON auction.device_id = device.id
-      INNER JOIN image
-      ON device.image_id = image.id
-      INNER JOIN payment
-      ON auction.payment_id = payment.id
-      ORDER BY auction.finish_time
-    `;
-      var {rows, rowCount, errcode} = await query(querytext, [store_id]);
-      result = {auction: rows, result: define.const_SUCCESS};
-      return result;
+        const querytext = `
+        SELECT 
+            auction.id AS auction_id,
+            auction.agency_use, auction.agency_hope, auction.period,
+            auction.contract_list, auction.finish_time,
+            auction.now_discount_price,
+            device.name, detail.volume, detail.color_hex, detail.color_name,
+            image.url_2x, payment.alias
+        FROM auction
+        INNER JOIN device_detail AS detail
+            ON auction.id NOT IN (
+                SELECT cut.auction_id 
+                FROM cut
+                WHERE cut.store_id = $1
+            )
+            AND auction.win_state = 1
+            AND auction.finish_time > current_timestamp
+            AND auction.device_detail_id = detail.id
+        INNER JOIN device
+            ON auction.device_id = device.id
+        INNER JOIN image
+            ON device.image_id = image.id
+        INNER JOIN payment
+            ON auction.payment_id = payment.id
+        ORDER BY auction.finish_time
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id], -60112);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: 60112}
+        }
+        result = {auction: rows, result: define.const_SUCCESS};
+        return result;
     }
     catch(err){
-      result.result = -7011;
+        result.result = -60111;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const post601CutInsert = async(store_id, auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        INSERT INTO cut(store_id, auction_id, finish_time)
+        VALUES($1, $2, current_timestamp +interval '2 hours')
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id], -60122);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60123}
+        }
+        else if(rowCount > 1){
+            return {result: -60124}
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -60121;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
 };
 
-const post701CutAuction = async(store_id, auction_id)=>{
+const post601CutAuctionUpdate = async(auction_id)=>{
     var result = {};
     try{
         const querytext = `
-        WITH cte AS(
-            UPDATE auction SET
+        UPDATE auction SET
             store_count = store_count +1
-            WHERE id = $2
-        )
-        INSERT INTO cut(store_id, auction_id, finish_time)
-        VALUES($1,$2, current_timestamp +interval '2 hours')
-    `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id]);
+        WHERE id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id], -60125);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60126}
+        }
         result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
-      result.result = -7012;
+      result.result = -60121;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
 };
-const delete701CutAuction = async()=>{
+
+const delete601CutAuction = async()=>{
     var result = {};
     try{
         const querytext = `
@@ -204,13 +242,13 @@ const delete701CutAuction = async()=>{
         return result;
     }
     catch(err){
-      result.result = -7013;
+      result.result = -6013;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
 };
 
-const get702Auction = async(auction_id)=>{
+const get602Auction = async(auction_id)=>{
     var result = {};
     try{
       const querytext = `
@@ -237,14 +275,14 @@ const get702Auction = async(auction_id)=>{
       return result;
     }
     catch(err){
-      result.result = -7021;
+      result.result = -6021;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
 };
 
 //creates temporary store_nick. also checks for now_discount_price, deal_id
-const get702NeededInfoForDeal = async(store_id, auction_id)=>{
+const get602NeededInfoForDeal = async(store_id, auction_id)=>{
     var result = {};
     try{ 
         const querytext = `
@@ -263,7 +301,7 @@ const get702NeededInfoForDeal = async(store_id, auction_id)=>{
     `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id]);
         if(rowCount === 0){
-            throw('no value when performing get702NeededInfoForDeal')
+            throw('no value when performing get602NeededInfoForDeal')
         }
         var tempNick = rows[0].region + rows[0].nick;
         result = {
@@ -274,13 +312,13 @@ const get702NeededInfoForDeal = async(store_id, auction_id)=>{
         return result;
     }
     catch(err){
-      result.result = -7022;
+      result.result = -6022;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
 };
 
-const insert702DealSend = async(paramArray)=>{
+const insert602DealSend = async(paramArray)=>{
     var result = {};
     try{
         const querytext = `
@@ -327,22 +365,22 @@ const insert702DealSend = async(paramArray)=>{
         ]*/
         var {rowCount} = await query(querytext, paramArray);
         if(rowCount === 0){
-            throw('post702DealSend ERROR. Check if discount_price is lower than now_discount_price')
+            throw('post602DealSend ERROR. Check if discount_price is lower than now_discount_price')
         }
         if(rowCount !== 1){
-            throw('post702DealSend something is wrong.. dunno why')
+            throw('post602DealSend something is wrong.. dunno why')
         }
         result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
-      result.result = -7023;
+      result.result = -6023;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
 };
 
-const update702DealSend = async(deal_id, auction_id, discount_price)=>{
+const update602DealSend = async(deal_id, auction_id, discount_price)=>{
     var result = {};
     try{
         console.log(deal_id)
@@ -355,10 +393,10 @@ const update702DealSend = async(deal_id, auction_id, discount_price)=>{
         `;
         var {rowCount} = await query(querytext1, [discount_price, auction_id]);
         if(rowCount === 0){
-            throw('post702DealSend1 ERROR. Check if discount_price is lower than now_discount_price')
+            throw('post602DealSend1 ERROR. Check if discount_price is lower than now_discount_price')
         }
         if(rowCount !== 1){
-            throw('post702DealSend1 something is wrong.. dunno why')
+            throw('post602DealSend1 something is wrong.. dunno why')
         }
         const querytext2 = `
         UPDATE deal SET
@@ -373,16 +411,16 @@ const update702DealSend = async(deal_id, auction_id, discount_price)=>{
         `;
         var {rowCount} = await query(querytext2, [deal_id, discount_price, auction_id]);
         if(rowCount === 0){
-            throw('post702DealSend2 ERROR. Check if discount_price is lower than now_discount_price')
+            throw('post602DealSend2 ERROR. Check if discount_price is lower than now_discount_price')
         }
         if(rowCount !== 1){
-            throw('post702DealSend2 something is wrong.. dunno why')
+            throw('post602DealSend2 something is wrong.. dunno why')
         }
         result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
-      result.result = -7024;
+      result.result = -6024;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     } 
@@ -519,13 +557,14 @@ module.exports = {
     get501StoreAuction,
     get501Search,
     get501Reviews,
-    get701Search,
-    post701CutAuction,
-    delete701CutAuction,
-    get702Auction,
-    get702NeededInfoForDeal,
-    insert702DealSend,
-    update702DealSend,
+    get601Search,
+    post601CutInsert,
+    post601CutAuctionUpdate,
+    delete601CutAuction,
+    get602Auction,
+    get602NeededInfoForDeal,
+    insert602DealSend,
+    update602DealSend,
     get801MyOngoingDeal,
     get802MyPreviousDeal,
     get803MyDealDetail

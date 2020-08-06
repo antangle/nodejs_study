@@ -13,46 +13,55 @@ router.post('/S101HomepageInfo', async (req, res) =>{
     var result ={};
     try{
         var {store_id} = req.body;
+        if(!store_id){
+            return res.json({result: 50111})
+        }
         var myDeal = await store.get501StoreAuction(store_id);
-        if(myDeal.result !== define.const_SUCCESS){
-            return res.json(myDeal);
-        }
         var lookaround = await store.get501Search(store_id);
-        if(lookaround.result !== define.const_SUCCESS){
-            return res.json(lookaround);
-        }
         var review = await store.get501Reviews(store_id);
-        if(review.result !== define.const_SUCCESS){
-            return res.json(review);
-        }
         result = {
             myDeal: myDeal.myDeal, 
             auction: lookaround.auction, 
-            review: review.review, 
-            result: define.const_SUCCESS
+            review: review.review
         };
+        if(myDeal.result !== define.const_SUCCESS){
+            result.result = myDeal.result;
+            return res.json(result);
+        }
+        else if(lookaround.result !== define.const_SUCCESS){
+            result.result = lookaround.result;
+            return res.json(result);
+        }
+        else if(review.result !== define.const_SUCCESS){
+            result.result = review.result;
+            return res.json(result);
+        }
+        result.result = define.const_SUCCESS;
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s101 - GetHomepageInfo/' + err);
+        console.log('router ERROR: s101 - S101HomepageInfo/' + err);
         result.result = -50111;
         return res.json(result);
     }
 });
 
-router.get('/S201SearchAuction', async (req, res) =>{
+router.post('/S201SearchAuction', async (req, res) =>{
     var result ={};
     try{
-        var {store_id} = req.query;
-        result = await store.get701Search(store_id);
+        var {store_id} = req.body;
+        if(!store_id){
+            return res.json({result: 60111})
+        }
+        result = await store.get601Search(store_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s201 - GetInfo/' + err);
-        result.result = -701;
+        console.log('router ERROR: S201SearchAuction/' + err);
+        result.result = -60111;
         return res.json(result);
     }
 });
@@ -61,23 +70,27 @@ router.post('/S201CutAuction', async (req, res) =>{
     var result ={};
     try{
         var {store_id, auction_id} = req.body;
-        result = await store.post701CutAuction(store_id, auction_id);
-        if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+        if(!store_id || !auction_id){
+            return res.json({result: 60121});
         }
+        result = await store.post601CutInsert(store_id, auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.post601CutAuctionUpdate(auction_id);
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s201 - Cut/' + err);
-        result.result = -702;
+        console.log('router ERROR: S201CutAuction/' + err);
+        result.result = -60121;
         return res.json(result);
     }
 });
 
-router.delete('/S201DeleteAuction', async (req, res) =>{
+router.delete('/S201DeleteCut', async (req, res) =>{
     var result ={};
     try{
-        result = await store.delete701CutAuction();
+        result = await store.delete601CutAuction();
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
@@ -94,7 +107,7 @@ router.get('/S202AuctionInfo', async (req, res) =>{
     var result ={};
     try{
         var {auction_id} = req.query;
-        result = await store.get702Auction(auction_id);
+        result = await store.get602Auction(auction_id);
         if(result.result !== define.const_SUCCESS){
             throw(result.result);
         }
@@ -113,7 +126,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         var {store_id, auction_id, discount_price} = req.body;
         //자릿수 10000원대만 나오게 sanitize
         discount_price = parseInt(discount_price/10000)*10000;
-        var info = await store.get702NeededInfoForDeal(store_id, auction_id);
+        var info = await store.get602NeededInfoForDeal(store_id, auction_id);
         console.log(info)
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
@@ -147,13 +160,13 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 discount_price, 
                 info.store_nick
             ]
-            result = await store.insert702DealSend(paramArray);
+            result = await store.insert602DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});
             }
         }
         else if(info.data.deal_id !== null){
-            result = await store.update702DealSend(info.data.deal_id, auction_id, discount_price);
+            result = await store.update602DealSend(info.data.deal_id, auction_id, discount_price);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});
             }

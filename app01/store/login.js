@@ -104,6 +104,7 @@ router.post('/toJWT902', async(req, res) =>{
     if (!name|| !mobileno || !birthdate || !dupinfo) {
         return res.json({result: 9021});
     }
+    console.log(dupinfo);
     var json = {
         name: name, 
         mobileno: mobileno, 

@@ -48,6 +48,10 @@ S202AuctionDealSend에서 -7022 왜뜰까
 
 S303MyDealDetail 에러 result-709
 
+web01에서 login 관련 push_token 값 아예 못건드리게 해놓을것.
+
+S101에서 공지사항 추가
+
 Pooling 에 관하여 pool 개수 조정
 !일단 주말에
 

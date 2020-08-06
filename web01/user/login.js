@@ -177,7 +177,6 @@ router.post('/SignIn904', async (req, res) =>{
         }
         const token = helper.generateToken(result.user_id);
         result.token = token
-        console.log(result);
         return res.json(result);
     }
     catch(err){
