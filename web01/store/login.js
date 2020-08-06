@@ -46,7 +46,7 @@ router.post('/Login901', async (req, res) =>{
         }
         //회원탈퇴 된상태
         if(dbResponse.data.state === -1){
-            return res.json({result: 9215});
+            return res.json({result: 9015});
         }
         //아이디 틀림
         if(!dbResponse.data.hash_pwd){
@@ -94,7 +94,6 @@ router.post('/Login901', async (req, res) =>{
         delete req.body.login_pwd;
         console.log('router ERROR: P901 - Login901/' + err);
         result.result = -9013;
-        result.message = err;
         return res.json(result);
     }
 });
@@ -203,7 +202,7 @@ router.post('/SignIn904', async (req, res) =>{
 
         var push = await partner.updatePushTokenPartner(login_id, push_token);
         if(push.result !== define.const_SUCCESS){
-            return res.json({result: push.result - 31})
+            return res.json({result: -9047})
         }
         const token = helper.generateToken(result.partner_id);
         console.log(result);
@@ -213,7 +212,7 @@ router.post('/SignIn904', async (req, res) =>{
     catch(err){
         delete req.body.login_pwd;
         console.log('router ERROR: P904 - SignIn904/' + err);
-        result.result = -9042;
+        result.result = -9043;
         return res.json(result);
     }
 });

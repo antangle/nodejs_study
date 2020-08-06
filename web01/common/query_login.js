@@ -117,7 +117,6 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
             RETURNING id
             `;
         var strDate = String(Date.now());
-        //cut strDate 0.001sec part and change type to Integer
         var id = strDate.substr(0,12);
 
         var paramArray = [
@@ -136,10 +135,10 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
         if(rowCount > 1){
             return {result: -9245}
         }
-        else if(rowCount <1){
+        else if(rowCount < 1){
             return {result: -9246}
         }
-        result ={result: define.const_SUCCESS, user_id: rows[0].id};
+        result = {result: define.const_SUCCESS, user_id: rows[0].id};
         return result;
     }
     catch(err){
@@ -188,7 +187,6 @@ const post006Nickname = async(nick, user_id)=>{
             create_time = current_date,
             state = 1
             WHERE id = $2
-            RETURNING id
             `;
         var {rows, rowCount, errcode} = await query(querytext, [nick, user_id], -92622);
         if(errcode){
@@ -200,7 +198,7 @@ const post006Nickname = async(nick, user_id)=>{
         else if(rowCount < 1){
             return {result: -92624};
         }
-        result = {result: define.const_SUCCESS, user_id: rows[0].id};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
@@ -339,11 +337,11 @@ const updatePushTokenUser = async(login_id, push_token)=>{
         else if(rowCount < 1){
             return {result: -9218};
         }
-        result = {result: define.const_SUCCESS};
+        result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
-        result.result = -9211;
+        result.result = -9213;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -553,7 +551,7 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
         return result;
     }
     catch(err){
-        result.result = -9044;
+        result.result = -9043;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
