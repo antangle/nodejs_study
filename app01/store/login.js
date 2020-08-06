@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const partner = require('../common/query_login');
 const define = require('../../definition/define');
-const {helper, comparePassword} = require('../../controller/validate');
+const {helper} = require('../../controller/validate');
 const verify = require('../../middleware/verify');
 
 router.use(express.urlencoded({limit:'50mb', extended: false }));
@@ -41,9 +41,15 @@ router.post('/Login901', async (req, res) =>{
         if(dbResponse.result !== 1){
             return res.json({result: dbResponse.result});
         }
+        //회원탈퇴 된상태
+        if(dbResponse.data.state === -1){
+            return res.json({result: 9215});
+        }
+        //아이디 틀림
         if(!dbResponse.data.hash_pwd){
             return res.json({result: 9013});
         }
+        //비번 틀림
         if(!helper.comparePassword(req.body.login_pwd, dbResponse.data.hash_pwd)){
             return res.json({result: 9014});
         }
@@ -56,15 +62,24 @@ router.post('/Login901', async (req, res) =>{
             state: dbResponse.data.state
         }
         if(dbResponse.data.state === 1){
-            await partner.updatePushTokenPartner(login_id, push_token)
+            var push = await partner.updatePushTokenPartner(login_id, push_token)
+            if(push.result !== define.const_SUCCESS){
+                return res.json(push);
+            }
             result.result = 1;
         }
         else if(dbResponse.data.state === 2){
-            await partner.updatePushTokenPartner(login_id, push_token)
+            var push = await partner.updatePushTokenPartner(login_id, push_token)
+            if(push.result !== define.const_SUCCESS){
+                return res.json(push);
+            }
             result.result = 1;
         }
         else if(dbResponse.data.state === 3){
-            await partner.updatePushTokenStore(login_id, push_token);
+            var push = await partner.updatePushTokenPartner(login_id, push_token);
+            if(push.result !== define.const_SUCCESS){
+                return res.json(push);
+            }
             result.result = 1;
         }
         else{
