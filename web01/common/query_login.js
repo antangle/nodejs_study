@@ -297,15 +297,15 @@ const checkUserState910 = async(user_id) =>{
         SELECT state, id AS user_id FROM users
         WHERE id = $1
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [user_id], -9102);
+        var {rows, rowCount, errcode} = await query(querytext, [user_id], -9302);
         if(errcode){ 
             return {result: errcode};
         }
         if(rowCount < 1){
-            return {result: -9103};
+            return {result: -9303};
         }
         else if(rowCount > 1){
-            return {result: -9104};    
+            return {result: -9304};    
         }
         result = {
             result: define.const_SUCCESS, 
@@ -315,7 +315,7 @@ const checkUserState910 = async(user_id) =>{
         return result;
     }
     catch(err){
-        result.result = -9101;
+        result.result = -9301;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -1013,19 +1013,23 @@ const updatePushTokenPartner = async(login_id, push_token)=>{
             WHERE login_id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [login_id, push_token], -9016);
+            //-9047
         if(errcode){
             return {result: errcode};
         }
         if(rowCount > 1){
+            //-9048
             return {result: -9017};
         }
         else if(rowCount < 1){
+            //-9049
             return {result: -9018};
         }
         result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){
+        //-9042
         result.result = -9011;
         console.log(`ERROR: ${result.result}/` + err);
         return result;

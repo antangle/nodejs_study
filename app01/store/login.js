@@ -33,6 +33,9 @@ router.get('/test', async(req, res) =>{
 router.post('/Login901', async (req, res) =>{
     var result = {};
     var {login_id, push_token} = req.body;
+    if(!push_token){
+        push_token = null;
+    }
     if (!login_id || !req.body.login_pwd) {
         return res.json({result: -9011});
     }
@@ -168,7 +171,10 @@ router.post('/CheckId904', async (req, res) =>{
 
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
-    var {login_id, info} = req.body;
+    var {login_id, info, push_token} = req.body;
+    if(!push_token){
+        push_token = null;
+    }
     if(!info){
         return res.json({result: 9041});
     }
@@ -194,6 +200,11 @@ router.post('/SignIn904', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
+        var push = await partner.updatePushTokenPartner(login_id, push_token);
+        if(push.result !== define.const_SUCCESS){
+            return res.json({result: push.result - 31})
+        }
         const token = helper.generateToken(result.partner_id);
         console.log(result);
         result.token = token
@@ -202,7 +213,7 @@ router.post('/SignIn904', async (req, res) =>{
     catch(err){
         delete req.body.login_pwd;
         console.log('router ERROR: P904 - SignIn904/' + err);
-        result.result = -9044;
+        result.result = -9042;
         return res.json(result);
     }
 });
