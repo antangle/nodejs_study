@@ -173,7 +173,7 @@ router.post('/CheckNick906', async (req, res) =>{
     var result = {};
     var {nick, user_id} = req.body;
     if(!nick || !user_id){
-        return res.json({result: 92611});
+        return res.json({result: 92612});
     }
     else if(!helper.isValidNickname(nick)){
         return res.json({result: -92615});

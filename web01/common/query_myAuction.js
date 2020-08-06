@@ -46,6 +46,7 @@ const update201AuctionState = async(user_id)=>{
             END
         )
         WHERE user_id = $1
+        AND state != -1
         RETURNING state
         `;
         var {rows, rowCount, errcode} =await query(querytext, [user_id], -20112);
@@ -54,9 +55,6 @@ const update201AuctionState = async(user_id)=>{
         }
         if(rowCount === 0){
             return {result: -20113}
-        }
-        else if(rowCount > 3){
-            return {result: -20114}   
         }
         var count = 0;
         //state가 전부 -1이면 출력값 없어야함.
@@ -109,9 +107,6 @@ const get201AuctionInfo = async(user_id)=>{
         }
         if(rowCount === 0){
             return {result: -20116}
-        }
-        else if(rowCount > 3){
-            return {result: -20117}
         }
         result = {auction: rows, rowCount: rowCount};
         result.result = define.const_SUCCESS;
@@ -178,6 +173,7 @@ const update202AuctionState = async(user_id)=>{
             END
         )
         WHERE user_id = $1
+        AND state != -1
         RETURNING state
         `;
         var {rows, rowCount, errcode} =await query(querytext, [user_id], -20212);
@@ -186,9 +182,6 @@ const update202AuctionState = async(user_id)=>{
         }
         if(rowCount === 0){
             return {result: -20213}
-        }
-        else if(rowCount > 3){
-            return {result: -20214}   
         }
         var count = 0;
         //state가 전부 -1이면 출력값 없어야함.
@@ -249,9 +242,6 @@ const get202AuctionInfo = async(user_id)=>{
         }
         if(rowCount === 0){
             return {result: -20216}
-        }
-        else if(rowCount > 3){
-            return {result: -20217}   
         }
         result = {auction: rows, rowCount: rowCount};
         result.result = define.const_SUCCESS;

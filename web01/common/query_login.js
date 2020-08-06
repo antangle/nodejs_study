@@ -155,8 +155,8 @@ const post006NicknameCheck = async(nick)=>{
         const querytext = `
             SELECT
                 COALESCE(
-                    (SELECT 1 FROM users
-                    WHERE nick = $1), -2
+                    (SELECT 92611 FROM users
+                    WHERE nick = $1), 1
                 ) AS match
         `;
         var {rows, rowCount, errcode} = await query(querytext, [nick], -92612);
@@ -166,10 +166,10 @@ const post006NicknameCheck = async(nick)=>{
         if(rowCount > 1){
             return {result: -92613};
         }
-        else if(rowCount <1){
+        else if(rowCount < 1){
             return {result: -92614};
         }
-        result = {result: define.const_SUCCESS, match: rows[0].match};
+        result = {result: rows[0].match};
         return result;
     }
     catch(err){
@@ -197,7 +197,7 @@ const post006Nickname = async(nick, user_id)=>{
         if(rowCount > 1){
             return {result: -92623};
         }
-        else if(rowCount <1){
+        else if(rowCount < 1){
             return {result: -92624};
         }
         result = {result: define.const_SUCCESS, user_id: rows[0].id};
@@ -1097,7 +1097,7 @@ module.exports = {
     UserShutAccount008,
     updatePushTokenUser,
     checkUserState910,
-    
+
     //partner login query
     getP001GetPassword,
     checkDupinfoPartner,
