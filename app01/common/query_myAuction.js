@@ -678,9 +678,9 @@ const get211StoreDetails = async(deal_id)=>{
                 AND store.id = deal.store_id
             INNER JOIN device
                 ON deal.device_id = device.id
-            INNER JOIN location_sd AS sd
+            LEFT JOIN location_sd AS sd
                 ON store.sido_code = sd.code
-            INNER JOIN location_sgg AS sgg
+            LEFT JOIN location_sgg AS sgg
                 ON store.sgg_code = sgg.code
             LEFT JOIN score
                 ON score.store_id = deal.store_id
