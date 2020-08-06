@@ -46,7 +46,6 @@ const update201AuctionState = async(user_id)=>{
             END
         )
         WHERE user_id = $1
-        AND state != -1
         RETURNING state
         `;
         var {rows, rowCount, errcode} =await query(querytext, [user_id], -20112);
