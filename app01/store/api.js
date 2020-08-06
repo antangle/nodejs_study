@@ -9,33 +9,33 @@ const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
 const {helper, comparePassword} = require('../../controller/validate');
 
-router.get('/S101HomepageInfo', async (req, res) =>{
+router.post('/S101HomepageInfo', async (req, res) =>{
     var result ={};
     try{
-        var {store_id} = req.query;
-        myDeal = await store.get601StoreAuction(store_id);
+        var {store_id} = req.body;
+        var myDeal = await store.get501StoreAuction(store_id);
         if(myDeal.result !== define.const_SUCCESS){
-            throw(myDeal.result);
+            return res.json(myDeal);
         }
-        var lookaround = await store.get601Search(store_id);
+        var lookaround = await store.get501Search(store_id);
         if(lookaround.result !== define.const_SUCCESS){
-            throw(lookaround.result);
+            return res.json(lookaround);
         }
-        var review = await store.get601Reviews(store_id);
+        var review = await store.get501Reviews(store_id);
         if(review.result !== define.const_SUCCESS){
-            throw(review.result);
+            return res.json(review);
         }
         result = {
             myDeal: myDeal.myDeal, 
             auction: lookaround.auction, 
             review: review.review, 
             result: define.const_SUCCESS
-        }
+        };
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: s101 - GetHomepageInfo/' + err);
-        result.result = -601;
+        result.result = -50111;
         return res.json(result);
     }
 });

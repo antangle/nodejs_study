@@ -293,8 +293,8 @@ const checkUserState910 = async(user_id) =>{
     var result = {};
     try{
         const querytext = `
-        SELECT state, id AS user_id FROM users
-        WHERE id = $1
+            SELECT state, id AS user_id FROM users
+            WHERE id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [user_id], -9302);
         if(errcode){ 
@@ -355,7 +355,7 @@ const UserUpdateToken008 = async(user_id, token) =>{
             UPDATE users SET
             push_token = $2
             WHERE id = $1
-            `;
+        `;
         var {rowCount} = await query(querytext, [user_id, token]);
         if(rowCount !== 1){
             return {result:-82, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
@@ -377,7 +377,7 @@ const UserDeleteToken008 = async(user_id) =>{
             UPDATE users SET
             push_token = NULL
             WHERE id = $1
-            `;
+        `;
         var {rowCount} = await query(querytext, [user_id]);
         if(rowCount !== 1){
             return {result:-84, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
@@ -421,9 +421,9 @@ const getP001GetPassword = async(login_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
-        FROM partner
-        WHERE login_id = $1
+            SELECT id AS partner_id, login_pwd AS hash_pwd, store_id, state
+            FROM partner
+            WHERE login_id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [login_id], -9012);
         if(errcode){
@@ -449,8 +449,9 @@ const checkDupinfoPartner = async(dupinfo) => {
     var result = {};
     try{
         const querytext = `
-        SELECT 1 FROM partner
-        WHERE dupinfo = $1
+            SELECT 1 FROM partner
+            WHERE dupinfo = $1
+            AND state != -1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [dupinfo], -90232);
         if(errcode){

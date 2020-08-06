@@ -575,7 +575,7 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
     if(rowCount === 0){
       return {result: -10323};
     }
-    result = {discount_official: rows[0].discount_official, result: 1}
+    result = {discount_official: rows[0].discount_official, result: 1};
     return result;
   }
   catch(err){
@@ -627,7 +627,7 @@ const postStep3Update = async(check, postInput)=>{
         check.temp_device_id, postInput.payment_id,
         postInput.agency_use, postInput.agency_hope, 
         postInput.period, postInput.contract_list
-      ]
+      ];
       var {rows, rowCount, errcode} = await query(querytext, inputarray, -10334);
       if(errcode){
         return {result: errcode};
