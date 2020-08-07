@@ -145,10 +145,12 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
+        if(isNaN(discount_price)){
+            return res.json({result: 60221});
+        }
         //자릿수 10000원대만 나오게 sanitize
         discount_price = parseInt(discount_price/10000)*10000;
         
-        console.log(discount_price);
         var info = await store.get602NeededInfoForDeal(store_id, auction_id);
         console.log(info);
         if(info.result !== define.const_SUCCESS){
@@ -157,23 +159,17 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         }
         //최초입찰이 아닐때 조건 세팅
         if(info.data.now_discount_price !== 0){
-        //최근 입찰자가 자신인지 확인
+        //최근 입찰자가 본인인지 확인
             if(info.data.now_order === info.data.deal_order){
-                result.result = -705
-                result.errMessage = '가장 최근 입찰자가 본인입니다.'
-                return res.json(result);
+                return res.json({result: 60222});
             }
             //제시한 가격이 최소 +10000인지 확인
             if(info.data.now_discount_price >= discount_price){
-                result.result = -706;
-                result.errMessage = '현재 입찰 금액보다 높게 설정해주세요.'
-                return res.json(result);
+                return res.json({result: 60223});
             }
             //제시한 가격이 50000만 한도 넘었는지 확인
             if(info.data.now_discount_price + 50000 < discount_price){
-                result.result = -707;
-                result.errMessage = '한번에 최대 입찰 금액은 50000원입니다.'
-                return res.json(result);
+                return res.json({result: 60224});
             }
         }
         if(!info.data.deal_id){
@@ -184,16 +180,38 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 discount_price, 
                 info.store_nick
             ];
+            store_count = 1;
+
             result = await store.insert602DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
-                return res.json({result: result.result});
+                return res.json(result);
+            }
+            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
             }
         }
         else if(info.data.deal_id){
             //내 갱신입찰
-            result = await store.update602DealSend(info.data.deal_id, auction_id, discount_price);
+            result = await store.updateBefore602DealSend(info.data.deal_id, store_id);
             if(result.result !== define.const_SUCCESS){
-                return res.json({result: result.result});
+                return res.json(result);
+            }
+            var paramArray = [
+                store_id, 
+                auction_id, 
+                discount_price,
+                info.store_nick
+            ];
+            store_count = 0;
+
+            result = await store.insert602DealSend(paramArray);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
             }
         }
         return res.json(result);
