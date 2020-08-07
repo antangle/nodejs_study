@@ -269,9 +269,9 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
                 device.name
             FROM auction
             INNER JOIN payment
-                ON payment.id = auction.payment_id
-                AND auction.id = $1
+                ON auction.id = $1
                 AND auction.user_id = $2
+                AND payment.id = auction.payment_id
             INNER JOIN device_detail AS detail
                 ON detail.id = auction.device_detail_id
             INNER JOIN device

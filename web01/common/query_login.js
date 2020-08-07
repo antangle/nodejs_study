@@ -868,42 +868,6 @@ const storeDenyUpdatePartner = async(partner_id) => {
     }
 }
 
-const PartnerToStore909 = async(partner_id)=>{
-    try{
-        const querytext = `
-            WITH cte AS(
-                UPDATE store SET
-                state = 1
-            )
-            UPDATE partner SET
-            store_id = store.id,
-            state = 1
-            FROM store
-            WHERE partner.id = $1
-            AND store.partner_id = $1
-            RETURNING store_id
-        `;
-       
-        var {rows, rowCount, errcode} = await query(querytext, [partner_id], -9092);
-        if(errcode){
-            return {result: errcode};
-        }
-        if(rowCount < 1){
-            return {result: -9093};
-        }
-        else if (rowCount > 1){
-            return {result: -9094};
-        }
-        result = {result: define.const_SUCCESS, store_id: rows[0].store_id};
-        return result;
-    }
-    catch(err){
-        result.result = -9091;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
 const checkState910 = async(partner_id) =>{
     var result = {};
     try{
@@ -935,6 +899,11 @@ const checkState910 = async(partner_id) =>{
         return result;
     }
 }
+
+
+
+
+
 
 const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
@@ -1116,7 +1085,6 @@ module.exports = {
     storeAcceptUpdatePartner,
     storeDenyUpdateStoreTemp,
     storeDenyUpdatePartner,
-    PartnerToStore909,
     checkState910,
 
     updatePushTokenPartner,
