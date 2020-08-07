@@ -13,7 +13,7 @@ const getU001GetPassword = async(login_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT id AS user_id, login_pwd AS hash_pwd, state
+        SELECT id AS user_id, login_pwd AS hash_pwd, nick, sgg_code, state
         FROM users
         WHERE login_id = $1
         `;

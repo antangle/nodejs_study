@@ -20,7 +20,7 @@ const helper ={
     return /^[a-zA-Z][a-zA-Z0-9]{5,14}$/.test(login_id);
   },
   isValidNickname(nick){
-    return /^[가-힣a-zA-Z][^:<>()&.~\s]{0,14}$/.test(nick);
+    return /^[가-힣a-zA-Z][가-힣a-zA-Z0-9]{3,14}$/.test(nick);
   },
   isValidPassword(password){
     return /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{5,19}$/.test(password);

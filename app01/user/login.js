@@ -52,6 +52,8 @@ router.post('/Login901', async (req, res) =>{
         result = {
             token: token, 
             user_id: dbResponse.data.user_id,
+            nick: dbResponse.data.nick,
+            sgg_code: dbResponse.data.sgg_code,
             state: dbResponse.data.state,
             result: define.const_SUCCESS
         }
