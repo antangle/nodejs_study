@@ -185,13 +185,7 @@ const post601CutInsert = async(store_id, auction_id)=>{
         INSERT INTO cut(store_id, auction_id, finish_time)
             SELECT $1, auction.id, auction.finish_time
             FROM auction
-            INNER JOIN cut
-            ON auction.id = $2
-            AND NOT EXISTS(
-                SELECT 1 FROM cut
-                WHERE store_id = $1
-                AND auction_id = $2
-            )
+            WHERE auction.id = $2
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id], -60122);
         if(errcode){
@@ -503,7 +497,12 @@ const get701MyOngoingDeal = async(store_id)=>{
             ON deal.store_id = $1
             AND deal.state = 1
             AND auction.id = deal.auction_id
-            AND auction.finish_time + interval '1 hour' >= current_timestamp
+            AND auction.finish_time >= current_timestamp
+            AND deal.id NOT IN (
+                SELECT deal_id 
+                FROM cut_deal
+                WHERE store_id = $1
+            )
         INNER JOIN device_detail AS detail
             ON detail.id = deal.device_detail_id
         INNER JOIN payment
@@ -527,6 +526,62 @@ const get701MyOngoingDeal = async(store_id)=>{
     }
     catch(err){
       result.result = -7011;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+};
+
+const post701CutDealInsert = async(store_id, deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        INSERT INTO cut_deal(store_id, deal_id, finish_time)
+            SELECT $1, deal.id, auction.finish_time
+            FROM deal
+            INNER JOIN auction
+                ON deal.id = $2
+                AND auction.id = deal.auction_id
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, deal_id], -70112);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -70113};
+        }
+        else if(rowCount > 1){
+            return {result: -70114};
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -70111;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+};
+
+const delete701CutDeal = async()=>{
+    var result = {};
+    try{
+        const querytext = `
+            DELETE FROM cut_deal
+            WHERE finish_time < current_timestamp
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [], -70122);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -70123};
+        }
+        console.log(`Total ${rowCount} rows has been deleted`);
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -70121;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
@@ -641,6 +696,8 @@ module.exports = {
     updateAfter602DealSendInsert,
     updateBefore602DealSend,
     get701MyOngoingDeal,
+    post701CutDealInsert,
+    delete701CutDeal,
     get702MyPreviousDeal,
     get703MyDealDetail
 };

@@ -243,6 +243,52 @@ router.post('/S301MyOngoingDeal', async (req, res) =>{
     }
 });
 
+
+router.post('/S301CutDeal', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id, deal_id} = req.body;
+        if(!store_id || !deal_id){
+            return res.json({result: 70111});
+        }
+        result = await store.post701CutDealInsert(store_id, deal_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S301CutDeal/' + err);
+        result.result = -70111;
+        return res.json(result);
+    }
+});
+
+router.delete('/S301DeleteCutDeal', async (req, res) =>{
+    var result ={};
+    try{
+        var {pwd} = req.body;
+        console.log(process.env.CUTDELETEPWD);
+        if(!pwd){
+            return res.json({result: 70121});
+        }
+        if(pwd !== process.env.CUTDELETEPWD){
+            return res.json({result: 70121});
+        }
+        result = await store.delete701CutDeal();
+        if(result.result !== define.const_SUCCESS){
+            res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S301DeleteCutDeal/' + err);
+        result.result = -70121;
+        return res.json(result);
+    }
+});
+
+
 router.post('/S302MyPreviousDeal', async (req, res) =>{
     var result ={};
     try{
