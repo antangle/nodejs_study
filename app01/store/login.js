@@ -360,7 +360,7 @@ router.post('/partnerToStoreDeny909', async(req, res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: p909Deny - partnerToStore909/' + err);
+        console.log('router ERROR: p909Deny - partnerToStoreDeny909/' + err);
         result.result = -90921;
         return res.json(result);
     }
@@ -369,18 +369,20 @@ router.post('/partnerToStoreDeny909', async(req, res) =>{
 router.post('/checkState910', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
-    if(!partner_id){
-        return {result: 9101}
-    }
     try{
+        if(!partner_id){
+            return {result: 9101};
+        }
+        console.log(partner_id);
         result = await partner.checkState910(partner_id);
+        console.log(result);
         if(result.result != define.const_SUCCESS){
             return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: P910 - checkState912/' + err);
+        console.log('router ERROR: P910 - checkState910/' + err);
         result.result = -9101;
         return res.json(result);
     }

@@ -536,23 +536,18 @@ const get702MyPreviousDeal = async(store_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT device.name, detail.volume, 
+        SELECT device.name, detail.volume,
             detail.color_name, detail.color_hex,
             image.url_2x, auction.finish_time,
             deal.id AS deal_id, deal.discount_price AS my_discount_price,
             deal.state AS deal_state,
             auction.contract_list, auction.period,
             auction.agency_hope, auction.agency_use,
-            users.phone, payment.alias
+            users.phone, users.nick, payment.alias
         FROM deal
         INNER JOIN auction
             ON deal.store_id = $1
-            AND (
-                deal.state = 2 OR (
-                    deal.state = 1 
-                    AND auction.finish_time + interval '1 hour' < current_timestamp
-                )
-            )
+            AND deal.state = 2 
             AND auction.id = deal.auction_id
         INNER JOIN device_detail AS detail
             ON detail.id = deal.device_detail_id
@@ -589,7 +584,7 @@ const get703MyDealDetail = async(deal_id, store_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT device.name, detail.volume, 
+        SELECT device.name, detail.volume,
             detail.color_name, detail.color_hex, 
             detail.cost_price, auction.finish_time,
             deal.id AS deal_id, deal.discount_price AS my_discount_price,
@@ -602,7 +597,7 @@ const get703MyDealDetail = async(deal_id, store_id)=>{
         INNER JOIN auction
             ON deal.id = $1
             AND deal.store_id = $2
-            AND deal.state = 1
+            AND deal.state = 2
             AND auction.id = deal.auction_id
         INNER JOIN payment
             ON payment.id = deal.payment_id
