@@ -592,7 +592,7 @@ const get703MyDealDetail = async(deal_id, store_id)=>{
             auction.agency_hope, auction.agency_use,
             auction.contract_list, auction.period,
             auction.win_time,
-            payment.price AS payment_price
+            payment.price AS payment_price, payment.alias
         FROM deal
         INNER JOIN auction
             ON deal.id = $1
