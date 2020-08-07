@@ -293,7 +293,9 @@ const checkUserState910 = async(user_id) =>{
     var result = {};
     try{
         const querytext = `
-            SELECT state, id AS user_id FROM users
+            SELECT state, id AS user_id 
+            nick, sgg_code
+            FROM users
             WHERE id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [user_id], -9302);
