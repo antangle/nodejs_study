@@ -165,7 +165,7 @@ const get601Search = async(store_id)=>{
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: 60112}
+            return {result: 60112};
         }
         result = {auction: rows, result: define.const_SUCCESS};
         return result;
@@ -182,17 +182,25 @@ const post601CutInsert = async(store_id, auction_id)=>{
     try{
         const querytext = `
         INSERT INTO cut(store_id, auction_id, finish_time)
-        VALUES($1, $2, current_timestamp +interval '2 hours')
+            SELECT $1, auction.id, auction.finish_time
+            FROM auction
+            INNER JOIN cut
+            ON auction.id = $2
+            AND NOT EXISTS(
+                SELECT 1 FROM cut
+                WHERE store_id = $1
+                AND auction_id = $2
+            )
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id], -60122);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -60123}
+            return {result: -60123};
         }
         else if(rowCount > 1){
-            return {result: -60124}
+            return {result: -60124};
         }
         result.result = define.const_SUCCESS;
         return result;
@@ -233,16 +241,22 @@ const delete601CutAuction = async()=>{
     var result = {};
     try{
         const querytext = `
-        DELETE FROM cut
-        WHERE finish_time < current_timestamp
-    `;
-        var {rowCount} = await query(querytext, []);
-        console.log(`Total ${rowCount} rows has been deleted`)
+            DELETE FROM cut
+            WHERE finish_time < current_timestamp
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [], -60132);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60133};
+        }
+        console.log(`Total ${rowCount} rows has been deleted`);
         result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
-      result.result = -6013;
+      result.result = -60131;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
     }
@@ -251,57 +265,72 @@ const delete601CutAuction = async()=>{
 const get602Auction = async(auction_id)=>{
     var result = {};
     try{
-      const querytext = `
-      SELECT 
-      auction.id AS auction_id,
-      auction.agency_use, auction.agency_hope, auction.period,
-      auction.contract_list, auction.finish_time, 
-      auction.now_discount_price,
-      device.name, detail.volume, detail.color_hex, detail.color_name,
-      image.url_2x, payment.alias
-      FROM auction
-      INNER JOIN device_detail AS detail
-      ON auction.device_detail_id = detail.id
-      AND auction.id = $1
-      INNER JOIN device
-      ON auction.device_id = device.id
-      INNER JOIN image
-      ON device.image_id = image.id
-      INNER JOIN payment
-      ON auction.payment_id = payment.id
+        const querytext = `
+        SELECT 
+            auction.id AS auction_id,
+            auction.agency_use, auction.agency_hope, auction.period,
+            auction.contract_list, auction.finish_time, 
+            auction.now_discount_price,
+            device.name, detail.volume, detail.color_hex, detail.color_name,
+            image.url_2x, payment.alias
+        FROM auction
+        INNER JOIN device_detail AS detail
+            ON auction.device_detail_id = detail.id
+            AND auction.id = $1
+        INNER JOIN device
+            ON auction.device_id = device.id
+        INNER JOIN image
+            ON device.image_id = image.id
+        INNER JOIN payment
+            ON auction.payment_id = payment.id
     `;
-      var {rows, rowCount, errcode} = await query(querytext, [auction_id]);
-      result = {auction: rows, result:define.const_SUCCESS};
-      return result;
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id], -60212);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60213};
+        }
+        else if(rowCount > 1){
+            return {result: -60214};
+        }
+        result = {result: define.const_SUCCESS, auction: rows};
+        return result;
     }
     catch(err){
-      result.result = -6021;
-      console.log(`ERROR: ${result.result}/` + err);
-      return result;
+        result.result = -60211;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
     }
 };
 
 //creates temporary store_nick. also checks for now_discount_price, deal_id
 const get602NeededInfoForDeal = async(store_id, auction_id)=>{
     var result = {};
-    try{ 
+    try{
         const querytext = `
         SELECT store.region, store_nick.nick, 
-        auction.now_discount_price, auction.now_order,
-        deal.id AS deal_id, deal.deal_order
+            auction.now_discount_price, auction.now_order,
+            deal.id AS deal_id, deal.deal_order
         FROM store
         INNER JOIN auction
-        ON auction.id = $2
-        AND store.id = $1
+            ON auction.id = $2
+            AND store.id = $1
         INNER JOIN store_nick
-        ON store_nick.id = mod(auction.now_order + auction.id*2, 1000)
+            ON store_nick.id = mod(auction.now_order + auction.id*2, 1000)
         LEFT JOIN deal
-        ON deal.store_id = $1
-        AND deal.auction_id = $2
-    `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id]);
+            ON deal.store_id = $1
+            AND deal.auction_id = $2
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id], -60222);
+        if(errcode){
+            return {result: errcode};
+        }
         if(rowCount === 0){
-            throw('no value when performing get602NeededInfoForDeal')
+            return {result: -60223};
+        }
+        else if(rowCount > 1){
+            return {result: -60224};
         }
         var tempNick = rows[0].region + rows[0].nick;
         result = {
@@ -309,53 +338,85 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
             data: rows[0],
             result: define.const_SUCCESS
         };
-        return result;
+        return result; 
     }
     catch(err){
-      result.result = -6022;
-      console.log(`ERROR: ${result.result}/` + err);
-      return result;
+        result.result = -60221;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
     }
 };
 
-const insert602DealSend = async(paramArray)=>{
+const insert602DealSend = async(paramArray) => {
     var result = {};
     try{
         const querytext = `
-        WITH cte AS(
-            UPDATE auction
-            SET now_discount_price = $3,
-            now_order = now_order +1,
-            store_count = store_count +1
-            WHERE id = $2
-        )
         INSERT INTO deal(
-            store_id, auction_id, 
+            store_id, auction_id,
             user_id, device_detail_id,
-            device_id, agency, 
-            contract_list, discount_official, 
+            device_id, agency,
+            contract_list, discount_official,
             discount_price, payment_id,
             discount_payment, period,
             create_time, deal_order,
-            state, store_nick)
-        SELECT $1, $2, 
+            state, store_nick
+        )
+        SELECT $1, $2,
             auction.user_id, auction.device_detail_id,
             auction.device_id, auction.agency_hope,
             auction.contract_list, official.discount_official,
-            $3, auction.payment_id, 
+            $3, auction.payment_id,
             payment.price*6, auction.period,
             current_timestamp, auction.now_order +1,
             1, $4
         FROM auction
         INNER JOIN payment
-        ON payment.id = auction.payment_id
-        AND auction.id = $2
+            ON payment.id = auction.payment_id
+            AND auction.id = $2
         INNER JOIN device_detail
-        ON device_detail.id = auction.device_detail_id
+            ON device_detail.id = auction.device_detail_id
         LEFT JOIN official
-        ON official.payment_id = auction.payment_id
-        AND official.device_id = auction.device_id
-        AND official.device_volume = device_detail.volume
+            ON official.payment_id = auction.payment_id
+            AND official.device_id = auction.device_id
+            AND official.device_volume = device_detail.volume
+        `;
+        /*
+            var paramArray = [
+                store_id, 
+                auction_id, 
+                discount_price, 
+                tempNick
+            ]
+        */
+        var {rows, rowCount, errcode} = await query(querytext, paramArray, -60232);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60213};
+        }
+        else if(rowCount > 1){
+            return {result: -60214};
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -60221;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+};
+
+const updateAfter602DealSendInsert = async(auction_id, now_discount_price, store_count) => {
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE auction
+            SET now_discount_price = $2,
+            now_order = now_order +1,
+            store_count = store_count + $3
+            WHERE id = $1
         `;
         /*var paramArray = [
             store_id, 
@@ -363,12 +424,15 @@ const insert602DealSend = async(paramArray)=>{
             discount_price, 
             tempNick
         ]*/
-        var {rowCount} = await query(querytext, paramArray);
-        if(rowCount === 0){
-            throw('post602DealSend ERROR. Check if discount_price is lower than now_discount_price')
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id, now_discount_price, store_count], -60225);
+        if(errcode){
+            return {result: errcode};
         }
-        if(rowCount !== 1){
-            throw('post602DealSend something is wrong.. dunno why')
+        if(rowCount === 0){
+            return {result: -60213};
+        }
+        else if(rowCount > 1){
+            return {result: -60214};
         }
         result.result = define.const_SUCCESS;
         return result;
@@ -564,6 +628,7 @@ module.exports = {
     get602Auction,
     get602NeededInfoForDeal,
     insert602DealSend,
+    updateAfter602DealSendInsert,
     update602DealSend,
     get801MyOngoingDeal,
     get802MyPreviousDeal,

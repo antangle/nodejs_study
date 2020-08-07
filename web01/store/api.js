@@ -4,6 +4,10 @@ const router = express.Router();
 router.use(express.json({limit: '50mb'}));
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 
+const path = require('path')
+const dotenv = require('dotenv');
+dotenv.config({path: path.join(__dirname, '/../../.env')});
+
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
@@ -78,6 +82,9 @@ router.post('/S201CutAuction', async (req, res) =>{
             return res.json(result);
         }
         result = await store.post601CutAuctionUpdate(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
         return res.json(result);
     }
     catch(err){
@@ -90,32 +97,43 @@ router.post('/S201CutAuction', async (req, res) =>{
 router.delete('/S201DeleteCut', async (req, res) =>{
     var result ={};
     try{
+        var {pwd} = req.body;
+        console.log(process.env.CUTDELETEPWD);
+        if(!pwd){
+            return res.json({result: 60131});
+        }
+        if(pwd !== process.env.CUTDELETEPWD){
+            return res.json({result: 60131});
+        }
         result = await store.delete601CutAuction();
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s201 - Delete/' + err);
-        result.result = -703;
+        console.log('router ERROR: S201DeleteCut/' + err);
+        result.result = -60131;
         return res.json(result);
     }
 });
 
-router.get('/S202AuctionInfo', async (req, res) =>{
+router.post('/S202AuctionInfo', async (req, res) =>{
     var result ={};
     try{
-        var {auction_id} = req.query;
+        var {auction_id} = req.body;
+        if(!auction_id){
+            return res.json({result: 60211})
+        }
         result = await store.get602Auction(auction_id);
         if(result.result !== define.const_SUCCESS){
-            throw(result.result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s202 - GetAuction/' + err);
-        result.result = -704;
+        console.log('router ERROR: S202AuctionInfo/' + err);
+        result.result = -60211;
         return res.json(result);
     }
 });
@@ -124,15 +142,20 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
         var {store_id, auction_id, discount_price} = req.body;
+        if(!store_id || !auction_id || !discount_price){
+            return res.json({result: 60221});
+        }
         //자릿수 10000원대만 나오게 sanitize
         discount_price = parseInt(discount_price/10000)*10000;
+        
+        console.log(discount_price);
         var info = await store.get602NeededInfoForDeal(store_id, auction_id);
-        console.log(info)
+        console.log(info);
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
             return res.json(result);
         }
-        //최초입찰이 아니라면 체크
+        //최초입찰이 아닐때 조건 세팅
         if(info.data.now_discount_price !== 0){
         //최근 입찰자가 자신인지 확인
             if(info.data.now_order === info.data.deal_order){
@@ -143,29 +166,31 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             //제시한 가격이 최소 +10000인지 확인
             if(info.data.now_discount_price >= discount_price){
                 result.result = -706;
-                result.errMessage = '입찰 금액보다 높게 설정해주세요.'
+                result.errMessage = '현재 입찰 금액보다 높게 설정해주세요.'
                 return res.json(result);
             }
             //제시한 가격이 50000만 한도 넘었는지 확인
-            if(info.data.now_discount_price +50000 < discount_price){
+            if(info.data.now_discount_price + 50000 < discount_price){
                 result.result = -707;
                 result.errMessage = '한번에 최대 입찰 금액은 50000원입니다.'
                 return res.json(result);
             }
         }
-        if(info.data.deal_id === null || info.data.deal_id === undefined){
+        if(!info.data.deal_id){
+            //내 첫입찰
             var paramArray = [
                 store_id, 
                 auction_id, 
                 discount_price, 
                 info.store_nick
-            ]
+            ];
             result = await store.insert602DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});
             }
         }
-        else if(info.data.deal_id !== null){
+        else if(info.data.deal_id){
+            //내 갱신입찰
             result = await store.update602DealSend(info.data.deal_id, auction_id, discount_price);
             if(result.result !== define.const_SUCCESS){
                 return res.json({result: result.result});
@@ -175,7 +200,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
     }
     catch(err){
         console.log('router ERROR: s202 - DealSend/' + err);
-        result.result = -708;
+        result.result = -60221;
         return res.json(result);
     }
 });
