@@ -323,7 +323,9 @@ const checkUserState910 = async(user_id) =>{
         result = {
             result: define.const_SUCCESS, 
             state: rows[0].state,
-            user_id: rows[0].user_id
+            user_id: rows[0].user_id,
+            nick: rows[0].nick,
+            sgg_code: rows[0].sgg_code
         };
         return result;
     }
