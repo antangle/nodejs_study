@@ -14,21 +14,35 @@ const myPageNeededInfo401 = async(user_id)=>{
     var result = {};
     try{
       const querytext = `
-      SELECT users.nick
+      SELECT users.nick, joinTB.device_name,
+        joinTB.url_2x, joinTB.brand_id
       FROM users
-      LEFT JOIN auction_temp AS temp
-      ON temp.user_id = $1
+      LEFT JOIN (
+        SELECT temp.user_id, device.name AS device_name, image.url_2x, 
+        brand.id AS brand_id
+        FROM auction_temp AS temp
+        INNER JOIN device
+        ON temp.user_id = $1
+        AND device.id = temp.device_id
+        INNER JOIN image
+        ON image.id = device.image_id
+        INNER JOIN brand
+        ON brand.id = device.brand_id
+      ) AS joinTB
+      ON joinTB.user_id = $1
       WHERE users.id = $1
     `;
-      var {rows, rowCount, errcode} = await query(querytext, [user_id], -4014);
+      var {rows, rowCount, errcode} = await query(querytext, [user_id], -4012);
       if(errcode){
           return {result: errcode};
       }
-      if(rowCount !== 1){
+      if(rowCount === 0){
           return {result: -4013};
       }
-      result.nick = rows[0].nick;
-      result.result = define.const_SUCCESS;
+      result = {
+        result: define.const_SUCCESS,
+        info: rows
+      }
       return result;
     }
     catch(err){
@@ -43,14 +57,19 @@ const myPageHelp402 = async(user_id, type, comment)=>{
     try{
       const querytext = `
       INSERT INTO help_user(user_id, type, comment)
-      VALUES($1, $2, $3)
+        SELECT id, $2, $3
+        FROM users
+        WHERE users.id = $1
     `;
-      var {rows, rowCount, errcode} = await query(querytext, [user_id, type, comment], -4024);
+      var {rows, rowCount, errcode} = await query(querytext, [user_id, type, comment], -4022);
       if(errcode){
-          return {result: errcode}  
+        return {result: errcode}  
       }
-      if(rowCount !== 1){
-          return {result: -4023}
+      if(rowCount === 0){
+        return {result: -4023}
+      }
+      else if(rowCount > 1){
+        return {result: -4024}
       }
       result.result = define.const_SUCCESS;
       return result;
@@ -67,28 +86,28 @@ const myReview403 = async(user_id)=>{
   try{
     const querytext = `
     SELECT score.score, score.deal_id, 
-    score.store_id, score.user_id,
-    score.comment, score.create_date,
-    device.name AS device_name,
-    detail.volume, detail.color_name,
-    deal.store_nick
+      score.store_id, score.user_id,
+      score.comment, score.create_date,
+      device.name AS device_name,
+      detail.volume, detail.color_name,
+      deal.store_nick
     FROM score
     INNER JOIN deal
-    ON score.user_id = $1
-    AND deal.user_id = score.user_id
-    INNER JOIN device
-    ON device.id = deal.device_id
+      ON score.user_id = $1
+      AND deal.id = score.deal_id
     INNER JOIN device_detail AS detail
-    ON detail.id = deal.device_detail_id
+      ON detail.id = deal.device_detail_id
+    INNER JOIN device
+      ON device.id = deal.device_id
   `;
-    var {rows, rowCount, errcode} = await query(querytext, [user_id], -4034);
+    var {rows, rowCount, errcode} = await query(querytext, [user_id], -4032);
     if(errcode){
         return {result: errcode};
     }
     if(rowCount === 0){
         return {result: -4033};
     }
-    result = {review: rows, count: rowCount, result: define.const_SUCCESS}
+    result = {review: rows, rowCount: rowCount, result: define.const_SUCCESS}
     return result;
   }
   catch(err){
@@ -104,21 +123,21 @@ const CheckNick404 = async(nick)=>{
       const querytext = `
           SELECT
               COALESCE(
-                  (SELECT 1 FROM users 
-                  WHERE nick = $1), -2) AS match
+                  (SELECT 40402 FROM users 
+                  WHERE nick = $1), 1) AS match
                   `;
       var {rows, rowCount, errcode} = await query(querytext, [nick], -40402);
       if(errcode){
         return {result: errcode};
       }
-      if(rowCount < 1){
+      if(rowCount === 0){
         return {result: -40403}
       }
       if(rowCount > 1){
         return {result: -40404}
       }
 
-      result ={result: define.const_SUCCESS, match: rows[0].match};
+      result = {result: rows[0].match};
       return result;
   }
   catch(err){
@@ -133,22 +152,25 @@ const changeNick404 = async(nick, user_id)=>{
   try{
       const querytext = `
           UPDATE users SET 
-          nick = $1,
-          create_time = current_date
+          nick = $1
           WHERE id = $2
-          RETURNING id
+          AND NOT EXISTS(
+            SELECT 1 FROM users
+            WHERE nick = $1
+          )
+          RETURNING nick
           `;
       var {rows, rowCount, errcode} = await query(querytext, [nick, user_id], -40412);
       if(errcode){
         return {result: errcode};
       }
-      if(rowCount < 1){
+      if(rowCount === 0){
         return {result: -40413}
       }
       if(rowCount > 1){
         return {result: -40414}
       }
-      result ={result: define.const_SUCCESS, user_id: rows[0].id};
+      result ={result: define.const_SUCCESS, nick: rows[0].nick};
       return result;
   }
   catch(err){
@@ -165,12 +187,12 @@ const get007SdCode = async()=>{
           SELECT code, name
           FROM location_sd
           `;
-      var {rows, rowCount, errcode} = await query(querytext, [], -40502);
+      var {rows, rowCount, errcode} = await query(querytext, [], -40512);
       if(errcode){
           return {result: errcode};
       }
       if(rowCount < 1){
-          return {result: -40514}
+          return {result: -40513}
       }
       result = {result: define.const_SUCCESS, sd: rows};
       return result;
@@ -190,18 +212,18 @@ const get007SggCode = async(sido_code)=>{
           FROM location_sgg
           WHERE sido_code = $1
           `;
-      var {rows, rowCount, errcode} = await query(querytext, [sido_code], -40712);
+      var {rows, rowCount, errcode} = await query(querytext, [sido_code], -40522);
       if(errcode){
           return {result: errcode}
       }
       if(rowCount <1){
-          return {result: -40715}
+          return {result: -40523}
       }
       result ={result: define.const_SUCCESS, sgg: rows};
       return result;
   }
   catch(err){
-      result.result = -40713;
+      result.result = -40521;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
   }
@@ -221,20 +243,20 @@ const post007LocationCode = async(sido_code, sgg_code, user_id)=>{
               AND sgg.code = $2
           )
       `;
-      var {rowCount} = await query(querytext, [sido_code, sgg_code, user_id], -40593);
+      var {rowCount} = await query(querytext, [sido_code, sgg_code, user_id], -40532);
       if(rowCount < 1){
-          return {result: -40578}
+          return {result: -40533}
           //존재하지 않는 sido, sgg code or user_id.
       }
       else if(rowCount > 1){
-          return {result: -40579}
+          return {result: -40534}
           //예상외의 업뎃
       }
       result ={result: define.const_SUCCESS};
       return result;
   }
   catch(err){
-      result.result = -9077;
+      result.result = -40531;
       console.log(`ERROR: ${result.result}/` + err);
       return result;
   }

@@ -627,10 +627,10 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
 });
 
 /* mypage */
-router.get('/myPageNeededInfo401', async(req,res) =>{
+router.post('/myPageNeededInfo401', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.body;
         if(!user_id){
             return res.json({result: 4011});
         }
@@ -667,12 +667,12 @@ router.post('/myPageHelp402', async(req,res) =>{
     }
 });
 
-router.get('/myReview403', async(req,res) =>{
+router.post('/myReview403', async(req,res) =>{
     var result ={};
     try{
-        var {user_id} = req.query;
+        var {user_id} = req.body;
         if(!user_id){
-            return res.json({result: 4032});
+            return res.json({result: 4031});
         }
         result = await myPage.myReview403(user_id);
         if(result.result !== define.const_SUCCESS){
@@ -694,7 +694,7 @@ router.post('/CheckNick404', async (req, res) =>{
         return res.json({result: 40401});
     }
     else if(!helper.isValidNickname(nick)){
-        return res.json({result: -40401});
+        return res.json({result: 40401});
     }
     try{
         result = await myPage.CheckNick404(nick);
@@ -705,7 +705,7 @@ router.post('/CheckNick404', async (req, res) =>{
     }   
     catch(err){
         console.log('router ERROR: 4040 - CheckNick404/' + err);
-        result.result = -4040;
+        result.result = -40401;
         return res.json(result);
     }
 });
@@ -733,13 +733,52 @@ router.post('/changeNick404', async (req, res) =>{
     }
 });
 
-router.post('/changePlace405', async(req,res) =>{
+router.get('/GetSdCode405', async (req, res) =>{
+    var result ={};
+    try{     
+        result = await myPage.get007SdCode();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: GetSdCode405/' + err);
+        result.result = -40511;
+        return res.json(result);
+    }
+});
+
+router.get('/GetSggCode405', async (req, res) =>{
+    var result ={};
+    var {sido_code} = req.query;
+    try{
+        if(!sido_code){
+            return res.json({result: 40521});
+        }
+        else if(sido_code <100 || sido_code > 1700){
+            return res.json({result: 40521});
+        }
+        result = await myPage.get007SggCode(sido_code);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: GetSggCode405/' + err);
+        result.result = -40521;
+        return res.json(result);
+    }
+});
+
+router.post('/changeLocation405', async (req, res) =>{
     var result ={};
     var {user_id, sido_code, sgg_code} = req.body;
-    if(!sido_code || !sgg_code || !user_id || sido_code <100|| sgg_code < 100){
-        return res.json({result: 40511});
-    }
     try{
+        if(!sido_code || !sgg_code || !user_id){
+            return res.json({result: 40531});
+        }
         result = await myPage.post007LocationCode(sido_code, sgg_code, user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -747,8 +786,8 @@ router.post('/changePlace405', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: changePlace405/' + err);
-        result.result = -4050;
+        console.log('router ERROR: 405 - changeLocation405/' + err);
+        result.result = -40531;
         return res.json(result);
     }
 });

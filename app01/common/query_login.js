@@ -268,7 +268,12 @@ const postU007LocationCode = async(sido_code, sgg_code, user_id)=>{
             sido_code = $1,
             sgg_code = $2
             WHERE id = $3
-            `;
+            AND EXISTS(
+                SELECT 1 FROM location_sgg AS sgg
+                WHERE sgg.sido_code = $1
+                AND sgg.code = $2
+            )
+        `;
         var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, user_id], -92723);
         if(errcode){
             return {result: errcode}
@@ -293,7 +298,7 @@ const checkUserState910 = async(user_id) =>{
     var result = {};
     try{
         const querytext = `
-            SELECT state, id AS user_id 
+            SELECT state, id AS user_id,
             nick, sgg_code
             FROM users
             WHERE id = $1
