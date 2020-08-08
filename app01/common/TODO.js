@@ -43,6 +43,7 @@ S301 한번 입찰하면 경매 마감시간이 끝나도 계속 뜸
 @해결
 
 405 주소바꾸기 할때 본래 주소 보여주기
+@해결 /web01/user/api/locationInfo405 로 user_id 보내면서 요청
 
 오픈소스 라이센스 정보 모아놓은거 있는지 ??
 @현재 할필요 없대용
@@ -53,10 +54,10 @@ S202AuctionDealSend에서 -7022 왜뜰까
 S303MyDealDetail 에러 result-709
 @갈아서 아마 안나올듯?
 
-web01에서 login 관련 push_token 값 아예 못건드리게 해놓을것.
-
 S101에서 공지사항 추가
 @일단 프론트에서 처리됨
+
+web01에서 login 관련 push_token 값 아예 못건드리게 해놓을것.
 
 Pooling 에 관하여 pool 개수 조정
 !일단 주말에

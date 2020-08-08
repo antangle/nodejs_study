@@ -331,10 +331,10 @@ router.post('/S303MyDealDetail', async (req, res) =>{
 
 // store myPage
 
-router.get('/myPageNeededInfo801', async(req,res) =>{
+router.post('/myPageNeededInfoS401', async(req,res) =>{
     var result ={};
     try{
-        var {partner_id} = req.query;
+        var {partner_id} = req.body;
         if(!partner_id){
             return res.json({result: 8011});
         }
@@ -351,7 +351,7 @@ router.get('/myPageNeededInfo801', async(req,res) =>{
     }
 });
 
-router.post('/myPageHelp802', async(req,res) =>{
+router.post('/myPageHelpS402', async(req,res) =>{
     var result ={};
     try{
         var {partner_id, type, comment} = req.body;
@@ -371,12 +371,12 @@ router.post('/myPageHelp802', async(req,res) =>{
     }
 });
 
-router.get('/myReview803', async(req,res) =>{
+router.post('/myReviewS403', async(req,res) =>{
     var result ={};
     try{
-        var {partner_id} = req.query;
+        var {partner_id} = req.body;
         if(!partner_id){
-            return res.json({result: 8032});
+            return res.json({result: 8031});
         }
         result = await myPage.myReview803(partner_id);
         if(result.result !== define.const_SUCCESS){
@@ -391,7 +391,7 @@ router.get('/myReview803', async(req,res) =>{
     }
 });
 
-router.post('/changePassword804', async(req,res) =>{
+router.post('/changePasswordS404', async(req,res) =>{
     var result ={};
     var {partner_id} = req.body;
     //old_pwd: 과거 비번, new_pwd: 바뀌는 비번
@@ -400,7 +400,7 @@ router.post('/changePassword804', async(req,res) =>{
         return res.json({result: 80401});
     }
     if(!helper.isValidPassword(req.body.new_pwd)){
-        return res.json({result: -80405});
+        return res.json({result: 80402});
     }
     try{
         const pwd = await myPage.getPartnerPassword804(partner_id);
@@ -409,7 +409,7 @@ router.post('/changePassword804', async(req,res) =>{
             return res.json({result: pwd.result});
         }
         if(!helper.comparePassword(req.body.old_pwd, pwd.hash_pwd)){
-            return res.json({result: 80402});
+            return res.json({result: 80403});
         }
         const hash = helper.hashPassword(req.body.new_pwd);
         delete req.body.new_pwd;
@@ -423,17 +423,17 @@ router.post('/changePassword804', async(req,res) =>{
     catch(err){
         delete req.body.new_pwd;
         console.log('router ERROR: changePassword804/' + err);
-        result.result = -8060;
+        result.result = -80401;
         return res.json(result);
     }
 });
 
-router.post('/partnerShutAccount810', async(req,res) =>{
+router.post('/partnerShutAccountS410', async(req,res) =>{
     var result ={};
     try{
         var {partner_id} = req.body;
         if(!partner_id){
-            return res.json({result: -8102});
+            return res.json({result: 8101});
         }
         result = await myPage.partnerShutAccount810(partner_id);
         if(result.result !== define.const_SUCCESS){

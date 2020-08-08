@@ -56,7 +56,7 @@ const checkDupinfoUser = async(dupinfo) => {
             return {result: 92231};    
         }
         if(rowcount > 1){
-            return {result:-92234}
+            return {result: -92234}
         }
         return result;
     }
@@ -111,7 +111,7 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
                 $1, $2,
                 $3, $4,
                 $5, $6,
-                3, 1,
+                1, 1,
                 current_timestamp, $7
             )
             ON CONFLICT (login_id) DO NOTHING
@@ -188,6 +188,7 @@ const post006Nickname = async(nick, user_id)=>{
             create_time = current_date,
             state = 1
             WHERE id = $2
+            RETURNING nick
             `;
         var {rows, rowCount, errcode} = await query(querytext, [nick, user_id], -92622);
         if(errcode){
@@ -199,7 +200,7 @@ const post006Nickname = async(nick, user_id)=>{
         else if(rowCount < 1){
             return {result: -92624};
         }
-        result = {result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS, nick: rows[0].nick, user_id: user_id};
         return result;
     }
     catch(err){
@@ -273,8 +274,9 @@ const postU007LocationCode = async(sido_code, sgg_code, user_id)=>{
                 WHERE sgg.sido_code = $1
                 AND sgg.code = $2
             )
+            RETURNING *
         `;
-        var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, user_id], -92723);
+        var {rows, rowCount, errcode} = await query(querytext, [sido_code, sgg_code, user_id], -92723);
         if(errcode){
             return {result: errcode}
         }
@@ -284,7 +286,12 @@ const postU007LocationCode = async(sido_code, sgg_code, user_id)=>{
         else if(rowCount <1){
             return {result: -92725}
         }
-        result = {result: define.const_SUCCESS};
+        result = {
+            result: define.const_SUCCESS, 
+            user_id: rows[0].id, 
+            nick: rows[0].nick, 
+            sgg_code: rows[0].sgg_code
+        };
         return result;
     }
     catch(err){

@@ -733,6 +733,26 @@ router.post('/changeNick404', async (req, res) =>{
     }
 });
 
+router.post('/locationInfo405', async (req, res) =>{
+    var result ={};    
+    var {user_id} = req.body;
+    try{
+        if(!user_id){
+            return res.json({result: 40501});
+        }
+        result = await myPage.changeLocationInfo(user_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: postlocation405/' + err);
+        result.result = -40501;
+        return res.json(result);
+    }
+});
+
 router.get('/GetSdCode405', async (req, res) =>{
     var result ={};
     try{     
@@ -796,25 +816,27 @@ router.post('/changePassword406', async(req,res) =>{
     var result ={};
     var {user_id} = req.body;
     //old_pwd: 과거 비번, new_pwd: 바뀌는 비번
-    if(!user_id || !req.body.old_pwd || !req.body.new_pwd){
-        //input 존재하지 않음
-        return res.json({result: 40601})
-    }
-    if(!helper.isValidPassword(req.body.new_pwd)){
-        return res.json({result: -40605})
-    }
     try{
+        if(!user_id || !req.body.old_pwd || !req.body.new_pwd){
+            //input 존재하지 않음
+            return res.json({result: 40601})
+        }
+        if(!helper.isValidPassword(req.body.new_pwd)){
+            return res.json({result: 40602})
+        }
         const pwd = await myPage.getUserPassword406(user_id);
         if(pwd.result !== define.const_SUCCESS){
             //getUserPassword405에서 뭔가 실패
             return res.json({result: pwd.result});
         }
         if(!helper.comparePassword(req.body.old_pwd, pwd.hash_pwd)){
-            //비번이 다름
-            return res.json({result: 40602});
+            //예전 비번이 다름
+            return res.json({result: 40603});
         }
         const hash_pwd = helper.hashPassword(req.body.new_pwd);
-        delete req.body.login_pwd;
+        //비밀번호 변수 지워놓기
+        delete req.body.new_pwd;
+        delete req.body.old_pwd;
 
         result = await myPage.changeUserPassword406(user_id, hash_pwd);
         if(result.result !== define.const_SUCCESS){
@@ -822,10 +844,11 @@ router.post('/changePassword406', async(req,res) =>{
         }
         return res.json(result);
     }
-    catch(err){
-        delete req.body.login_pwd;
+    catch(err){       
+        delete req.body.old_pwd;
+        delete req.body.new_pwd;
         console.log('router ERROR: changePassword406/' + err);
-        result.result = -4060;
+        result.result = -40601;
         return res.json(result);
     }
 });
@@ -835,7 +858,7 @@ router.post('/UserShutAccount410', async(req,res) =>{
     try{
         var {user_id} = req.body;
         if(!user_id){
-            return res.json({result: -4102});
+            return res.json({result: 4101});
         }
         result = await myPage.UserShutAccount410(user_id);
         if(result.result !== define.const_SUCCESS){
@@ -844,7 +867,7 @@ router.post('/UserShutAccount410', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: getOut410/' + err);
+        console.log('router ERROR: UserShutAccount410/' + err);
         result.result = -4101;
         return res.json(result);
     }

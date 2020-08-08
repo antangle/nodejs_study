@@ -17,13 +17,13 @@ const helper ={
     return bcrypt.compareSync(password, hashPassword)
   },
   isValidId(login_id){
-    return /^[a-zA-Z][a-zA-Z0-9]*$/.test(login_id);
+    return /^[a-zA-Z][a-zA-Z0-9]{5,20}$/.test(login_id);
   },
   isValidNickname(nick){
-    return  /^[가-힣a-zA-Z][가-힣a-zA-Z0-9]{0,14}$/.test(nick);
+    return  /^[가-힣a-zA-Z][가-힣a-zA-Z0-9]{1,8}$/.test(nick);
   },
   isValidPassword(password){
-    return /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]*$/.test(password);
+    return /^(?=[^a-zA-Z]*[a-zA-Z])(?=\D*\d)[^\s]{5,20}$/.test(password);
   },
   isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);
