@@ -303,6 +303,7 @@ router.post('/checkState910', async(req, res) =>{
             return {result: 9301}
         }
         result = await user.checkUserState910(user_id);
+        console.log(result);
         if(result.result != define.const_SUCCESS){
             return res.json(result);
         }
