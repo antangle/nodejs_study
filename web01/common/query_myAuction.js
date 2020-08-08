@@ -759,18 +759,19 @@ const post213Report = async(deal_id, type, comment)=>{
     try{
         const querytext = `
             INSERT INTO report(user_id, store_id, deal_id, type, comment)
-            SELECT deal.user_id, deal.store_id, $1, $2, $3
-            FROM deal
-            WHERE deal.id = $1
-            ON CONFLICT (deal_id) DO
-            UPDATE SET
-            type = $2,
-            comment =$3
-            WHERE deal.id = $1
+                SELECT deal.user_id, deal.store_id, $1, $2, $3
+                FROM deal
+                WHERE deal.id = $1
             `;
-        var {rowCount} = await query(querytext, [deal_id, type, comment]);
-        if(rowCount !== 0){
-            return {result: -2132}
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id, type, comment], -2132);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -2133};
+        }
+        else if(rowCount > 1){
+            return {result: -2134};
         }
         result ={result: define.const_SUCCESS};
         return result;

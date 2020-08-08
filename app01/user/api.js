@@ -626,6 +626,26 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     }
 });
 
+router.post('/post213Report', async(req,res) =>{
+    var result ={};
+    try{
+        var {deal_id, type, comment} = req.body;
+        if(!deal_id || !type || !comment){
+            return res.json({result: 2131});
+        }
+        result = await auction.post213Report(deal_id, type, comment);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: post213Report/' + err);
+        result.result = -2131;
+        return res.json(result);
+    }
+});
+
 /* mypage */
 router.post('/myPageNeededInfo401', async(req,res) =>{
     var result ={};
