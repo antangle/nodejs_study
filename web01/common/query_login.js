@@ -1064,6 +1064,7 @@ const test = async(partner_id)=>{
         return result;
     }
 };
+
 //#endregion
 module.exports = {
     //user login query

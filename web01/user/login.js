@@ -19,10 +19,7 @@ router.get('/test', verifyToken, (req, res) =>{
 router.post('/Login901', async (req, res) =>{
     var result = {};
     try{
-        var {login_id, push_token} = req.body;
-        if(!push_token){
-            push_token = null;
-        }
+        var {login_id} = req.body;
         if (!login_id || !req.body.login_pwd) {
             return res.json({result: -9211});
         }
@@ -43,11 +40,6 @@ router.post('/Login901', async (req, res) =>{
             return res.json({result: 9214});
         }
         delete req.body.login_pwd;
-        //push_token 업데이트
-        var push = await user.updatePushTokenUser(login_id, push_token);
-        if(push.result !== define.const_SUCCESS){
-            return res.json(push);
-        }
         const token = helper.generateToken(dbResponse.data.user_id);
         result = {
             token: token, 
@@ -117,11 +109,8 @@ router.post('/checkDupinfo', async(req, res) =>{
 
 router.post('/CheckId904', async (req, res) =>{
     var result = {};
-    var {login_id, push_token} = req.body;
+    var {login_id} = req.body;
     try{
-        if(!push_token){
-            push_token = null;
-        }
         if (!login_id) {
             return res.json({result: -9231});
         }
@@ -143,11 +132,8 @@ router.post('/CheckId904', async (req, res) =>{
 
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
-    var {login_id, info, push_token} = req.body;
+    var {login_id, info} = req.body;
     try{
-        if(!push_token){
-            push_token = null;
-        }
         if(!info){
             return res.json({result: 9241});
         }
@@ -174,10 +160,6 @@ router.post('/SignIn904', async (req, res) =>{
         //새 계정 insert
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
-        }
-        var push = await user.updatePushTokenUser(login_id, push_token);
-        if(push.result !== define.const_SUCCESS){
-            return res.json(push);
         }
         const token = helper.generateToken(result.user_id);
         result.token = token
@@ -326,7 +308,7 @@ router.post('/checkState910', async(req, res) =>{
 
 
 
-
+/*여기서부터 안쓰는 코드
 
 router.post('/postUpdateToken909', async (req, res) =>{
     var result ={};
@@ -378,6 +360,5 @@ router.post('/postShutAccount911', async (req, res) =>{
         return res.status(400).json(result);
     }
 });
-//#endregion
-
+*/
 module.exports = router;
