@@ -121,7 +121,7 @@ router.post('/toJWT902', async(req, res) =>{
     catch(err){
         console.log('router ERROR: P902 - toJWT902/' + err);
         result.result = -9021;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -142,7 +142,7 @@ router.post('/checkDupinfo', async(req, res) =>{
     catch(err){
         console.log('router ERROR: P902 - toJWT902/' + err);
         result.result = -90231;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -165,7 +165,7 @@ router.post('/CheckId904', async (req, res) =>{
     catch(err){
         console.log('router ERROR: P904 - CheckId904/' + err);
         result.result = -9033;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -393,14 +393,7 @@ router.post('/checkState910', async(req, res) =>{
 
 
 
-
-
-
-
-
-
-
-
+//#region 여기서부터 안쓰는 코드
 
 router.post('/postUpdateToken910', async (req, res) =>{
     var result ={};
@@ -452,5 +445,7 @@ router.post('/postShutAccount911', async (req, res) =>{
         return res.json(result);
     }
 });
+
+//#endregion
 
 module.exports = router;

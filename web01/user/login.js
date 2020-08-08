@@ -90,7 +90,7 @@ router.post('/toJWT902', async(req, res) =>{
     catch(err){
         console.log('router ERROR: U902 - toJWT902/' + err);
         result.result = -9221;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -111,7 +111,7 @@ router.post('/checkDupinfo', async(req, res) =>{
     catch(err){
         console.log('router ERROR: U902 - toJWT902/' + err);
         result.result = -92231;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -137,7 +137,7 @@ router.post('/CheckId904', async (req, res) =>{
     catch(err){
         console.log('router ERROR: U904 - CheckId904/' + err);
         result.result = -9233;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -317,6 +317,16 @@ router.post('/checkState910', async(req, res) =>{
         return res.json(result);
     }
 });
+
+
+
+
+
+
+
+
+
+
 
 router.post('/postUpdateToken909', async (req, res) =>{
     var result ={};
