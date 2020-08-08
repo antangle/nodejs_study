@@ -17,7 +17,7 @@ get201StateUpdate 함수에서 마감시간이 지나도 result를 1 항상 뱉�
 @203 해결. 딜없으면 deal, store, score(평점) 관련내용 전부 null 뜨고, auction 관련 내용만 뜰거임.
 
 203, 204 재입찰할 경우 이전딜이 사라짐
-!이건 s202dealsend에서 처리해야됨!
+@해결 s202dealsend에서 처리해야됨!
 
 210 get210InfoForReview => store_id말고 store_nick 뱉어주삼
 @해결
@@ -36,6 +36,7 @@ S301 한번 입찰하면 경매 마감시간이 끝나도 계속 뜸
 
 200번대에서 신고하기 기능?
 
+로그아웃 기능
 
 401 => 최근 본 기종도 호출
 @해결. step1에서 고른 기종 이름, 브랜드이름, 이미지url 제공

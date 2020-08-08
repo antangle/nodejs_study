@@ -66,6 +66,7 @@ const checkDupinfoUser = async(dupinfo) => {
         return result;
     }
 }
+
 const postU004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
@@ -311,7 +312,7 @@ const checkUserState910 = async(user_id) =>{
             WHERE id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [user_id], -9302);
-        if(errcode){ 
+        if(errcode){
             return {result: errcode};
         }
         if(rowCount < 1){
@@ -334,7 +335,7 @@ const checkUserState910 = async(user_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const updatePushTokenUser = async(login_id, push_token)=>{
     var result = {};
@@ -489,7 +490,7 @@ const checkDupinfoPartner = async(dupinfo) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const postP004LoginIdCheck = async(login_id)=>{
     var result = {};
@@ -573,7 +574,7 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
     var result = {};
