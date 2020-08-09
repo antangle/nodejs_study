@@ -122,7 +122,7 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
             `;
         var strDate = String(Date.now());
         var id = strDate.substr(0,12);
-        var hidden_login_id = login_id.substr(0,2) + '*****';
+        var hidden_login_id = login_id.substr(0,3) + '*****';
         var paramArray = [
             id,
             login_id,
