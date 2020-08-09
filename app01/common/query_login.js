@@ -729,18 +729,22 @@ const storeAcceptInsertStore = async(partner_id) => {
                 id,  
                 uuid, name, 
                 trade_name, phone, 
-                phone_1, address, 
+                phone_1, address,
+                sido_code, sgg_code,
                 state, region, 
                 update_time
             )
-            SELECT $1, 
-            uuid, name,
-            trade_name, phone,
-            phone_1, address,
-            1, region,
-            current_timestamp
-            FROM store_temp AS temp
-            WHERE partner_id = $2
+                SELECT $1, 
+                    temp.uuid, temp.name,
+                    temp.trade_name, temp.phone,
+                    temp.phone_1, temp.address,
+                    partner.sido_code, partner.sgg_code,
+                    1, temp.region,
+                    current_timestamp
+                FROM store_temp AS temp
+                INNER JOIN partner
+                    ON temp.partner_id = $2
+                    AND partner.id = $2
             RETURNING id
         `;
         var strDate = String(Date.now());
