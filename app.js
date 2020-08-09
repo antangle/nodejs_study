@@ -1,39 +1,43 @@
 const express = require('express');
 const path = require('path');
-const logger = require('morgan');
 const cors = require('cors');
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
 const app = express();
-const swagger = require('./swagger/swagger.js');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
+const fs = require('fs');
 dotenv.config();
 
 const {verifyToken} = require('./middleware/verify');
 
 const port = process.env.port || 9000;
-const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
 
 //app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'pug');
+
 app.set('jwt-secret', process.env.JWT_SECRET);
 
 //later configure cors option
 app.use(cors());
-app.use(logger('dev'));
+
+if(process.env.ENVIRONMENT === 'pro'){
+  var accessLogStream = fs.createWriteStream(
+    path.join(__dirname, '/logs/access.log'), {flags: 'a'}
+  );
+  app.use(morgan('combined', {stream: accessLogStream}));
+}
+else{
+  app.use(morgan('dev'));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//save jihun 
-const APIwebRouter = require('./api_web/index');
-const nicewebRouter = require('./api_web/nice');
-const loginwebRouter = require('./api_web/login');
-const landingwebRouter = require('./api_web/landing');
 
-app.use('/api', APIwebRouter);
-app.use('/login', loginwebRouter);
-app.use('/nice', nicewebRouter);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+//const swagger = require('./swagger/swagger.js');
+//const swaggerJsDoc = require('swagger-jsdoc');
+//const swaggerUi = require('swagger-ui-express');
+//const swaggerDoc = swaggerJsDoc(swagger.swaggerOptions);
+//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+const landingwebRouter = require('./api_web/landing');
 app.use('/landing', landingwebRouter);
 
 //web

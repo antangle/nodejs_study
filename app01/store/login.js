@@ -104,7 +104,6 @@ router.post('/toJWT902', async(req, res) =>{
     if (!name|| !mobileno || !birthdate || !dupinfo) {
         return res.json({result: 9021});
     }
-    console.log(dupinfo);
     var json = {
         name: name, 
         mobileno: mobileno, 
@@ -396,9 +395,7 @@ router.post('/checkState910', async(req, res) =>{
         if(!partner_id){
             return {result: 9101};
         }
-        console.log(partner_id);
         result = await partner.checkState910(partner_id);
-        console.log(result);
         if(result.result != define.const_SUCCESS){
             return res.json(result);
         }

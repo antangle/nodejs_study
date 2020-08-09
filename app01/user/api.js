@@ -28,7 +28,6 @@ router.get('/test', async(req, res)=>{
             }
         }
         */
-        console.log(array);
         result = await buy.test(device_id);
         return res.json(result);
     }
