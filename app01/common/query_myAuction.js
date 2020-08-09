@@ -83,7 +83,8 @@ const get201AuctionInfo = async(user_id)=>{
         SELECT auc.id as auction_id, auc.device_detail_id,
             auc.payment_id, auc.agency_use,
             auc.agency_hope, auc.finish_time,
-            auc.now_discount_price, auc.state, auc.win_state,
+            auc.now_discount_price, auc.state,
+            auc.win_state,
             auc.win_deal_id, payment.alias,
             device.name, detail.color_name,
             detail.volume, image.url_2x
@@ -263,7 +264,7 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
                 auction.finish_time AS auction_finish_time,
                 auction.now_order, deal.deal_order,
                 auction.contract_list, auction.period, auction.finish_time,
-                auction.state,
+                auction.state, auction.store_count
                 detail.cost_price, deal.discount_official,
                 deal.discount_payment,
                 payment.price AS payment_price,
@@ -313,13 +314,13 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT deal.id AS deal_id, deal.store_id, 
+        SELECT deal.id AS deal_id, deal.store_id,
             deal.store_nick AS store_nick, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time,
             auction.now_order, deal.deal_order,
             auction.contract_list, auction.period, auction.finish_time,
-            auction.state,
+            auction.state, auction.store_count,
             detail.cost_price, deal.discount_official,
             deal.discount_payment,
             payment.price AS payment_price,
