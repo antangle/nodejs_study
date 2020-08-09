@@ -21,7 +21,7 @@ app.use(cors());
 
 if(process.env.ENVIRONMENT === 'pro'){
   var accessLogStream = fs.createWriteStream(
-    path.join(__dirname, '/logs/access.log'), {flags: 'a'}
+    path.join(__dirname, '/access.log'), {flags: 'a'}
   );
   app.use(morgan('combined', {stream: accessLogStream}));
 }
@@ -49,7 +49,7 @@ const app01Router = require('./app01/index');
 app.use('/app01', app01Router);
 
 //test
-const testRouter = require('./api_web/login');
+const testRouter = require('./test');
 app.use('/test', testRouter);
 
 
