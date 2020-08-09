@@ -611,7 +611,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     try{
         var {deal_id} = req.query;
         if(!deal_id){
-            return res.json({result: 21211})
+            return res.json({result: 21211});
         }
         result = await auction.get212AllStoreReviews(deal_id);
         if(result.result !== define.const_SUCCESS){
@@ -622,6 +622,26 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     catch(err){
         console.log('router ERROR: get212AllStoreReviews/' + err);
         result.result = -21211;
+        return res.json(result);
+    }
+});
+
+router.post('/213InfoForReport', async(req,res) =>{
+    var result ={};
+    try{
+        var {deal_id} = req.body;
+        if(!deal_id){
+            return res.json({result: 21311});
+        }
+        result = await auction.get213InfoForReport(deal_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 213InfoForReport/' + err);
+        result.result = -21311;
         return res.json(result);
     }
 });

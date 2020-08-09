@@ -509,7 +509,7 @@ const get210InfoForReview = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT deal.id AS deal_id, 
+            SELECT deal.id AS deal_id,
                 deal.store_nick, detail.volume, 
                 detail.color_name, device.name
             FROM deal
@@ -786,6 +786,34 @@ const post213Report = async(deal_id, type, comment)=>{
     }
 };
 
+const get213InfoForReport = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT id AS deal_id, store_nick
+            FROM deal
+            WHERE id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21312);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -21313}
+        }
+        else if(rowCount > 1){
+            return {result: -21314}
+        }
+        result = {store_nick: rows[0].store_nick, result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -21311;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
@@ -803,6 +831,7 @@ module.exports = {
     update210StoreAfterReview,
     get211StoreDetails,
     get212AllStoreReviews,
-    post213Report,
+    get213InfoForReport,
+    post213Report
 };
    

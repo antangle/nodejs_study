@@ -888,6 +888,36 @@ const storeDenyUpdatePartner = async(partner_id) => {
     }
 }
 
+const partnerToStoreInfo = async() => {
+    var result = {};
+    try{
+        const querytext = `
+            SELECT partner_id, uuid,
+            name, trade_name,
+            phone, phone_1,
+            address, state,
+            create_time, region
+            FROM store_temp
+            WHERE state = 2 OR state = 3
+            ORDER BY state ASC, create_time ASC
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [], -90932);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount < 1){
+            return {result: -90933};
+        }
+        result = {info: rows, result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -90931;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+}
+
 const checkState910 = async(partner_id) =>{
     var result = {};
     try{
@@ -1106,6 +1136,7 @@ module.exports = {
     storeAcceptUpdatePartner,
     storeDenyUpdateStoreTemp,
     storeDenyUpdatePartner,
+    partnerToStoreInfo,
     checkState910,
 
     updatePushTokenPartner,

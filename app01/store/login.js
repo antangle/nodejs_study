@@ -366,6 +366,29 @@ router.post('/partnerToStoreDeny909', async(req, res) =>{
     }
 });
 
+router.post('/partnerToStoreInfo', async(req, res) =>{
+    var result ={};
+    var {pwd} = req.body;
+    try{
+        if(!pwd){
+            return res.json({result: 90931})
+        }
+        if(pwd != process.env.CUTDELETEPWD){
+            return res.json({result: 90932})
+        }    
+        result = await partner.partnerToStoreInfo();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: p909- partnerToStoreInfo/' + err);
+        result.result = -90931;
+        return res.json(result);
+    }
+});
+
 router.post('/checkState910', async(req, res) =>{
     var result ={};
     var {partner_id} = req.body;
