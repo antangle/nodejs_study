@@ -669,7 +669,7 @@ const get211StoreDetails = async(deal_id)=>{
                 device.name AS device_name,
                 deal.store_nick,
                 sd.name AS sido_name, sgg.name AS sgg_name,
-                users.nick AS user_nick
+                users.hidden_login_id AS user_nick
             FROM deal
             INNER JOIN store
                 ON deal.id = $1
@@ -720,7 +720,7 @@ const get212AllStoreReviews = async(deal_id)=>{
                 DATE(score.create_date),
                 device.name AS device_name,
                 detail.color_name, detail.volume,
-                curr_deal.store_nick, users.nick AS user_nick
+                curr_deal.store_nick, users.hidden_login_id AS user_nick
             FROM deal
             INNER JOIN store
                 ON store.id = (
