@@ -122,7 +122,7 @@ router.post('/CheckId904', async (req, res) =>{
         if(!push_token){
             push_token = null;
         }
-        if (!login_id) {
+        if(!login_id) {
             return res.json({result: -9231});
         }
         else if(!helper.isValidId(login_id)){
