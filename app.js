@@ -49,7 +49,7 @@ const app01Router = require('./app01/index');
 app.use('/app01', app01Router);
 
 //test
-const testRouter = require('./test');
+const testRouter = require('./test/index');
 app.use('/test', testRouter);
 
 

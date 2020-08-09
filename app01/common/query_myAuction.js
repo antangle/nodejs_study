@@ -60,6 +60,7 @@ const update201AuctionState = async(user_id)=>{
         for(var i=0; i<rowCount; ++i){
             if(rows[i].state !== -1){
                 count = count + 1;
+                break;
             }
         }
         if(count === 0){
@@ -172,7 +173,7 @@ const update202AuctionState = async(user_id)=>{
             END
         )
         WHERE user_id = $1
-        RETURNING state
+        RETURNING *
         `;
         var {rows, rowCount, errcode} =await query(querytext, [user_id], -20212);
         if(errcode){
@@ -184,8 +185,9 @@ const update202AuctionState = async(user_id)=>{
         var count = 0;
         //state가 전부 -1이면 출력값 없어야함.
         for(var i=0; i<rowCount; ++i){
-            if(rows[i].state === -1){
+            if(rows[i].state === -1 || rows[i].win_state === 2){
                 count = count + 1;
+                break;
             }
         }
         if(count === 0){
@@ -241,8 +243,7 @@ const get202AuctionInfo = async(user_id)=>{
         if(rowCount === 0){
             return {result: -20216}
         }
-        result = {auction: rows, rowCount: rowCount};
-        result.result = define.const_SUCCESS;
+        result = {auction: rows, rowCount: rowCount, result: define.const_SUCCESS};
         return result;
     }
     catch(err){
