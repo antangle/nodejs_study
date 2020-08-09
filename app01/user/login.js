@@ -299,13 +299,11 @@ router.post('/postLocationCode907', async (req, res) =>{
 router.post('/checkState910', async(req, res) =>{
     var result ={};
     var {user_id} = req.body;
-    console.log(user_id);
     try{
         if(!user_id){
             return {result: 9301}
         }
         result = await user.checkUserState910(user_id);
-        console.log(result);
         if(result.result != define.const_SUCCESS){
             return res.json(result);
         }

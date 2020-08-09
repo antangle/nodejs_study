@@ -98,7 +98,6 @@ router.delete('/S201DeleteCut', async (req, res) =>{
     var result ={};
     try{
         var {pwd} = req.body;
-        console.log(process.env.CUTDELETEPWD);
         if(!pwd){
             return res.json({result: 60131});
         }
@@ -152,7 +151,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         discount_price = parseInt(discount_price/10000)*10000;
         
         var info = await store.get602NeededInfoForDeal(store_id, auction_id);
-        console.log(info);
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
             return res.json(result);
@@ -268,7 +266,6 @@ router.delete('/S301DeleteCutDeal', async (req, res) =>{
     var result ={};
     try{
         var {pwd} = req.body;
-        console.log(process.env.CUTDELETEPWD);
         if(!pwd){
             return res.json({result: 70121});
         }

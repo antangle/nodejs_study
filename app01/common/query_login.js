@@ -1063,7 +1063,6 @@ const whoSaidMakeMeStore = async()=>{
             WHERE state = 2
         `;
         var {rows, rowCount} = await query(querytext, []);
-        console.log(rowCount);
         if(rowCount !== 1){
             return {result: -9000}
         }
