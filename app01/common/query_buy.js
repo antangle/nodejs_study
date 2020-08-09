@@ -518,20 +518,20 @@ const getStep3PaymentInfo = async(agency, generation, device_detail_id) =>{
   try{
     const querytext = `
       SELECT id AS payment_id, name AS payment_name,
-      price, call,
-      data, data_condition,
-      data_share, data_speed, limitation
+        price, call,
+        data, data_condition,
+        data_share, data_speed, limitation
       FROM payment
       WHERE agency = $1
-      AND generation = $2
-      AND state = 1
-      AND id in (
-        SELECT official.payment_id FROM official
-        INNER JOIN device_detail AS detail
-        ON detail.id = $3
-        AND official.device_id = detail.device_id
-        AND official.device_volume = detail.volume
-      )
+        AND generation = $2
+        AND state = 1
+        AND id in (
+          SELECT official.payment_id FROM official
+          INNER JOIN device_detail AS detail
+          ON detail.id = $3
+          AND official.device_id = detail.device_id
+          AND official.device_volume = detail.volume
+        )
       ORDER BY limitation ASC, price DESC
       `;
     var {rows, rowCount, errcode} = await query(querytext, [agency, generation, device_detail_id], -10312);
@@ -558,15 +558,15 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
       SELECT discount_official
       FROM official
       INNER JOIN device_detail AS detail
-      ON detail.id = $1
-      AND detail.volume = official.device_volume
-      AND official.state = 1
+        ON detail.id = $1
+        AND detail.volume = official.device_volume
+        AND official.state = 1
       INNER JOIN payment
-      ON payment.id = $2
-      AND official.payment_id = payment.id
+        ON payment.id = $2
+        AND official.payment_id = payment.id
       INNER JOIN device
-      ON device.id = official.device_id
-      AND device.id = detail.device_id
+        ON device.id = official.device_id
+        AND device.id = detail.device_id
     `;
     var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, payment_id], -10322);
     if(errcode){
@@ -770,4 +770,3 @@ module.exports = {
   countAuctions,
   finishAuctionTempDeviceInfo
 };
- 

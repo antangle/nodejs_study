@@ -72,12 +72,15 @@ Pooling 에 관하여 pool 개수 조정
 
 /web01/user/api/get212AllStoreReviews
 버그있음 기종을 지금 딜로만 뱉어
+@해결
 
 /web01/user/api/get210InfoForReview 에서 result -21013뜨는데, 
 낙찰한 다음에는 또 잘뜸
-
-비밀번호 찾기
+@아니 애초에 리뷰 낙찰후에 쓴다고 헀잖아
 
 신고하기 두번째 쓰니까 -2132 INSERT score 쿼리에러 뜨넴
+@해결
+
+비밀번호 찾기
 
 */

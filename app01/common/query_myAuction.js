@@ -552,16 +552,16 @@ const insert210Review = async(jsondata)=>{
     var result = {};
     try{
         const querytext = `
-            WITH cte AS(
-                SELECT score 
-                FROM score 
-                WHERE deal_id = $3
-            )
-            INSERT INTO score(
-                user_id, store_id, 
-                score, comment, 
-                deal_id, create_date
-            )
+        WITH cte AS(
+            SELECT score 
+            FROM score 
+            WHERE deal_id = $3
+        )
+        INSERT INTO score(
+            user_id, store_id, 
+            score, comment, 
+            deal_id, create_date
+        )
             SELECT 
                 user_id, store_id, 
                 $1, $2, 
@@ -571,15 +571,15 @@ const insert210Review = async(jsondata)=>{
                 SELECT 1 FROM deal
                 WHERE deal.id = $3
             )
-            AND deal.id = $3
-            AND deal.user_id = $4
+                AND deal.id = $3
+                AND deal.user_id = $4
             ON CONFLICT (deal_id) DO UPDATE 
             SET score = $1,
                 comment = $2,
                 create_date = current_date
-            RETURNING (
-                SELECT cte.score FROM cte
-            )
+        RETURNING (
+            SELECT cte.score FROM cte
+        )
         `;
         var {score, comment, deal_id, user_id} = jsondata;
         var {rows, rowCount, errcode} = await query(querytext, [score, comment, deal_id, user_id], -21022);
@@ -592,19 +592,15 @@ const insert210Review = async(jsondata)=>{
         else if(rowCount > 1){
             return {result: -21024};
         }
-        var isScoreNull;
+        var isScoreNull = false;
         if(!rows[0].score){
             isScoreNull = true;
-        }
-        else{
-            isScoreNull = false;
         }
         result = {
             isScoreNull: isScoreNull,
             scoreGap: score - rows[0].score,
             result: define.const_SUCCESS
         };
-        console.log(result);
         return result;
     }
     catch(err){
@@ -722,20 +718,26 @@ const get212AllStoreReviews = async(deal_id)=>{
                 DATE(score.create_date),
                 device.name AS device_name,
                 detail.color_name, detail.volume,
-                deal.store_nick, users.nick AS user_nick
+                curr_deal.store_nick, users.nick AS user_nick
             FROM deal
             INNER JOIN store
-                ON deal.id = $1
-                AND store.id = deal.store_id
+                ON store.id = (
+                    SELECT store_id FROM deal
+                    WHERE deal.id = $1
+                )
             INNER JOIN score
                 ON score.store_id = store.id
+                AND deal.id = score.deal_id
             INNER JOIN users
                 ON users.id = score.user_id
             INNER JOIN device_detail AS detail
-                ON 
-                
+                ON detail.id = deal.device_detail_id
             INNER JOIN device
-                ON device.id = 
+                ON device.id = deal.device_id
+            CROSS JOIN (
+                SELECT store_nick FROM deal
+                WHERE deal.id = $1
+            ) AS curr_deal
         `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21212);
         //TODO: later on, gotta decide which review to look upon
