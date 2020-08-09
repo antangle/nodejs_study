@@ -834,7 +834,6 @@ const storeDenyUpdateStoreTemp = async(partner_id) => {
             update_time = current_timestamp
             WHERE partner_id = $1
         `;
-
         var {rows, rowCount, errcode} = await query(querytext, [partner_id], -90922);
         if(errcode){
             return {result: errcode};

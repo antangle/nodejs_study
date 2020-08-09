@@ -728,13 +728,14 @@ const get212AllStoreReviews = async(deal_id)=>{
                 ON deal.id = $1
                 AND store.id = deal.store_id
             INNER JOIN score
-                ON score.store_id = deal.store_id
+                ON score.store_id = store.id
             INNER JOIN users
                 ON users.id = score.user_id
             INNER JOIN device_detail AS detail
-                ON deal.device_detail_id = detail.id
+                ON 
+                
             INNER JOIN device
-                ON deal.device_id = device.id
+                ON device.id = 
         `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21212);
         //TODO: later on, gotta decide which review to look upon

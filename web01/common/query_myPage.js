@@ -223,6 +223,7 @@ const get007SdCode = async()=>{
       const querytext = `
           SELECT code, name
           FROM location_sd
+          ORDER BY code ASC
           `;
       var {rows, rowCount, errcode} = await query(querytext, [], -40512);
       if(errcode){
@@ -248,6 +249,7 @@ const get007SggCode = async(sido_code)=>{
           SELECT code, name
           FROM location_sgg
           WHERE sido_code = $1
+          ORDER BY code ASC
           `;
       var {rows, rowCount, errcode} = await query(querytext, [sido_code], -40522);
       if(errcode){
@@ -566,10 +568,11 @@ const partnerShutAccount810 = async(partner_id) =>{
   try{
       const querytext = `
         UPDATE partner SET
+        store_id = NULL,
         state = -1,
         update_time = current_timestamp,
         push_token = NULL,
-        store_id = NULL
+        dupinfo = NULL
         WHERE id = $1
       `;
       var {rows, rowCount, errcode} = await query(querytext, [partner_id], -8102);

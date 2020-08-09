@@ -35,6 +35,7 @@ S301 한번 입찰하면 경매 마감시간이 끝나도 계속 뜸
 @해결
 
 200번대에서 신고하기 기능?
+@해결, 만듬
 
 로그아웃 기능
 
@@ -64,5 +65,19 @@ web01에서 login 관련 push_token 값 아예 못건드리게 해놓을것.
 
 Pooling 에 관하여 pool 개수 조정
 !일단 주말에
+
+/web01/user/api/GetSdCode405
+서울특별시 아래로감 ㅠ 저번꺼처럼 위로 올려주삼
+@해결
+
+/web01/user/api/get212AllStoreReviews
+버그있음 기종을 지금 딜로만 뱉어
+
+/web01/user/api/get210InfoForReview 에서 result -21013뜨는데, 
+낙찰한 다음에는 또 잘뜸
+
+비밀번호 찾기
+
+신고하기 두번째 쓰니까 -2132 INSERT score 쿼리에러 뜨넴
 
 */
