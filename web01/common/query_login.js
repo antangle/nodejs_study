@@ -106,21 +106,23 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
                 login_pwd, name, 
                 phone, birth, 
                 state, term,
-                create_time, dupinfo
+                create_time, dupinfo,
+                hidden_login_id
             )
             VALUES(
                 $1, $2,
                 $3, $4,
                 $5, $6,
                 1, 1,
-                current_timestamp, $7
+                current_timestamp, $7,
+                $8
             )
             ON CONFLICT (login_id) DO NOTHING
             RETURNING id
             `;
         var strDate = String(Date.now());
         var id = strDate.substr(0,12);
-
+        var hidden_login_id = login_id.substr(0,2) + '*****';
         var paramArray = [
             id,
             login_id,
@@ -128,7 +130,8 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
             decode.name,
             decode.mobileno,
             decode.birthdate,
-            decode.dupinfo
+            decode.dupinfo,
+            hidden_login_id
         ];
         var {rows, rowCount, errcode} = await query(querytext, paramArray, -9242);
         if(errcode){
