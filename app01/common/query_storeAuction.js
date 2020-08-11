@@ -159,7 +159,7 @@ const get601Search = async(store_id)=>{
             ON device.image_id = image.id
         INNER JOIN payment
             ON auction.payment_id = payment.id
-        ORDER BY auction.finish_time
+        ORDER BY auction.finish_time DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id], -60112);
         if(errcode){
