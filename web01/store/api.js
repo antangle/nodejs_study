@@ -161,14 +161,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(info.data.now_order === info.data.deal_order){
                 return res.json({result: 60222});
             }
-            //제시한 가격이 최소 +10000인지 확인
-            if(info.data.now_discount_price >= discount_price){
-                return res.json({result: 60223});
-            }
-            //제시한 가격이 50000만 한도 넘었는지 확인
-            if(info.data.now_discount_price + 50000 < discount_price){
-                return res.json({result: 60224});
-            }
         }
         if(!info.data.deal_id){
             //내 첫입찰
@@ -201,7 +193,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 discount_price,
                 info.store_nick
             ];
-            store_count = 0;
+            store_count = 1;
 
             result = await store.insert602DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
