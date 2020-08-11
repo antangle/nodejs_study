@@ -37,7 +37,7 @@ const update201AuctionState = async(user_id)=>{
     try{
         const querytext = `
         UPDATE auction SET state = (
-            CASE WHEN finish_time + interval '1 hour' < current_timestamp
+            CASE WHEN finish_time + interval '1 day' < current_timestamp
             THEN -1
             WHEN finish_time < current_timestamp
             THEN 2
@@ -125,7 +125,7 @@ const post201StateUpdate = async(auction_id)=>{
     try{
         const querytext = `
         UPDATE auction SET state = (
-            CASE WHEN finish_time + interval '1 hour' < current_timestamp
+            CASE WHEN finish_time + interval '1 day' < current_timestamp
             THEN -1
             WHEN finish_time < current_timestamp
             THEN 2
@@ -165,7 +165,7 @@ const update202AuctionState = async(user_id)=>{
     try{
         const querytext = `
         UPDATE auction SET state = (
-            CASE WHEN finish_time + interval '1 hour' < current_timestamp
+            CASE WHEN finish_time + interval '1 day' < current_timestamp
             THEN -1
             WHEN finish_time < current_timestamp
             THEN 2
@@ -181,7 +181,7 @@ const update202AuctionState = async(user_id)=>{
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -20213}
+            return {result: -20213};
         }
         var count = 0;
         //state가 전부 -1이면 출력값 없어야함.
@@ -232,7 +232,7 @@ const get202AuctionInfo = async(user_id)=>{
             ON deal.id = auc.win_deal_id
         LEFT JOIN store
             ON store.id = deal.store_id
-            AND auc.win_time + interval '1 day' > current_timestamp
+            AND auc.win_time + interval '3 days' > current_timestamp
         LEFT JOIN score
             ON score.deal_id = auc.win_deal_id
         ORDER BY auc.finish_time

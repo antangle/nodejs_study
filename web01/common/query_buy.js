@@ -619,7 +619,7 @@ const postStep3Update = async(check, postInput)=>{
           $1, $2, $3, $4, $5,
           $6, $7, $8, 
           current_timestamp, 
-          current_timestamp + interval '1 hour', 
+          current_timestamp + interval '1 day', 
           0 ,1, 1)
         RETURNING user_id`;
       const inputarray = [
