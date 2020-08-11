@@ -55,7 +55,7 @@ router.post('/S201SearchAuction', async (req, res) =>{
     try{
         var {store_id} = req.body;
         if(!store_id){
-            return res.json({result: 60111})
+            return res.json({result: 60111});
         }
         result = await store.get601Search(store_id);
         if(result.result !== define.const_SUCCESS){

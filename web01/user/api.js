@@ -409,6 +409,22 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
     }
 });
 
+var countPage = 0;
+router.post('/countPage', async (req, res) =>{
+    var result ={};
+    try{
+        countPage = countPage + 1;
+        result.count = countPage;
+        result.result = define.const_SUCCESS;
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 203 countPage/' + err);
+        result.result = -20321;
+        return res.json(result);
+    }
+});
+
 router.post('/get203MyAuctionDetails', async (req, res) =>{
     var result ={};
     try{
@@ -427,6 +443,7 @@ router.post('/get203MyAuctionDetails', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        result.count = countPage;
         return res.json(result);
     }
     catch(err){

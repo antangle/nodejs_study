@@ -449,7 +449,13 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
     try{
         const querytext = `
             UPDATE auction
-            SET now_discount_price = $2,
+            SET now_discount_price = (
+                CASE WHEN now_discount_price < $2
+                THEN $2
+                WHEN now_discount_price >= $2
+                THEN now_discount_price
+                END
+            ),
             now_order = now_order +1,
             store_count = store_count + $3
             WHERE id = $1
