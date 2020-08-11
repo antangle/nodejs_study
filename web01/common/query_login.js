@@ -189,7 +189,7 @@ const post006Nickname = async(nick, user_id)=>{
         const querytext = `
             UPDATE users SET 
             nick = $1,
-            create_time = current_date,
+            create_time = current_timestamp,
             state = 1
             WHERE id = $2
             RETURNING nick
