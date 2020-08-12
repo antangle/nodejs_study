@@ -369,6 +369,7 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
                 state = -1
                 WHERE id = $1
                 AND store_id = $2
+                AND state != 2
             `;
         }
         else if(cancel === 1){
@@ -381,6 +382,7 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
                     WHERE id = $1
                 )
                 AND store_id = $2
+                AND state != 2
             `;
         }
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
