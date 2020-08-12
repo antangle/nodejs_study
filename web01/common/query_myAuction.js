@@ -443,9 +443,6 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
         if(rowCount === 0){
             return {result: -20813}
         }
-        else if(rowCount > 1){
-            return {result: -20814}
-        }
         const querytext2 = `
             UPDATE auction
             SET win_deal_id = $1,
