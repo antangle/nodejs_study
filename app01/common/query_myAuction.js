@@ -285,7 +285,7 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
             LEFT JOIN store
                 ON deal.auction_id = $1
                 AND store.id = deal.store_id
-            ORDER BY auction.finish_time DESC
+            ORDER BY deal.create_time DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id, now_order], -20315);
         if(errcode){
