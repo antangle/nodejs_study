@@ -421,9 +421,20 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
     try{
         const querytext1 = `
             UPDATE deal
-            SET state = 2
-            WHERE deal.id = $1
-            AND deal.user_id = $2
+            SET state = CASE
+                WHEN id = $1
+                    THEN 2
+                WHEN id != $1
+                    THEN -2
+                ELSE
+                    state
+                END           
+            WHERE auction_id = (
+                SELECT auction_id 
+                FROM deal
+                WHERE id = $1
+            )
+            AND user_id = $2
         `;
         var {rows, rowCount, errcode} = await query(querytext1, [deal_id, user_id], -20812);
         if(errcode){
