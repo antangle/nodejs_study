@@ -362,7 +362,7 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
     var result = {};
     try{
         let querytext;
-        if(cancel === -1){
+        if(cancel == -1){
             querytext = `
                 UPDATE deal SET
                 state = -1
@@ -370,7 +370,7 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
                 AND store_id = $2
             `;
         }
-        else if(cancel === 1){
+        else if(cancel == 1){
             querytext = `
                 UPDATE deal SET
                 state = -2

@@ -147,7 +147,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(isNaN(discount_price)){
             return res.json({result: 60221});
         }
-        if(cancel !== 1){
+        if(cancel != 1){
             cancel = -1;
         }
         //자릿수 10000원대만 나오게 sanitize
