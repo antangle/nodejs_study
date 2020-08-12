@@ -264,7 +264,7 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
                 auction.finish_time AS auction_finish_time,
                 auction.now_order, deal.deal_order,
                 auction.contract_list, auction.period, auction.finish_time,
-                auction.state, auction.store_count
+                auction.state, auction.store_count,
                 detail.cost_price, deal.discount_official,
                 deal.discount_payment,
                 payment.price AS payment_price,
@@ -277,14 +277,15 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
             INNER JOIN device_detail AS detail
                 ON detail.id = auction.device_detail_id
             INNER JOIN device
-                ON device.id = auction.device_id 
+                ON device.id = auction.device_id
             LEFT JOIN deal
                 ON deal.auction_id = auction.id
                 AND deal.deal_order > $3
+                AND deal.state != -2
             LEFT JOIN store
                 ON deal.auction_id = $1
                 AND store.id = deal.store_id
-            ORDER BY deal.discount_price
+            ORDER BY auction.finish_time DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id, now_order], -20315);
         if(errcode){
@@ -336,6 +337,7 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
             ON device.id = auction.device_id 
         LEFT JOIN deal
             ON deal.auction_id = auction.id
+            AND deal.state != -2
         LEFT JOIN store
             ON deal.auction_id = $1
             AND store.id = deal.store_id

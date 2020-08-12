@@ -261,13 +261,13 @@ const get602Auction = async(auction_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT 
+        SELECT
             auction.id AS auction_id,
             auction.agency_use, auction.agency_hope, auction.period,
             auction.contract_list, auction.finish_time, 
             auction.now_discount_price,
             device.name, detail.volume, detail.color_hex, detail.color_name,
-            image.url_2x, payment.alias
+            image.url_2x, payment.alias, deal.id AS deal_id
         FROM auction
         INNER JOIN device_detail AS detail
             ON auction.device_detail_id = detail.id
@@ -278,6 +278,10 @@ const get602Auction = async(auction_id)=>{
             ON device.image_id = image.id
         INNER JOIN payment
             ON auction.payment_id = payment.id
+        LEFT JOIN deal
+            ON deal.store_id = $2
+            AND deal.auction_id = $1
+            AND deal.state = 1
     `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id], -60212);
         if(errcode){
@@ -359,7 +363,7 @@ const updateBefore602DealSend = async(deal_id, store_id)=>{
     try{
         const querytext = `
             UPDATE deal SET
-            state = -1
+            state = $3
             WHERE id = $1
             AND store_id = $2
         `;

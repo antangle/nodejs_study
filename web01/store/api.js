@@ -120,11 +120,11 @@ router.delete('/S201DeleteCut', async (req, res) =>{
 router.post('/S202AuctionInfo', async (req, res) =>{
     var result ={};
     try{
-        var {auction_id} = req.body;
-        if(!auction_id){
+        var {auction_id, store_id} = req.body;
+        if(!auction_id|| !store_id){
             return res.json({result: 60211})
         }
-        result = await store.get602Auction(auction_id);
+        result = await store.get602Auction(auction_id, store_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -140,12 +140,15 @@ router.post('/S202AuctionInfo', async (req, res) =>{
 router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
-        var {store_id, auction_id, discount_price} = req.body;
+        var {store_id, auction_id, discount_price, cancel} = req.body;
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
         if(isNaN(discount_price)){
             return res.json({result: 60221});
+        }
+        if(cancel !== 1){
+            cancel = -1;
         }
         //자릿수 10000원대만 나오게 sanitize
         discount_price = parseInt(discount_price/10000)*10000;
@@ -183,7 +186,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         }
         else if(info.data.deal_id){
             //내 갱신입찰
-            result = await store.updateBefore602DealSend(info.data.deal_id, store_id);
+            result = await store.updateBefore602DealSend(info.data.deal_id, store_id, cancel);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
@@ -199,7 +202,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
-            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
+            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count, cancel);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
