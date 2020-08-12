@@ -381,6 +381,7 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
                 AND store_id = $2
             `;
         }
+        console.log(cancel);
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
         if(errcode){
             return {result: errcode};

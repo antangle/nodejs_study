@@ -147,6 +147,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(isNaN(discount_price)){
             return res.json({result: 60221});
         }
+        console.log(cancel);
         //-1이면 현황유지, 1이면 이전 모든 딜 취소
         if(cancel !== 1){
             cancel = -1;
