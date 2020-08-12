@@ -429,6 +429,7 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
                     FROM deal
                     WHERE id = $1
                 )
+                AND id != $1
                     THEN -2
                 END
             )
