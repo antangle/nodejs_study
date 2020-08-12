@@ -285,7 +285,7 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
             LEFT JOIN store
                 ON deal.auction_id = $1
                 AND store.id = deal.store_id
-            ORDER BY auction.finish_time ASC
+            ORDER BY deal.create_time DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id, now_order], -20315);
         if(errcode){
@@ -421,9 +421,19 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
     try{
         const querytext1 = `
             UPDATE deal
-            SET state = 2
-            WHERE deal.id = $1
-            AND deal.user_id = $2
+            SET state = (
+                CASE WHEN id = $1
+                    THEN 2
+                WHEN auction_id = (
+                    SELECT auction_id
+                    FROM deal
+                    WHERE id = $1
+                )
+                AND id != $1
+                    THEN -2
+                END
+            )
+            WHERE deal.user_id = $2
         `;
         var {rows, rowCount, errcode} = await query(querytext1, [deal_id, user_id], -20812);
         if(errcode){
