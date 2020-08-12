@@ -361,20 +361,34 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
 const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
     var result = {};
     try{
-        const querytext = `
-            UPDATE deal SET
-            state = $3
-            WHERE id = $1
-            AND store_id = $2
-        `;
-        var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id, cancel], -60225);
+        let querytext;
+        if(cancel === -1){
+            querytext = `
+                UPDATE deal SET
+                state = -1
+                WHERE id = $1
+                AND store_id = $2
+            `;
+        }
+        else if(cancel === 1){
+            querytext = `
+                UPDATE deal SET
+                state = -2
+                WHERE auction_id = (
+                    SELECT auction_id FROM deal
+                    WHERE id = $1
+                )
+                AND store_id = $2
+            `;
+        }
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount === 0){
             return {result: -60226};
         }
-        else if(rowCount > 1){
+        else if(rowCount > 1 && cancel === -1){
             return {result: -60227};
         }
         result.result = define.const_SUCCESS;

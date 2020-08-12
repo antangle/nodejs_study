@@ -357,16 +357,32 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
     }
 };
 
-//재입찰일 경우, 이전 store_nick 가져오고, 이전 입찰들의 state = -1로 변화.
-const updateBefore602DealSend = async(deal_id, store_id)=>{
+//재입찰일 경우, 이전 store_nick 가져오고, 이전 입찰들의 state = -1로 변화
+//취소 시 cancel 값 -2.
+const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
     var result = {};
     try{
-        const querytext = `
-            UPDATE deal SET
-            state = $3
-            WHERE id = $1
-            AND store_id = $2
-        `;
+        let querytext;
+        if(cancel === -1){
+            querytext = `
+                UPDATE deal SET
+                state = -1
+                WHERE id = $1
+                AND store_id = $2
+            `;
+        }
+        else if(cancel === 1){
+            //취소 할 시 해당 auction관련 모든 deal_state = -2
+            querytext = `
+                UPDATE deal SET
+                state = -2
+                WHERE auction_id = (
+                    SELECT auction_id FROM deal
+                    WHERE id = $1
+                )
+                AND store_id = $2
+            `;
+        }
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
         if(errcode){
             return {result: errcode};
@@ -374,7 +390,7 @@ const updateBefore602DealSend = async(deal_id, store_id)=>{
         if(rowCount === 0){
             return {result: -60226};
         }
-        else if(rowCount > 1){
+        else if(rowCount > 1 && cancel === -1){
             return {result: -60227};
         }
         result.result = define.const_SUCCESS;

@@ -121,7 +121,7 @@ router.post('/S202AuctionInfo', async (req, res) =>{
     var result ={};
     try{
         var {auction_id, store_id} = req.body;
-        if(!auction_id|| !store_id){
+        if(!auction_id || !store_id){
             return res.json({result: 60211})
         }
         result = await store.get602Auction(auction_id, store_id);
@@ -157,13 +157,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
             return res.json(result);
-        }
-        //최초입찰이 아닐때 조건 세팅
-        if(info.data.now_discount_price !== 0){
-        //최근 입찰자가 본인인지 확인
-            if(info.data.now_order === info.data.deal_order){
-                return res.json({result: 60222});
-            }
         }
         if(!info.data.deal_id){
             //내 첫입찰
