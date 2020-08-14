@@ -625,7 +625,7 @@ const get702MyPreviousDeal = async(store_id)=>{
             deal.state AS deal_state,
             auction.contract_list, auction.period,
             auction.agency_hope, auction.agency_use,
-            users.phone, users.nick, payment.alias
+            user_phone.phone, user_nick.nick, payment.alias
         FROM deal
         INNER JOIN auction
             ON deal.store_id = $1
@@ -639,8 +639,10 @@ const get702MyPreviousDeal = async(store_id)=>{
             ON device.id = deal.device_id
         INNER JOIN image
             ON image.id = device.image_id
-        LEFT JOIN users
-            ON auction.user_id = users.id
+        INNER JOIN users AS user_nick
+            ON user_nick.id = auction.user_id
+        LEFT JOIN users AS user_phone 
+            ON auction.user_id = user_phone.id
             AND auction.win_time + interval '1 day' > current_timestamp
         ORDER BY deal.create_time
     `;
