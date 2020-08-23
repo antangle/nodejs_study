@@ -11,7 +11,10 @@ dotenv.config({path: path.join(__dirname, '/../../.env')});
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
+const functions = require('../common/function');
 const {helper, comparePassword} = require('../../controller/validate');
+const { kStringMaxLength } = require('buffer');
+const { stringify } = require('querystring');
 
 router.post('/S101HomepageInfo', async (req, res) =>{
     var result ={};
@@ -122,7 +125,7 @@ router.post('/S202AuctionInfo', async (req, res) =>{
     try{
         var {auction_id, store_id} = req.body;
         if(!auction_id || !store_id){
-            return res.json({result: 60211})
+            return res.json({result: 60211});
         }
         result = await store.get602Auction(auction_id, store_id);
         if(result.result !== define.const_SUCCESS){
@@ -144,14 +147,17 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
-        if(isNaN(discount_price)){
+        
+        discount_price = functions.check_DiscountPrice(discount_price);
+        if(discount_price === -1){
             return res.json({result: 60221});
         }
         if(cancel != 1){
             cancel = -1;
         }
-        //자릿수 10000원대만 나오게 sanitize
-        discount_price = parseInt(discount_price/10000)*10000;
+        else{
+            cancel = 1;
+        }
         
         var info = await store.get602NeededInfoForDeal(store_id, auction_id);
         if(info.result !== define.const_SUCCESS){
@@ -176,6 +182,10 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            result = await store.insert602Party(store_id, auction_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
         }
         else if(info.data.deal_id){
             //내 갱신입찰
@@ -184,8 +194,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 return res.json(result);
             }
             var paramArray = [
-                store_id, 
-                auction_id, 
+                store_id,
+                auction_id,
                 discount_price,
                 info.store_nick
             ];
@@ -205,6 +215,357 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
     catch(err){
         console.log('router ERROR: s202 - DealSend/' + err);
         result.result = -60221;
+        return res.json(result);
+    }
+});
+
+router.delete('/HandlerDelete', async (req, res) =>{
+    var result ={};
+    try{
+        var {pwd} = req.body;
+        if(!pwd){
+            return res.json({result: 60311});
+        }
+        if(pwd !== process.env.CUTDELETEPWD){
+            return res.json({result: 60311});
+        }
+        result = await store.delete601CutAuction();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.deleteParty();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.delete701CutDeal();
+        if(result.result !== define.const_SUCCESS){
+            res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: HandlerDelete/' + err);
+        result.result = -60311;
+        return res.json(result);
+    }
+});
+
+router.post('/S204AutoBetHomeInfo', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id} = req.body;
+        if(!store_id){
+            return res.json({result: 60411});
+        }
+        result = await store.selectS204AutoBetInfo(store_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204AutoBetHomeInfo/' + err);
+        result.result = -60411;
+        return res.json(result);
+    }
+});
+
+router.post('/S204AutoBetCancelAll', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id, cancel} = req.body;
+        if(!store_id || !cancel){
+            return res.json({result: 60421});
+        }
+        if(cancel != 1 && cancel != -1){
+            return res.json({result: 60421});
+        }
+        cancel = functions.check_State(cancel);
+
+        result = await store.updateS204AutoBetCancelAll(store_id, cancel);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204AutoBetCancelAll/' + err);
+        result.result = -60411;
+        return res.json(result); 
+
+    }
+});
+
+router.post('/S205AutoBetInfoBefore', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id, device_id} = req.body;
+        if(!store_id || !device_id){
+            return res.json({result: 60511});
+        }
+        result = await store.selectS205AutoBetInfoBefore(store_id, device_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S205AutoBetInfoBefore/' + err);
+        result.result = -60511;
+        return res.json(result);
+    }
+});
+
+router.post('/S205AutoBetInfoAfter', async (req, res) =>{
+    var result ={};
+    try{
+        var {
+            device_id,
+            volume,
+            agency,
+            change_type,
+            plan,
+            delivery
+        } = req.body;
+        if(!device_id || !volume || !agency || 
+            !change_type || !plan || !delivery){
+            return res.json({result: 60521});
+        }
+        if(
+            functions.check_OneTwo(change_type) === -1 ||
+            functions.check_OneTwo(plan) === -1 ||
+            functions.check_OneTwo(delivery) === -1 ||
+            functions.check_IsNumber(agency) === -1 ||
+            functions.check_IsNumber(device_id) === -1 ||
+            functions.check_IsNumber(volume) === -1
+        ){
+            return res.json({result: 60521});
+        }
+        var device_volume_id = functions.generate_dvi(device_id, volume);
+        var condition = functions.generate_condition(
+            agency,
+            change_type,
+            plan,
+            delivery
+        );
+
+        result = await store.selectS205AutoBetInfoAfter(device_volume_id, condition);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S205AutoBetInfo/' + err);
+        result.result = -60521;
+        return res.json(result);
+    }
+});
+
+router.post('/S205AutoBetSet', async (req, res) =>{
+    var result ={};
+    try{
+        var {
+            store_id,
+            device_id,
+            volume,
+            agency,
+            change_type,
+            plan,
+            delivery,
+            payment_jsonArray,
+            state
+        } = req.body;
+        //agency는 1,2,3 나머지 type 들은 1,2
+        if(!store_id || !device_id || !volume || !agency || !change_type ||
+            !plan || !delivery || !payment_jsonArray || !state){
+            return res.json({result: 60531});
+        }
+
+        if(
+            functions.check_OneTwo(change_type) === -1 ||
+            functions.check_OneTwo(plan) === -1 ||
+            functions.check_OneTwo(delivery) === -1 ||
+            functions.check_IsNumber(agency) === -1 ||
+            functions.check_IsNumber(device_id) === -1 ||
+            functions.check_IsNumber(volume) === -1
+        ){
+            return res.json({result: 60531});
+        }
+
+        state = functions.check_State(state);
+        var device_volume_id = functions.generate_dvi(device_id, volume);
+        
+        var paramArray = [];
+        for(var i=0; i<payment_jsonArray.length; ++i){
+            var payment_id = functions.check_IsNumber(payment_jsonArray[i].payment_id);
+            if(payment_id === -1){
+                return res.json({result: 60531});
+            }
+            
+            var discount_price = functions.check_DiscountPrice(payment_jsonArray[i].discount_price);
+            if(discount_price === -1){
+                return res.json({result: 60531});
+            }
+
+            var is_payment_main = functions.check_IsNumber(payment_jsonArray[i].is_payment_main);
+            //unique 조건 4개를 하나로 합치기 위해 condition 생성
+            var condition = functions.generate_condition(
+                agency, 
+                change_type, 
+                plan, 
+                delivery
+            );
+            paramArray.push([
+                store_id,
+                device_volume_id,
+                payment_id,
+                condition,
+                agency,
+                change_type,
+                plan,
+                delivery,
+                discount_price,
+                state,
+                is_payment_main,
+                device_id
+            ]);
+        }
+        result = await store.upsertS205AutoBet(paramArray);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.updateS205BeforeAutoBetDealSend();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.insertS205AutoBetDealSend();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.updateS205AfterAutoBetDealSend();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.insertS205PartyAfterAutobet();
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S205AutoBetSet/' + err);
+        result.result = -60531;
+        return res.json(result);
+    }
+});
+
+router.post('/S205AutoBetLoad', async (req, res) =>{
+    var result ={};
+    try{
+        var {
+            store_id,
+            device_id,
+            volume,
+            agency,
+            change_type,
+            plan,
+            delivery,
+            step
+        } = req.body;
+        if(!store_id || !device_id || !volume || !agency || !change_type ||
+            !plan || !delivery || !step){
+            return res.json({result: 60551});
+        }
+        if(
+            functions.check_OneTwo(change_type) === -1 ||
+            functions.check_OneTwo(plan) === -1 ||
+            functions.check_OneTwo(delivery) === -1 ||
+            functions.check_IsNumber(agency) === -1 ||
+            functions.check_IsNumber(device_id) === -1 ||
+            functions.check_IsNumber(volume) === -1 ||
+            functions.check_OneTwo(step) === -1
+        ){
+            return res.json({result: 60551});
+        }
+
+        var device_volume_id = functions.generate_dvi(device_id, volume);
+        var condition = functions.generate_condition(
+                            agency, 
+                            change_type, 
+                            plan, 
+                            delivery
+                        );
+        if(step === 1){
+            result = await store.selectS205AutoBetInfoLoad(store_id, device_volume_id, condition, agency);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+        if(step === 2){
+            result = await store.selectS205AutoBetInfoLoad2(store_id, device_volume_id, condition, agency);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: s301 - MyOngoingDeal/' + err);
+        result.result = -7011;
+        return res.json(result);
+    }
+});
+
+router.post('/S205AutoBetCancel', async (req, res) =>{
+    var result ={};
+    try{
+        var {
+            store_id,
+            device_id,
+            volume,
+            agency,
+            change_type,
+            plan,
+            delivery,
+            cancel
+        } = req.body;
+        if(!store_id || !device_id || !volume || !agency || !change_type ||
+            !plan || !delivery || !cancel){
+            return res.json({result: 60561});
+        }
+        if(
+            functions.check_OneTwo(change_type) === -1 ||
+            functions.check_OneTwo(plan) === -1 ||
+            functions.check_OneTwo(delivery) === -1 ||
+            functions.check_IsNumber(agency) === -1 ||
+            functions.check_IsNumber(device_id) === -1 ||
+            functions.check_IsNumber(volume) === -1
+        ){
+            return res.json({result: 60561});
+        }
+        if(cancel != 1 && cancel != -1){
+            return res.json({result: 60561});
+        }
+        cancel = functions.check_State(cancel);
+
+        var device_volume_id = functions.generate_dvi(device_id, volume);
+        var condition = functions.generate_condition(
+                            agency, 
+                            change_type, 
+                            plan, 
+                            delivery
+                        );
+        
+        result = await store.updateS205AutoBetCancel(store_id, device_volume_id, condition, cancel);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: s301 - MyOngoingDeal/' + err);
+        result.result = -60561;
         return res.json(result);
     }
 });
@@ -272,7 +633,6 @@ router.delete('/S301DeleteCutDeal', async (req, res) =>{
         return res.json(result);
     }
 });
-
 
 router.post('/S302MyPreviousDeal', async (req, res) =>{
     var result ={};

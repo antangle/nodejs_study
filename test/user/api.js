@@ -8,7 +8,8 @@ const {helper} = require('../../controller/validate');
 const buy = require('../common/query_buy');
 const auction = require('../common/query_myAuction');
 const myPage = require('../common/query_myPage');
-const define = require('../../definition/define')
+const define = require('../../definition/define');
+const functions = require('../common/function');
 
 router.get('/test', async(req, res)=>{
     try{
@@ -274,7 +275,8 @@ router.post('/postSaveStep3', async (req, res) =>{
         postInput = {
             user_id, payment_id,
             agency_use, agency_hope, 
-            period, contract_list
+            period, contract_list,
+            delivery
         }
         check = {
             device_detail_id, 
@@ -284,10 +286,20 @@ router.post('/postSaveStep3', async (req, res) =>{
         //TODO: contract_list 에 대한 정규식 필요함
         if(!postInput.user_id || !postInput.payment_id ||
             !postInput.agency_use || !postInput.agency_hope || 
-            !postInput.period || !postInput.contract_list){
+            !postInput.period || !postInput.contract_list ||
+            !postInput.delivery){
                 return res.json({result: 10331});
             };
         //TODO: 쿼리 단순화/ 분기해야한다
+        var type = functions.check_type(postInput.agency_use, postInput.agency_hope);
+        var plan = functions.check_plan(postInput.period);
+        var delivery = postInput.delivery;
+
+        var condition = functions.generate_condition(
+            postInput.agency_hope, type, plan, delivery
+        );
+        postInput.condition = condition;
+
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
         if(check.result !== define.const_SUCCESS){
             return res.json({result: -10332});
@@ -302,7 +314,6 @@ router.post('/postSaveStep3', async (req, res) =>{
         //check returning device_id, state, device_detail_id
         //postInput has all the info of step 3
         result = await buy.postStep3Update(check, postInput);
-        result.count = Number(count.count) + 1;
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -312,6 +323,24 @@ router.post('/postSaveStep3', async (req, res) =>{
             return res.json(kill);
         }
         */
+        var auction_id = result.auction_id
+        result = await buy.update104BeforeAutoBetDealSend(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await buy.insert104AutoBetDealSend(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await buy.update104AfterAutoBetDealSend(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await buy.insert104PartyAfterAutobet(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result.count = Number(count.count) + 1;
         return res.json(result);
     }
     catch(err){
@@ -610,7 +639,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     try{
         var {deal_id} = req.query;
         if(!deal_id){
-            return res.json({result: 21211})
+            return res.json({result: 21211});
         }
         result = await auction.get212AllStoreReviews(deal_id);
         if(result.result !== define.const_SUCCESS){
@@ -621,6 +650,26 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     catch(err){
         console.log('router ERROR: get212AllStoreReviews/' + err);
         result.result = -21211;
+        return res.json(result);
+    }
+});
+
+router.post('/213InfoForReport', async(req,res) =>{
+    var result ={};
+    try{
+        var {deal_id} = req.body;
+        if(!deal_id){
+            return res.json({result: 21311});
+        }
+        result = await auction.get213InfoForReport(deal_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 213InfoForReport/' + err);
+        result.result = -21311;
         return res.json(result);
     }
 });

@@ -518,20 +518,20 @@ const getStep3PaymentInfo = async(agency, generation, device_detail_id) =>{
   try{
     const querytext = `
       SELECT id AS payment_id, name AS payment_name,
-      price, call,
-      data, data_condition,
-      data_share, data_speed, limitation
+        price, call,
+        data, data_condition,
+        data_share, data_speed, limitation
       FROM payment
       WHERE agency = $1
-      AND generation = $2
-      AND state = 1
-      AND id in (
-        SELECT official.payment_id FROM official
-        INNER JOIN device_detail AS detail
-        ON detail.id = $3
-        AND official.device_id = detail.device_id
-        AND official.device_volume = detail.volume
-      )
+        AND generation = $2
+        AND state = 1
+        AND id in (
+          SELECT official.payment_id FROM official
+          INNER JOIN device_detail AS detail
+          ON detail.id = $3
+          AND official.device_id = detail.device_id
+          AND official.device_volume = detail.volume
+        )
       ORDER BY limitation ASC, price DESC
       `;
     var {rows, rowCount, errcode} = await query(querytext, [agency, generation, device_detail_id], -10312);
@@ -558,15 +558,15 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
       SELECT discount_official
       FROM official
       INNER JOIN device_detail AS detail
-      ON detail.id = $1
-      AND detail.volume = official.device_volume
-      AND official.state = 1
+        ON detail.id = $1
+        AND detail.volume = official.device_volume
+        AND official.state = 1
       INNER JOIN payment
-      ON payment.id = $2
-      AND official.payment_id = payment.id
+        ON payment.id = $2
+        AND official.payment_id = payment.id
       INNER JOIN device
-      ON device.id = official.device_id
-      AND device.id = detail.device_id
+        ON device.id = official.device_id
+        AND device.id = detail.device_id
     `;
     var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, payment_id], -10322);
     if(errcode){
@@ -602,31 +602,34 @@ const postStep3Update = async(check, postInput)=>{
           step = 3
           WHERE user_id = $1
         )
-        INSERT INTO auction(user_id,
-          device_detail_id,
-          device_id,
-          payment_id,
-          agency_use,
-          agency_hope,
-          period,
-          contract_list,
-          create_time,
-          finish_time,
-          now_order,
-          state,
-          win_state)
+        INSERT INTO auction(
+          user_id, device_detail_id,
+          device_id, payment_id,
+          agency_use, agency_hope,
+          period, contract_list,
+          create_time, finish_time,
+          now_order, state,
+          win_state, delivery,
+          condition
+        )
         VALUES(
-          $1, $2, $3, $4, $5,
-          $6, $7, $8, 
-          current_timestamp, 
-          current_timestamp + interval '1 hour', 
-          0 ,1, 1)
-        RETURNING user_id`;
+          $1, $2, 
+          $3, $4, 
+          $5, $6, 
+          $7, $8, 
+          current_timestamp, current_timestamp + interval '1 day', 
+          0 ,1, 
+          1, $9, 
+          $10
+        )
+        RETURNING auction.id
+        `;
       const inputarray = [
         postInput.user_id, check.device_detail_id, 
         check.temp_device_id, postInput.payment_id,
         postInput.agency_use, postInput.agency_hope, 
-        postInput.period, postInput.contract_list
+        postInput.period, postInput.contract_list,
+        postInput.delivery, postInput.condition
       ];
       var {rows, rowCount, errcode} = await query(querytext, inputarray, -10334);
       if(errcode){
@@ -638,6 +641,7 @@ const postStep3Update = async(check, postInput)=>{
       else if(rowCount > 1){
         return {result: -10336};
       }
+      result.auction_id = rows[0].id;
       result.result = define.const_SUCCESS;
     }
     return result;
@@ -649,11 +653,199 @@ const postStep3Update = async(check, postInput)=>{
   }
 };
 
+const update104BeforeAutoBetDealSend = async(auction_id)=>{
+  var result = {};
+  try{
+      const querytext = `
+          UPDATE deal SET
+              state = -1
+          FROM auction
+          INNER JOIN device_detail AS detail
+              ON detail.id = auction.device_detail_id
+              AND auction.finish_time > current_timestamp
+          INNER JOIN autobet
+              ON detail.device_volume_id = autobet.device_volume_id
+              AND auction.payment_id = autobet.payment_id
+              AND auction.condition = autobet.condition
+              AND autobet.state = 1
+          WHERE deal.store_id = autobet.store_id
+              AND deal.auction_id = $1
+              AND deal.state = 1
+          `;
+      var {rows, rowCount, errcode} = await query(querytext, [auction_id], -10337);
+      if(errcode){
+          return {result: errcode};
+      }
+      result = {result: define.const_SUCCESS};
+      return result;
+  }
+  catch(err){
+      result.result = -10331;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+  }
+};
+
+const insert104AutoBetDealSend = async(auction_id)=>{
+  var result = {};
+  try{
+      const querytext = `
+          INSERT INTO deal(
+              store_id, auction_id,
+              user_id, device_detail_id,
+              device_id, agency,
+              contract_list, discount_official,
+              discount_price, payment_id,
+              discount_payment, period,
+              create_time, deal_order,
+              state, store_nick
+          )
+          SELECT
+              autobet.store_id, auction.id AS auction_id,
+              auction.user_id, auction.device_detail_id,
+              auction.device_id, auction.agency_hope,
+              auction.contract_list, official.discount_official,
+              autobet.discount_price, auction.payment_id,
+              payment.price*6, auction.period,
+              current_timestamp AS create_time, 
+              auction.now_order + ROW_NUMBER() OVER (
+                PARTITION BY auction.id
+                ORDER BY autobet.store_id ASC
+              ) AS deal_order,
+              1 AS state, COALESCE(deal.store_nick, store.region || store_nick.nick) AS store_nick
+          FROM auction
+          INNER JOIN device_detail AS detail
+              ON detail.id = auction.device_detail_id
+              AND auction.finish_time > current_timestamp
+              AND auction.id = $1
+          INNER JOIN payment
+              ON payment.id = auction.payment_id
+          INNER JOIN official
+              ON official.payment_id = auction.payment_id
+              AND official.device_volume_id = detail.device_volume_id
+          INNER JOIN autobet
+              ON detail.device_volume_id = autobet.device_volume_id
+              AND auction.payment_id = autobet.payment_id
+              AND auction.condition = autobet.condition
+              AND autobet.state = 1
+          INNER JOIN store_nick
+              ON store_nick.id = mod(mod(autobet.id, 500) + auction.now_order + 500 + auction.id*2, 1000)
+          INNER JOIN store
+              ON store.id = autobet.store_id
+          LEFT JOIN deal
+              ON deal.store_id = autobet.store_id
+              AND deal.auction_id = auction.id
+              AND deal.state = 1
+          LEFT JOIN party
+              ON party.store_id = autobet.store_id
+              AND party.auction_id = auction.id
+          WHERE party.id IS NULL
+          `;
+      var {rows, rowCount, errcode} = await query(querytext, [auction_id], -10338);
+      if(errcode){
+          return {result: errcode};
+      }
+      result = {result: define.const_SUCCESS};
+      return result;
+  }
+  catch(err){
+      result.result = -10331;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+  }
+};
+
+const update104AfterAutoBetDealSend = async(auction_id)=>{
+  var result = {};
+  try{
+      const querytext = `
+      UPDATE auction SET 
+          now_discount_price = 
+              CASE WHEN now_discount_price < joined_table.max_discount_price
+                  THEN joined_table.max_discount_price
+              WHEN now_discount_price >= joined_table.max_discount_price
+                  THEN now_discount_price
+              END
+          ,
+          now_order = now_order +joined_table.count,
+          store_count = store_count + joined_table.count
+      FROM (
+          SELECT COUNT(auction.id), auction.id, MAX(deal.discount_price) AS max_discount_price
+          FROM auction
+          INNER JOIN device_detail AS detail
+              ON detail.id = auction.device_detail_id
+              AND auction.finish_time > current_timestamp
+              AND auction.id = $1
+          INNER JOIN autobet
+              ON detail.device_volume_id = autobet.device_volume_id
+              AND auction.payment_id = autobet.payment_id
+              AND auction.condition = autobet.condition
+              AND autobet.state = 1
+          INNER JOIN deal
+              ON deal.store_id = autobet.store_id
+              AND deal.auction_id = auction.id
+              AND deal.state = 1
+          GROUP BY auction.id
+      ) AS joined_table
+      WHERE joined_table.id = auction.id
+      `;
+      var {rows, rowCount, errcode} = await query(querytext, [auction_id], -10339);
+      if(errcode){
+          return {result: errcode};
+      }
+      result = {result: define.const_SUCCESS};
+      return result;
+  }
+  catch(err){
+      result.result = -10331;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+  }
+};
+
+const insert104PartyAfterAutobet = async(auction_id)=>{
+  var result = {};
+  try{
+      const querytext = `
+      INSERT INTO party(store_id, auction_id, state, finish_time)
+          SELECT autobet.store_id, auction.id, 1, auction.finish_time
+          FROM auction
+          INNER JOIN device_detail AS detail
+              ON detail.id = auction.device_detail_id
+              AND auction.finish_time > current_timestamp
+              AND auction.id = $1
+          INNER JOIN autobet
+              ON detail.device_volume_id = autobet.device_volume_id
+              AND auction.payment_id = autobet.payment_id
+              AND auction.condition = autobet.condition
+              AND autobet.state = 1
+          INNER JOIN deal
+              ON deal.store_id = autobet.store_id
+              AND deal.auction_id = auction.id
+              AND deal.state = 1
+      ON CONFLICT (store_id, auction_id) DO NOTHING
+      `;
+      var {rows, rowCount, errcode} = await query(querytext, [auction_id], -10340);
+      if(errcode){
+          return {result: errcode};
+      }
+      result = {result: define.const_SUCCESS};
+      return result;
+  }
+  catch(err){
+      result.result = -10331;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+  }
+};
+
+
+
 //필요없어짐
 const killAuctionTempState = async(user_id)=>{
   var result = {};
   try{
-    const querytext = `
+    const querytext = ` 48
       UPDATE auction_temp
       SET state = -1
       WHERE user_id = $1
@@ -751,6 +943,9 @@ const finishAuctionTempDeviceInfo = async(user_id)=>{
   }
 };
 
+
+
+
 module.exports = {
   test,
   get100LatestDeviceHomepage,
@@ -768,6 +963,11 @@ module.exports = {
   postStep3Update,
   killAuctionTempState,
   countAuctions,
-  finishAuctionTempDeviceInfo
+  finishAuctionTempDeviceInfo,
+
+  //Autobet
+  update104BeforeAutoBetDealSend,
+  insert104AutoBetDealSend,
+  update104AfterAutoBetDealSend,
+  insert104PartyAfterAutobet
 };
- 

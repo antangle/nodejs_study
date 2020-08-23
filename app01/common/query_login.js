@@ -65,7 +65,8 @@ const checkDupinfoUser = async(dupinfo) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
+
 const postU004LoginIdCheck = async(login_id)=>{
     var result = {};
     try{
@@ -150,7 +151,7 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const post006NicknameCheck = async(nick)=>{
     var result = {};
@@ -302,7 +303,7 @@ const postU007LocationCode = async(sido_code, sgg_code, user_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const checkUserState910 = async(user_id) =>{
     var result = {};
@@ -337,7 +338,7 @@ const checkUserState910 = async(user_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const updatePushTokenUser = async(login_id, push_token)=>{
     var result = {};
@@ -492,7 +493,7 @@ const checkDupinfoPartner = async(dupinfo) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const postP004LoginIdCheck = async(login_id)=>{
     var result = {};
@@ -576,7 +577,7 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
     var result = {};
@@ -605,7 +606,7 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const StoreTempInsert908 = async(store_info)=>{
     try{
@@ -688,7 +689,7 @@ const updatePartnerMakeMeStore = async(partner_id)=>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const storeAcceptCheckUUID = async(partner_id) => {
     try{
@@ -720,7 +721,7 @@ const storeAcceptCheckUUID = async(partner_id) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const storeAcceptInsertStore = async(partner_id) => {
     try{
@@ -769,7 +770,7 @@ const storeAcceptInsertStore = async(partner_id) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const storeAcceptUpdateStoreTemp = async(partner_id) => {
     try{
@@ -797,7 +798,7 @@ const storeAcceptUpdateStoreTemp = async(partner_id) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const storeAcceptUpdatePartner = async(store_id ,partner_id) => {
     try{
@@ -828,7 +829,7 @@ const storeAcceptUpdatePartner = async(store_id ,partner_id) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const storeDenyUpdateStoreTemp = async(partner_id) => {
     try{
@@ -856,7 +857,7 @@ const storeDenyUpdateStoreTemp = async(partner_id) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const storeDenyUpdatePartner = async(partner_id) => {
     try{
@@ -888,7 +889,7 @@ const storeDenyUpdatePartner = async(partner_id) => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const partnerToStoreInfo = async() => {
     var result = {};
@@ -918,7 +919,7 @@ const partnerToStoreInfo = async() => {
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
+};
 
 const checkState910 = async(partner_id) =>{
     var result = {};
@@ -950,12 +951,7 @@ const checkState910 = async(partner_id) =>{
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
-}
-
-
-
-
-
+};
 
 const PartnerUpdateToken909 = async(partner_id, token) =>{
     var result = {}
@@ -1101,6 +1097,7 @@ const test = async(partner_id)=>{
         return result;
     }
 };
+
 //#endregion
 module.exports = {
     //user login query
