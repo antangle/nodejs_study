@@ -512,7 +512,7 @@ router.post('/S205AutoBetLoad', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: s301 - MyOngoingDeal/' + err);
-        result.result = -7011;
+        result.result = -60551;
         return res.json(result);
     }
 });
