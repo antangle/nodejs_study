@@ -602,31 +602,34 @@ const postStep3Update = async(check, postInput)=>{
           step = 3
           WHERE user_id = $1
         )
-        INSERT INTO auction(user_id,
-          device_detail_id,
-          device_id,
-          payment_id,
-          agency_use,
-          agency_hope,
-          period,
-          contract_list,
-          create_time,
-          finish_time,
-          now_order,
-          state,
-          win_state)
+        INSERT INTO auction(
+          user_id, device_detail_id,
+          device_id, payment_id,
+          agency_use, agency_hope,
+          period, contract_list,
+          create_time, finish_time,
+          now_order, state,
+          win_state, delivery,
+          condition
+        )
         VALUES(
-          $1, $2, $3, $4, $5,
-          $6, $7, $8, 
-          current_timestamp, 
-          current_timestamp + interval '1 day', 
-          0 ,1, 1)
-        RETURNING user_id`;
+          $1, $2, 
+          $3, $4, 
+          $5, $6, 
+          $7, $8, 
+          current_timestamp, current_timestamp + interval '1 day', 
+          0 ,1, 
+          1, $9, 
+          $10
+        )
+        RETURNING auction.id
+        `;
       const inputarray = [
         postInput.user_id, check.device_detail_id, 
         check.temp_device_id, postInput.payment_id,
         postInput.agency_use, postInput.agency_hope, 
-        postInput.period, postInput.contract_list
+        postInput.period, postInput.contract_list,
+        postInput.delivery, postInput.condition
       ];
       var {rows, rowCount, errcode} = await query(querytext, inputarray, -10334);
       if(errcode){
@@ -638,6 +641,7 @@ const postStep3Update = async(check, postInput)=>{
       else if(rowCount > 1){
         return {result: -10336};
       }
+      result.auction_id = rows[0].id;
       result.result = define.const_SUCCESS;
     }
     return result;
@@ -648,6 +652,7 @@ const postStep3Update = async(check, postInput)=>{
     return result;
   }
 };
+
 
 //필요없어짐
 const killAuctionTempState = async(user_id)=>{

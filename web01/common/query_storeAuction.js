@@ -366,7 +366,7 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
             querytext = `
                 UPDATE deal SET
                 state = -1
-                WHERE id = $1
+                WHERE id = $1 
                 AND store_id = $2
                 AND state != 2
             `;
