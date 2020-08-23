@@ -653,7 +653,6 @@ const postStep3Update = async(check, postInput)=>{
   }
 };
 
-
 //필요없어짐
 const killAuctionTempState = async(user_id)=>{
   var result = {};

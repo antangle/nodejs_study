@@ -8,7 +8,8 @@ const {helper} = require('../../controller/validate');
 const buy = require('../common/query_buy');
 const auction = require('../common/query_myAuction');
 const myPage = require('../common/query_myPage');
-const define = require('../../definition/define')
+const define = require('../../definition/define');
+const functions = require('../common/function');
 
 router.get('/test', async(req, res)=>{
     try{
@@ -274,7 +275,8 @@ router.post('/postSaveStep3', async (req, res) =>{
         postInput = {
             user_id, payment_id,
             agency_use, agency_hope, 
-            period, contract_list
+            period, contract_list,
+            delivery
         }
         check = {
             device_detail_id, 
@@ -284,9 +286,20 @@ router.post('/postSaveStep3', async (req, res) =>{
         //TODO: contract_list 에 대한 정규식 필요함
         if(!postInput.user_id || !postInput.payment_id ||
             !postInput.agency_use || !postInput.agency_hope || 
-            !postInput.period || !postInput.contract_list){
+            !postInput.period || !postInput.contract_list ||
+            !postInput.delivery){
                 return res.json({result: 10331});
             };
+        //TODO: 쿼리 단순화/ 분기해야한다
+        var type = functions.check_type(postInput.agency_use, postInput.agency_hope);
+        var plan = functions.check_plan(postInput.period);
+        var delivery = postInput.delivery;
+
+        var condition = functions.generate_condition(
+            postInput.agency_hope, type, plan, delivery
+        );
+        postInput.condition = condition;
+        console.log(condition);
         //TODO: 쿼리 단순화/ 분기해야한다
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
         if(check.result !== define.const_SUCCESS){
