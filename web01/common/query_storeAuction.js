@@ -748,9 +748,9 @@ const selectS205AutoBetInfoAfter = async(device_volume_id, condition)=>{
                 max.discount_price AS max_discount_price
             FROM autobet_max AS max
             INNER JOIN payment
-                ON max.device_volume_id = $1
+                ON payment.id = max.payment_id
+            WHERE max.device_volume_id = $1
                 AND max.condition = $2
-                AND payment.id = max.payment_id
             ORDER BY payment.price DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, condition], -60522);

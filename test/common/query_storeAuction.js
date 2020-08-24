@@ -748,9 +748,9 @@ const selectS205AutoBetInfoAfter = async(device_volume_id, condition)=>{
                 max.discount_price AS max_discount_price
             FROM autobet_max AS max
             INNER JOIN payment
-                ON max.device_volume_id = $1
-                AND max.condition = $2
-                AND payment.id = max.payment_id
+                ON payment.id = max.payment_id
+            WHERE max.device_volume_id = $1
+            AND max.condition = $2
             ORDER BY payment.price DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, condition], -60522);
@@ -823,8 +823,8 @@ const upsertS205AutoBet = async(paramArray)=>{
                 UPDATE autobet_max
                     SET discount_price = $9
                 WHERE device_volume_id = $2
-                    AND payment_id = $3
                     AND condition = $4
+                    AND payment_id = $3
                     AND discount_price < $9
             )
             INSERT INTO autobet(
