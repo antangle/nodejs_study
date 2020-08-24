@@ -750,7 +750,7 @@ const selectS205AutoBetInfoAfter = async(device_volume_id, condition)=>{
             INNER JOIN payment
                 ON payment.id = max.payment_id
             WHERE max.device_volume_id = $1
-            AND max.condition = $2
+                AND max.condition = $2
             ORDER BY payment.price DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, condition], -60522);
