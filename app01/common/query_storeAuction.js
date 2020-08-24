@@ -637,16 +637,16 @@ const selectS204AutoBetInfo = async(store_id)=>{
     try{
         const querytext = `
             SELECT * FROM(
-                SELECT DISTINCT ON(device.name) 
+                SELECT DISTINCT ON(detail.device_volume_id) 
                     device.id, device.name,
                     autobet.load_time,
                     autobet.state
                 FROM autobet
                 INNER JOIN device_detail AS detail
-                    ON autobet.store_id = $1
-                    AND detail.device_volume_id = autobet.device_volume_id
+                    ON autobet.device_volume_id = detail.device_volume_id
                 INNER JOIN device
                     ON device.id = detail.device_id
+                WHERE autobet.store_id = $1
             ) distinct_table
             ORDER BY distinct_table.load_time DESC
         `;
@@ -791,11 +791,11 @@ const insertS205AutoBetMax = async()=>{
             AND payment.state = 1
             AND official.state = 1
         INNER JOIN temp2 AS type1
-        ON TRUE
+            ON TRUE
         INNER JOIN temp2 AS plan
-        ON TRUE
+            ON TRUE
         INNER JOIN temp2 AS delivery
-        ON TRUE
+            ON TRUE
         ON CONFLICT (device_volume_id, condition, payment_id) DO NOTHING
         `;
         var {rows, rowCount, errcode} = await query(querytext, [], -60412);
@@ -823,8 +823,8 @@ const upsertS205AutoBet = async(paramArray)=>{
                 UPDATE autobet_max
                     SET discount_price = $9
                 WHERE device_volume_id = $2
-                    AND payment_id = $3
                     AND condition = $4
+                    AND payment_id = $3
                     AND discount_price < $9
             )
             INSERT INTO autobet(
@@ -843,8 +843,8 @@ const upsertS205AutoBet = async(paramArray)=>{
                 $9, $10,
                 $11, $12
             ON CONFLICT(
-                store_id, device_volume_id, 
-                payment_id, condition
+                device_volume_id, condition,
+                payment_id, store_id
             )
             DO UPDATE SET
                 discount_price = excluded.discount_price,
@@ -886,9 +886,9 @@ const updateS205BeforeAutoBetDealSend = async()=>{
                 ON detail.id = auction.device_detail_id
                 AND auction.finish_time > current_timestamp
             INNER JOIN autobet
-                ON detail.device_volume_id = autobet.device_volume_id
-                AND auction.payment_id = autobet.payment_id
-                AND auction.condition = autobet.condition
+                ON autobet.device_volume_id = detail.device_volume_id
+                AND autobet.condition = auction.condition
+                AND autobet.payment_id = auction.payment_id
                 AND autobet.state = 1
             WHERE deal.store_id = autobet.store_id
                 AND deal.auction_id = auction.id
@@ -946,8 +946,8 @@ const insertS205AutoBetDealSend = async()=>{
                 AND official.device_volume_id = detail.device_volume_id
             INNER JOIN autobet
                 ON detail.device_volume_id = autobet.device_volume_id
-                AND auction.payment_id = autobet.payment_id
                 AND auction.condition = autobet.condition
+                AND auction.payment_id = autobet.payment_id
                 AND autobet.state = 1
             INNER JOIN store_nick
                 ON store_nick.id = mod(mod(autobet.id, 500) + auction.now_order + 500 + auction.id*2, 1000)
@@ -998,8 +998,8 @@ const updateS205AfterAutoBetDealSend = async()=>{
                 AND auction.finish_time > current_timestamp
             INNER JOIN autobet
                 ON detail.device_volume_id = autobet.device_volume_id
-                AND auction.payment_id = autobet.payment_id
                 AND auction.condition = autobet.condition
+                AND auction.payment_id = autobet.payment_id
                 AND autobet.state = 1
             INNER JOIN deal
                 ON deal.store_id = autobet.store_id
@@ -1035,8 +1035,8 @@ const insertS205PartyAfterAutobet = async()=>{
                 AND auction.finish_time > current_timestamp
             INNER JOIN autobet
                 ON detail.device_volume_id = autobet.device_volume_id
-                AND auction.payment_id = autobet.payment_id
                 AND auction.condition = autobet.condition
+                AND auction.payment_id = autobet.payment_id
                 AND autobet.state = 1
             INNER JOIN deal
                 ON deal.store_id = autobet.store_id
@@ -1058,31 +1058,31 @@ const insertS205PartyAfterAutobet = async()=>{
     }
 };
 
-const selectS205AutoBetInfoLoad = async(store_id, device_volume_id, condition)=>{
+const selectS205AutoBetInfoLoad = async(store_id, device_volume_id, condition, device_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT 
-                a.device_volume_id, a.condition,
-                a.agency, a.change_type,
-                a.plan, a.delivery,
-                a.name
-            FROM(
-                SELECT DISTINCT ON (autobet.condition)
-                    autobet.device_volume_id, autobet.condition,
-                    autobet.agency, autobet.change_type,
-                    autobet.plan, autobet.delivery,
-                    autobet.load_time, device.name
-                FROM autobet
-                INNER JOIN device
-                    ON autobet.store_id = $1
-                    AND autobet.device_volume_id = $2
-                    AND autobet.condition = $3
-                    AND device.id = autobet.device_id
-            ) a
-            ORDER BY a.load_time DESC
+        SELECT 
+            a.device_volume_id, a.condition,
+            a.agency, a.change_type,
+            a.plan, a.delivery,
+            a.name
+        FROM(
+            SELECT DISTINCT ON (autobet.condition)
+                autobet.device_volume_id, autobet.condition,
+                autobet.agency, autobet.change_type,
+                autobet.plan, autobet.delivery,
+                autobet.load_time, device.name
+            FROM autobet
+            INNER JOIN device
+                ON device.id = $4
+            WHERE autobet.store_id = $1
+                AND autobet.device_volume_id = $2
+                AND autobet.condition = $3
+        ) a
+        ORDER BY a.load_time DESC
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition], -60552);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition, device_id], -60552);
         if(errcode){
             return {result: errcode};
         }

@@ -497,13 +497,13 @@ router.post('/S205AutoBetLoad', async (req, res) =>{
                             delivery
                         );
         if(step === 1){
-            result = await store.selectS205AutoBetInfoLoad(store_id, device_volume_id, condition, agency);
+            result = await store.selectS205AutoBetInfoLoad(store_id, device_volume_id, condition, device_id);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
         }
         if(step === 2){
-            result = await store.selectS205AutoBetInfoLoad2(store_id, device_volume_id, condition, agency);
+            result = await store.selectS205AutoBetInfoLoad2(store_id, device_volume_id, condition);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
