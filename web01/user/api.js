@@ -299,8 +299,7 @@ router.post('/postSaveStep3', async (req, res) =>{
             postInput.agency_hope, type, plan, delivery
         );
         postInput.condition = condition;
-        console.log(condition);
-        //TODO: 쿼리 단순화/ 분기해야한다
+
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
         if(check.result !== define.const_SUCCESS){
             return res.json({result: -10332});
@@ -315,7 +314,6 @@ router.post('/postSaveStep3', async (req, res) =>{
         //check returning device_id, state, device_detail_id
         //postInput has all the info of step 3
         result = await buy.postStep3Update(check, postInput);
-        result.count = Number(count.count) + 1;
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -325,6 +323,24 @@ router.post('/postSaveStep3', async (req, res) =>{
             return res.json(kill);
         }
         */
+        var auction_id = result.auction_id
+        result = await buy.update104BeforeAutoBetDealSend(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await buy.insert104AutoBetDealSend(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await buy.update104AfterAutoBetDealSend(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await buy.insert104PartyAfterAutobet(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result.count = Number(count.count) + 1;
         return res.json(result);
     }
     catch(err){
@@ -422,22 +438,6 @@ router.post('/get202MyAuctionOff', async (req, res) =>{
     }
 });
 
-var countPage = 0;
-router.post('/countPage', async (req, res) =>{
-    var result ={};
-    try{
-        countPage = countPage + 1;
-        result.count = countPage;
-        result.result = define.const_SUCCESS;
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: 203 countPage/' + err);
-        result.result = -20321;
-        return res.json(result);
-    }
-});
-
 router.post('/get203MyAuctionDetails', async (req, res) =>{
     var result ={};
     try{
@@ -456,7 +456,6 @@ router.post('/get203MyAuctionDetails', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result.count = countPage;
         return res.json(result);
     }
     catch(err){
@@ -640,7 +639,7 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     try{
         var {deal_id} = req.query;
         if(!deal_id){
-            return res.json({result: 21211})
+            return res.json({result: 21211});
         }
         result = await auction.get212AllStoreReviews(deal_id);
         if(result.result !== define.const_SUCCESS){
@@ -651,6 +650,26 @@ router.get('/get212AllStoreReviews', async(req,res) =>{
     catch(err){
         console.log('router ERROR: get212AllStoreReviews/' + err);
         result.result = -21211;
+        return res.json(result);
+    }
+});
+
+router.post('/213InfoForReport', async(req,res) =>{
+    var result ={};
+    try{
+        var {deal_id} = req.body;
+        if(!deal_id){
+            return res.json({result: 21311});
+        }
+        result = await auction.get213InfoForReport(deal_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 213InfoForReport/' + err);
+        result.result = -21311;
         return res.json(result);
     }
 });

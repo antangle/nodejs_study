@@ -28,7 +28,7 @@ function check_State(state){
     if(isNaN(state)){
         return -1;
     }
-    else if(state !== 1){
+    else if(state != 1){
         return -1;
     }
     else{
@@ -41,6 +41,16 @@ function check_OneTwo(number){
         return -1;
     }
     if(number !== 1 && number !== 2){
+        return -1;
+    }
+    return number;
+}
+
+function check_OneTwoThree(number){
+    if(isNaN(number)){
+        return -1;
+    }
+    if(number !== 1 && number !== 2 && number !== 3){
         return -1;
     }
     return number;
@@ -83,6 +93,7 @@ module.exports ={
     check_DiscountPrice,
     check_IsNumber,
     check_OneTwo,
+    check_OneTwoThree,
     check_State,
     check_plan,
     check_type,
