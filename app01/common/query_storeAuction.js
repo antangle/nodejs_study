@@ -272,7 +272,7 @@ const delete601CutAuction = async()=>{
     }
 };
 
-const get602Auction = async(auction_id)=>{
+const get602Auction = async(auction_id, store_id)=>{
     var result = {};
     try{
         const querytext = `
@@ -298,7 +298,7 @@ const get602Auction = async(auction_id)=>{
             AND deal.auction_id = $1
             AND deal.state = 1
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [auction_id], -60212);
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id, store_id], -60212);
         if(errcode){
             return {result: errcode};
         }
