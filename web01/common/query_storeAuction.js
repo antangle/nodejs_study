@@ -734,6 +734,7 @@ const selectS204AutoBetDeviceByBrand = async(brand_id)=>{
             FROM device
             WHERE brand_id = $1
                 AND state = 1
+            ORDER BY device.birth DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [brand_id], -60434);
         if(errcode){
@@ -761,8 +762,9 @@ const selectS204AutoBetDeviceVolume = async(device_id)=>{
             FROM device_detail AS detail
             INNER JOIN device
                 ON device.id = $1
+                AND device.state = 1
             WHERE detail.device_id = $1
-                AND state = 1
+                AND detail.state = 1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [device_id], -60436);
         if(errcode){
