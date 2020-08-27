@@ -9,6 +9,7 @@ function decodejwt(jwtData){
 }
 
 function check_DiscountPrice(discount_price){
+    discount_price = discount_price*1;
     if(isNaN(discount_price)){
         return -1;
     }
@@ -18,6 +19,7 @@ function check_DiscountPrice(discount_price){
 }
 
 function check_IsNumber(number){
+    number = number*1;
     if(isNaN(number)){
         return -1;
     }
@@ -25,6 +27,7 @@ function check_IsNumber(number){
 }
 
 function check_State(state){
+    state = state*1;
     if(isNaN(state)){
         return -1;
     }
@@ -37,6 +40,7 @@ function check_State(state){
 }
 
 function check_OneTwo(number){
+    number = number*1;
     if(isNaN(number)){
         return -1;
     }
@@ -47,6 +51,7 @@ function check_OneTwo(number){
 }
 
 function check_OneTwoThree(number){
+    number = number*1;
     if(isNaN(number)){
         return -1;
     }
@@ -57,6 +62,7 @@ function check_OneTwoThree(number){
 }
 
 function check_plan(plan){
+    plan = plan*1;
     if(isNaN(plan)){
         return -1;
     }
@@ -83,6 +89,8 @@ function generate_condition(agency, change_type, plan, delivery){
 }
 
 function generate_dvi(device_id, volume){
+    device_id = device_id*1;
+    volume = volume*1;
     return device_id.toString() + '_' + volume.toString();
 }
 
