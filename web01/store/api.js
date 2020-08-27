@@ -301,7 +301,7 @@ router.post('/S204AutoBetCancelAll', async (req, res) =>{
 router.get('/S204AutoBetDevice', async (req, res) =>{
     var result ={};
     try{
-        var {brand_id} = req.body;
+        var {brand_id} = req.query;
         if(functions.check_IsNumber(brand_id) === -1){
             brand_id = 1;
             //default: SKT
@@ -329,7 +329,7 @@ router.get('/S204AutoBetDevice', async (req, res) =>{
 router.get('/S204AutoBetDeviceVolume', async (req, res) =>{
     var result ={};
     try{
-        var {device_id} = req.body;
+        var {device_id} = req.query;
         if(functions.check_IsNumber(device_id) === -1){
             return res.json({result: 60441});
         }
