@@ -18,6 +18,8 @@ function check_DiscountPrice(discount_price){
 }
 
 function check_IsNumber(number){
+    console.log(number);
+    console.log(typeof(number));
     if(isNaN(number)){
         return -1;
     }

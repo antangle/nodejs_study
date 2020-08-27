@@ -144,10 +144,12 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
         var {store_id, auction_id, discount_price, cancel, comment} = req.body;
-        if(!store_id || !auction_id || !discount_price || !comment){
+        if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
-        
+        if(!comment){
+            comment = null;
+        }
         discount_price = functions.check_DiscountPrice(discount_price);
         if(discount_price === -1){
             return res.json({result: 60221});
