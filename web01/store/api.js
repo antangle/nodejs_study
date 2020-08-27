@@ -382,8 +382,7 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             delivery
         } = req.body;
         console.log(req.body);
-        if(!store_id || !device_id || !volume || !agency || 
-            !change_type || !plan || !delivery){
+        if(!store_id){
             return res.json({result: 60521});
         }
         if(
@@ -394,6 +393,7 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             functions.check_IsNumber(device_id) === -1 ||
             functions.check_IsNumber(volume) === -1
         ){
+            console.log('herehere!');
             return res.json({result: 60521});
         }
         var device_volume_id = functions.generate_dvi(device_id, volume);
