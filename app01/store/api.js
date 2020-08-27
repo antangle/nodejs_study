@@ -11,7 +11,7 @@ dotenv.config({path: path.join(__dirname, '/../../.env')});
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
-const functions = require('../common/function');
+const functions = require('../../controller/function');
 const {helper, comparePassword} = require('../../controller/validate');
 const { kStringMaxLength } = require('buffer');
 const { stringify } = require('querystring');

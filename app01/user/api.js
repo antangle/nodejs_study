@@ -9,7 +9,7 @@ const buy = require('../common/query_buy');
 const auction = require('../common/query_myAuction');
 const myPage = require('../common/query_myPage');
 const define = require('../../definition/define');
-const functions = require('../common/function');
+const functions = require('../../controller/function');
 
 router.get('/test', async(req, res)=>{
     try{

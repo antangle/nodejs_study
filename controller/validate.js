@@ -23,7 +23,7 @@ const helper ={
     return  /^[가-힣a-zA-Z][가-힣a-zA-Z0-9]{1,7}$/.test(nick);
   },
   isValidPassword(password){
-    return /^(?=[^a-zA-Z]*[a-zA-Z])(?=\D*\d)[^\s]{5,19}$/.test(password);
+    return /^(?=[^a-zA-Z]*[a-zA-Z])(?=\D*\d)[\w~!@#$%^&*_-]+$/.test(password);
   },
   isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);

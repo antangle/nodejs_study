@@ -142,7 +142,7 @@ const get601Search = async(store_id)=>{
             auction.contract_list, auction.finish_time,
             auction.now_discount_price,
             device.name, detail.volume, detail.color_hex, detail.color_name,
-            image.url_2x, payment.alias,
+            image.url_2x, payment.alias, users.nick, 
             CASE WHEN 
                 auction.id NOT IN (
                     SELECT cut.auction_id 
@@ -169,11 +169,13 @@ const get601Search = async(store_id)=>{
             AND auction.finish_time > current_timestamp
             AND auction.device_detail_id = detail.id
         INNER JOIN device
-            ON auction.device_id = device.id
+            ON device.id = auction.device_id
         INNER JOIN image
-            ON device.image_id = image.id
+            ON image.id = device.image_id
         INNER JOIN payment
-            ON auction.payment_id = payment.id
+            ON payment.id = auction.payment_id
+        INNER JOIN users
+            ON users.id = auction.user_id
         ORDER BY auction.finish_time DESC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id], -60112);
@@ -432,7 +434,8 @@ const insert602DealSend = async(paramArray) => {
             discount_price, payment_id,
             discount_payment, period,
             create_time, deal_order,
-            state, store_nick
+            state, store_nick,
+            comment
         )
         SELECT $1, $2,
             auction.user_id, auction.device_detail_id,
@@ -441,7 +444,8 @@ const insert602DealSend = async(paramArray) => {
             $3, auction.payment_id,
             payment.price*6, auction.period,
             current_timestamp, auction.now_order +1,
-            1, $4
+            1, $4,
+            $5
         FROM auction
         INNER JOIN payment
             ON payment.id = auction.payment_id
@@ -460,7 +464,8 @@ const insert602DealSend = async(paramArray) => {
                 store_id, 
                 auction_id, 
                 discount_price, 
-                tempNick
+                tempNick,
+                comment
             ]
         */
 
@@ -639,8 +644,7 @@ const selectS204AutoBetInfo = async(store_id)=>{
             SELECT * FROM(
                 SELECT DISTINCT ON(detail.device_volume_id) 
                     device.id AS device_id, device.name,
-                    autobet.load_time,
-                    autobet.state
+                    autobet.load_time, autobet.state
                 FROM autobet
                 INNER JOIN device_detail AS detail
                     ON autobet.device_volume_id = detail.device_volume_id
@@ -688,9 +692,89 @@ const updateS204AutoBetCancelAll = async(store_id, cancel)=>{
         return result;
     }
     catch(err){
-        result.result = -60411;
+        result.result = -60421;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
+    }
+};
+
+const selectS204AutoBetDeviceLatest = async()=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT 
+                device.id AS device_id, device.name
+            FROM device
+            WHERE latest = 1
+                AND state = 1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [], -60432);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60433}
+        }
+        result = {result: define.const_SUCCESS, info: rows};
+        return result;
+    }
+    catch(err){
+        result.result = -60431;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+};
+
+const selectS204AutoBetDeviceByBrand = async(brand_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT 
+                device.id AS device_id, device.name
+            FROM device
+            WHERE brand_id = $1
+                AND state = 1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [brand_id], -60434);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60435}
+        }
+        result = {result: define.const_SUCCESS, info: rows};
+        
+        return result;
+    }
+    catch(err){
+        result.result = -60431;
+        console.log(`ERROR: ${result.result}/` + err);
+    }
+};
+
+const selectS204AutoBetDeviceVolume = async(device_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT DISTINCT ON (volume)
+                volume
+            FROM device_detail
+            WHERE device_id = $1
+            AND state = 1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [device_id], -60436);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60437}
+        }
+        result = {result: define.const_SUCCESS, info: rows};
+        
+        return result;
+    }
+    catch(err){
+        result.result = -60431;
+        console.log(`ERROR: ${result.result}/` + err);
     }
 };
 
@@ -739,11 +823,38 @@ const selectS205AutoBetInfoBefore = async(store_id, device_id)=>{
     }
 };
 
+const selectS205AutoBetCondition = async(device_volume_id, store_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT DISTINCT ON(condition) 
+                change_type, plan,
+                delivery, condition
+            FROM autobet
+            WHERE device_volume_id = $1
+                AND store_id = $2
+            ORDER BY condition ASC
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, store_id], -60524);
+        if(errcode){
+            return {result: errcode};
+        }
+        result = {result: define.const_SUCCESS, info: rows};
+        return result;
+    }
+    catch(err){
+        result.result = -60521;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 const selectS205AutoBetInfoAfter = async(device_volume_id, condition)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT payment.id AS payment_id, payment.alias,
+            SELECT 
+                payment.id AS payment_id, payment.alias,
                 payment.generation, payment.limitation,
                 max.discount_price AS max_discount_price
             FROM autobet_max AS max
@@ -1392,7 +1503,14 @@ module.exports = {
     //자동입찰
     selectS204AutoBetInfo,
     updateS204AutoBetCancelAll,
+
+    //기기정하기
+    selectS204AutoBetDeviceLatest,
+    selectS204AutoBetDeviceByBrand,
+    selectS204AutoBetDeviceVolume,
+
     selectS205AutoBetInfoBefore,
+    selectS205AutoBetCondition,
     selectS205AutoBetInfoAfter,
 
     //autobet, autobet_max에 등록

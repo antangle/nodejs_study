@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const user = require('../common/query_login');
 const define = require('../../definition/define');
 const {helper} = require('../../controller/validate');
+const functions = require('../../controller/function');
 const {verifyToken} = require('../../middleware/verify');
 
 router.use(express.urlencoded({limit:'50mb', extended: false }));
@@ -148,13 +149,11 @@ router.post('/SignIn904', async (req, res) =>{
         if(!push_token){
             push_token = null;
         }
-        if(!info){
+        if(!login_id || !req.body.login_pwd || !info) {
             return res.json({result: 9241});
         }
-        if(!login_id || !req.body.login_pwd) {
-            return res.json({result: 9241});
-        }
-        if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd)){
+        if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd) ||
+            functions.check_StringLength(req.body.login_pwd, 6, 20) === -1){
             return res.json({result: -9241});
         }
         //hash password

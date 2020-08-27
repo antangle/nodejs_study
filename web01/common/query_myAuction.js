@@ -266,7 +266,7 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
                 auction.contract_list, auction.period, auction.finish_time,
                 auction.state, auction.store_count,
                 detail.cost_price, deal.discount_official,
-                deal.discount_payment,
+                deal.discount_payment, deal.comment,
                 payment.price AS payment_price,
                 device.name
             FROM auction
@@ -323,7 +323,7 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
             auction.contract_list, auction.period, auction.finish_time,
             auction.state, auction.store_count,
             detail.cost_price, deal.discount_official,
-            deal.discount_payment,
+            deal.discount_payment, deal.comment,
             payment.price AS payment_price,
             device.name
         FROM auction
@@ -366,7 +366,7 @@ const get205DealDetail = async(deal_id, user_id)=>{
         const querytext = `
             SELECT deal.id AS deal_id, deal.store_nick AS store_nick, 
                 deal.contract_list, deal.discount_official, 
-                deal.discount_price,
+                deal.discount_price, deal.comment,
                 deal.discount_payment, deal.month_price,
                 deal.gift, deal.create_time AS deal_create_time,
                 deal.period, deal.agency,

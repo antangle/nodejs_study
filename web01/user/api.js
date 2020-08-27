@@ -9,7 +9,7 @@ const buy = require('../common/query_buy');
 const auction = require('../common/query_myAuction');
 const myPage = require('../common/query_myPage');
 const define = require('../../definition/define');
-const functions = require('../common/function');
+const functions = require('../../controller/function');
 
 router.get('/test', async(req, res)=>{
     try{
@@ -247,6 +247,46 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
     catch(err){
         console.log('router ERROR: getStep3OfficialInfo/' + err);
         return res.json({result: -10321});
+    }
+});
+
+router.post('/selectStep3AutobetMaxInfo', async(req,res) =>{
+    var result ={};
+    try{
+        var {
+            device_detail_id, 
+            payment_id, 
+            agency_use, 
+            agency_hope,
+            period,
+            delivery
+        } = req.body;
+        if(
+            functions.check_IsNumber(device_detail_id) === -1 ||
+            functions.check_IsNumber(payment_id) === -1 ||
+            functions.check_OneTwoThree(agency_use) === -1 ||
+            functions.check_OneTwoThree(agency_hope) === -1 ||
+            functions.check_IsNumber(period) === -1 ||
+            functions.check_OneTwo(delivery) === -1
+        ){
+            return res.json({result: 10331});
+        }
+        var type = functions.check_type(agency_use, agency_hope);
+        var plan = functions.check_plan(period);
+
+        var condition = functions.generate_condition(
+            agency_hope, type, plan, delivery
+        );
+
+        result = await buy.selectAutobetMax(device_detail_id, condition, payment_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: selectStep3AutobetMaxInfo/' + err);
+        return res.json({result: -10331});
     }
 });
 

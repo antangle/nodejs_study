@@ -11,7 +11,7 @@ dotenv.config({path: path.join(__dirname, '/../../.env')});
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
-const functions = require('../common/function');
+const functions = require('../../controller/function');
 const {helper, comparePassword} = require('../../controller/validate');
 const { kStringMaxLength } = require('buffer');
 const { stringify } = require('querystring');
@@ -143,8 +143,8 @@ router.post('/S202AuctionInfo', async (req, res) =>{
 router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
-        var {store_id, auction_id, discount_price, cancel} = req.body;
-        if(!store_id || !auction_id || !discount_price){
+        var {store_id, auction_id, discount_price, cancel, comment} = req.body;
+        if(!store_id || !auction_id || !discount_price || !comment){
             return res.json({result: 60221});
         }
         
@@ -170,7 +170,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 store_id, 
                 auction_id, 
                 discount_price, 
-                info.store_nick
+                info.store_nick,
+                comment
             ];
             store_count = 1;
 
@@ -197,7 +198,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 store_id,
                 auction_id,
                 discount_price,
-                info.store_nick
+                info.store_nick,
+                comment
             ];
             store_count = 1;
 
@@ -296,6 +298,55 @@ router.post('/S204AutoBetCancelAll', async (req, res) =>{
     }
 });
 
+router.get('/S204AutoBetDevice', async (req, res) =>{
+    var result ={};
+    try{
+        var {brand_id} = req.body;
+        if(functions.check_IsNumber(brand_id) === -1){
+            brand_id = 1;
+            //default: SKT
+        }
+        
+        var latest = await store.selectS204AutoBetDeviceLatest();
+        if(latest.result !== define.const_SUCCESS){
+            return res.json(latest);
+        }
+
+        result = await store.selectS204AutoBetDeviceByBrand(brand_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result.latest = latest.info;
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204AutoBetHomeInfo/' + err);
+        result.result = -60431;
+        return res.json(result);
+    }
+});
+
+router.get('/S204AutoBetDeviceVolume', async (req, res) =>{
+    var result ={};
+    try{
+        var {device_id} = req.body;
+        if(functions.check_IsNumber(device_id) === -1){
+            return res.json({result: 60441});
+        }
+
+        result = await store.selectS204AutoBetDeviceVolume(device_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204AutoBetHomeInfo/' + err);
+        result.result = -60441;
+        return res.json(result);
+    }
+});
+
 router.post('/S205AutoBetInfoBefore', async (req, res) =>{
     var result ={};
     try{
@@ -320,6 +371,7 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
     var result ={};
     try{
         var {
+            store_id,
             device_id,
             volume,
             agency,
@@ -327,7 +379,7 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             plan,
             delivery
         } = req.body;
-        if(!device_id || !volume || !agency || 
+        if(!store_id || !device_id || !volume || !agency || 
             !change_type || !plan || !delivery){
             return res.json({result: 60521});
         }
@@ -348,11 +400,19 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             plan,
             delivery
         );
+        
+        //활성화된 조건들 보기
+        var check_condition = await store.selectS205AutoBetCondition(device_volume_id, store_id);
+        if(check_condition.result !== define.const_SUCCESS){
+            return res.json(check_condition);
+        }
 
+        //해당 condition의 요금제, 현재 자동입찰 최고가 보기
         result = await store.selectS205AutoBetInfoAfter(device_volume_id, condition);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        result.condition = check_condition.info
         return res.json(result);
     }
     catch(err){

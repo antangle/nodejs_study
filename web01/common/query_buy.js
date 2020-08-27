@@ -585,6 +585,35 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
   }
 }
 
+const selectAutobetMax = async(device_detail_id, condition, payment_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT max.discount_price
+      FROM autobet_max AS max
+      INNER JOIN device_detail AS detail
+        ON detail.id = $1
+      WHERE max.device_volume_id = detail.device_volume_id
+        AND max.condition = $2
+        AND max.payment_id = $3
+    `;
+    var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, condition, payment_id], -10332);
+    if(errcode){
+      return {result: errcode};
+    }
+    if(rowCount === 0){
+      return {result: -10333};
+    }
+    result = {result: define.const_SUCCESS, discount_price: rows[0].discount_price};
+    return result;
+  }
+  catch(err){
+    result.result = -10331;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+}
+
 const postStep3Update = async(check, postInput)=>{
   var result = {};
   try{
@@ -955,16 +984,21 @@ module.exports = {
   checkIsFirstAuction,
   postStep1Insert,
   postStep1Update,
+
   getStep2ColorVolume,
   postStep2Update,
+
   getAuctionTempWithUserStep3,
   getStep3PaymentInfo,
   getSelectedPayment,
-  postStep3Update,
-  killAuctionTempState,
   countAuctions,
-  finishAuctionTempDeviceInfo,
+  selectAutobetMax,
 
+  postStep3Update,
+
+  finishAuctionTempDeviceInfo,
+  
+  killAuctionTempState,
   //Autobet
   update104BeforeAutoBetDealSend,
   insert104AutoBetDealSend,
