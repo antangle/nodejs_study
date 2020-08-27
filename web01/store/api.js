@@ -381,10 +381,11 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             plan,
             delivery
         } = req.body;
-        console.log(req.body);
-        if(!store_id){
+        if(!store_id || !device_id || !volume || !agency || 
+            !change_type || !plan || !delivery){
             return res.json({result: 60521});
         }
+        console.log(typeof(functions.check_IsNumber(agency)))
         if(
             functions.check_OneTwo(change_type) === -1 ||
             functions.check_OneTwo(plan) === -1 ||

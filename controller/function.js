@@ -19,8 +19,8 @@ function check_StringLength(string, min, max){
         return 1;
     }
 }
-
 function check_DiscountPrice(discount_price){
+    discount_price = parseInt(discount_price, 10);
     if(isNaN(discount_price)){
         return -1;
     }
@@ -30,42 +30,38 @@ function check_DiscountPrice(discount_price){
 }
 
 function check_IsNumber(number){
+    number = parseInt(number, 10);
     if(isNaN(number)){
         return -1;
     }
-    return number;
+    return parseInt(number);
 }
 
 function check_State(state){
-    if(isNaN(state)){
-        return -1;
-    }
-    else if(state != 1){
-        return -1;
+    if(state == 1){
+        return 1;
     }
     else{
-        return 1;
+        return -1;
     }
 }
 
 function check_OneTwo(number){
-    if(isNaN(number)){
+    if(number == 1 || number == 2){
+        return Number(number);
+    }
+    else{
         return -1;
     }
-    if(number !== 1 && number !== 2){
-        return -1;
-    }
-    return number;
 }
 
 function check_OneTwoThree(number){
-    if(isNaN(number)){
-        return -1;
+    if(number == 1 || number == 2 || number == 3){
+        return Number(number);
     }
-    if(number !== 1 && number !== 2 && number !== 3){
-        return -1;
+    else{
+        return -1
     }
-    return number;
 }
 
 function check_plan(plan){
@@ -97,7 +93,6 @@ function generate_condition(agency, change_type, plan, delivery){
 function generate_dvi(device_id, volume){
     return device_id.toString() + '_' + volume.toString();
 }
-
 
 
 module.exports ={
