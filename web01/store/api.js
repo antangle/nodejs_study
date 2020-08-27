@@ -332,6 +332,8 @@ router.get('/S204AutoBetDeviceVolume', async (req, res) =>{
     var result ={};
     try{
         var {device_id} = req.query;
+        console.log(device_id);
+        console.log(typeof(device_id));
         if(functions.check_IsNumber(device_id) === -1){
             return res.json({result: 60441});
         }
