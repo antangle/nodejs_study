@@ -19,6 +19,7 @@ function check_DiscountPrice(discount_price){
 }
 
 function check_IsNumber(number){
+    console.log(number);
     number = number*1;
     if(isNaN(number)){
         return -1;
@@ -40,6 +41,7 @@ function check_State(state){
 }
 
 function check_OneTwo(number){
+    console.log(number);
     number = number*1;
     if(isNaN(number)){
         return -1;

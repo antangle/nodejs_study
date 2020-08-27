@@ -393,7 +393,6 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             functions.check_IsNumber(device_id) === -1 ||
             functions.check_IsNumber(volume) === -1
         ){
-            console.log('herehere!');
             return res.json({result: 60521});
         }
         var device_volume_id = functions.generate_dvi(device_id, volume);
