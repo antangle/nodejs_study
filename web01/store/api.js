@@ -381,6 +381,7 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             plan,
             delivery
         } = req.body;
+        console.log(req.body);
         if(!store_id || !device_id || !volume || !agency || 
             !change_type || !plan || !delivery){
             return res.json({result: 60521});
