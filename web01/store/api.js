@@ -369,6 +369,33 @@ router.post('/S205AutoBetInfoBefore', async (req, res) =>{
     }
 });
 
+router.post('/S205AutoBetInfoMiddle', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id, device_id, volume} = req.body;
+        if(!store_id || !device_id || !volume){
+            return res.json({result: 605111});
+        }
+        if(functions.check_IsNumber(device_id) === -1 ||
+            functions.check_IsNumber(volume) === -1
+        ){
+            return res.json({result: 605111})
+        }
+        var device_volume_id = functions.generate_dvi(device_id, volume);
+
+        result = await store.selectS205AutoBetCondition(device_volume_id, store_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S205AutoBetInfoMiddle/' + err);
+        result.result = -605111;
+        return res.json(result);
+    }
+});
+
 router.post('/S205AutoBetInfoAfter', async (req, res) =>{
     var result ={};
     try{
@@ -403,19 +430,12 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             plan,
             delivery
         );
-        
-        //활성화된 조건들 보기
-        var check_condition = await store.selectS205AutoBetCondition(device_volume_id, store_id);
-        if(check_condition.result !== define.const_SUCCESS){
-            return res.json(check_condition);
-        }
 
         //해당 condition의 요금제, 현재 자동입찰 최고가 보기
         result = await store.selectS205AutoBetInfoAfter(device_volume_id, condition);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result.condition = check_condition.info
         return res.json(result);
     }
     catch(err){

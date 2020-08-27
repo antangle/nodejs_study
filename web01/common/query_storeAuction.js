@@ -834,13 +834,14 @@ const selectS205AutoBetCondition = async(device_volume_id, store_id)=>{
         const querytext = `
             SELECT DISTINCT ON(condition) 
                 change_type, plan,
-                delivery, condition
+                delivery, condition,
+                state
             FROM autobet
             WHERE device_volume_id = $1
                 AND store_id = $2
             ORDER BY condition ASC
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, store_id], -60524);
+        var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, store_id], -605112);
         if(errcode){
             return {result: errcode};
         }
@@ -848,7 +849,7 @@ const selectS205AutoBetCondition = async(device_volume_id, store_id)=>{
         return result;
     }
     catch(err){
-        result.result = -60521;
+        result.result = -605111;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
