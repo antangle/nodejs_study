@@ -153,7 +153,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             return res.json({result: 60221});
         }
         if(cancel != 1){
-            cancel = -1;
+            cancel = -1; 
         }
         else{
             cancel = 1;

@@ -642,9 +642,10 @@ const selectS204AutoBetInfo = async(store_id)=>{
     try{
         const querytext = `
             SELECT * FROM(
-                SELECT DISTINCT ON(detail.device_volume_id) 
+                SELECT DISTINCT ON(detail.device_volume_id)
                     device.id AS device_id, device.name,
-                    autobet.load_time, autobet.state
+                    autobet.load_time, autobet.state,
+                    autobet.agency
                 FROM autobet
                 INNER JOIN device_detail AS detail
                     ON autobet.device_volume_id = detail.device_volume_id
@@ -755,11 +756,13 @@ const selectS204AutoBetDeviceVolume = async(device_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT DISTINCT ON (volume)
-                volume
-            FROM device_detail
-            WHERE device_id = $1
-            AND state = 1
+            SELECT DISTINCT ON (detail.volume)
+                detail.volume, device.name
+            FROM device_detail AS detail
+            INNER JOIN device
+                ON device.id = $1
+            WHERE detail.device_id = $1
+                AND state = 1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [device_id], -60436);
         if(errcode){
