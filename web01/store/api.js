@@ -459,8 +459,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             data,
             state
         } = req.body;
-        console.log(data);
-        console.log(data.payment_jsonArray);
+        console.log(JSON.parse(data));
         //agency는 1,2,3 나머지 type 들은 1,2
         if(!store_id || !device_id || !volume || !agency || !change_type ||
             !plan || !delivery || !state){
