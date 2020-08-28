@@ -461,7 +461,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
         } = req.body;
         console.log(req.body);
         console.log(payment_jsonArray);
-        console.log(JSON.parse(req.body));
+        console.log(JSON.parse(payment_jsonArray));
         if(payment_jsonArray === undefined){
             return res.json({result: 605315});
         }
