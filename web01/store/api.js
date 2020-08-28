@@ -432,7 +432,7 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
         );
 
         //해당 condition의 요금제, 현재 자동입찰 최고가 보기
-        result = await store.selectS205AutoBetInfoAfter(device_volume_id, condition);
+        result = await store.selectS205AutoBetInfoAfter(device_volume_id, condition, store_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }

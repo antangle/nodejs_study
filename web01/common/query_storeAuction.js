@@ -858,7 +858,7 @@ const selectS205AutoBetCondition = async(device_volume_id, store_id)=>{
     }
 };
 
-const selectS205AutoBetInfoAfter = async(device_volume_id, condition)=>{
+const selectS205AutoBetInfoAfter = async(device_volume_id, condition, store_id)=>{
     var result = {};
     try{
         const querytext = `
@@ -866,15 +866,20 @@ const selectS205AutoBetInfoAfter = async(device_volume_id, condition)=>{
                 payment.id AS payment_id, payment.alias,
                 payment.generation, payment.limitation,
                 max.discount_price AS max_discount_price,
-                payment.price AS payment_price
+                autobet.discount_price AS my_discount_price
             FROM autobet_max AS max
             INNER JOIN payment
                 ON payment.id = max.payment_id
+            INNER JOIN autobet
+                ON autobet.device_volume_id = $1
+                AND autobet.condition = $2
+                AND autobet.payment_id = payment.id
+                AND autobet.store_id = $3
             WHERE max.device_volume_id = $1
                 AND max.condition = $2
             ORDER BY payment.price DESC
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, condition], -60522);
+        var {rows, rowCount, errcode} = await query(querytext, [device_volume_id, condition, store_id], -60522);
         if(errcode){
             return {result: errcode};
         }
