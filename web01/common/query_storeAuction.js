@@ -867,7 +867,8 @@ const selectS205AutoBetInfoAfter = async(device_volume_id, condition, store_id)=
                 payment.id AS payment_id, payment.alias,
                 payment.generation, payment.limitation,
                 max.discount_price AS max_discount_price,
-                autobet.discount_price AS my_discount_price
+                autobet.discount_price AS my_discount_price,
+                payment.price AS payment_price
             FROM autobet_max AS max
             INNER JOIN payment
                 ON payment.id = max.payment_id
