@@ -413,7 +413,6 @@ router.post('/S205AutoBetInfoAfter', async (req, res) =>{
             !change_type || !plan || !delivery){
             return res.json({result: 60521});
         }
-        console.log(typeof(functions.check_IsNumber(agency)))
         if(
             functions.check_OneTwo(change_type) === -1 ||
             functions.check_OneTwo(plan) === -1 ||
@@ -461,7 +460,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             state
         } = req.body;
         console.log(req.body);
-        console.log(payment_jsonArray[0]);
+        console.log(payment_jsonArray[0].payment_id);
         if(payment_jsonArray === undefined){
             return res.json({result: 605315});
         }
