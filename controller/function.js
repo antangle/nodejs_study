@@ -31,7 +31,6 @@ function check_DiscountPrice(discount_price){
 
 function check_IsNumber(number){
     number = parseInt(number, 10);
-    console.log(number)
     if(isNaN(number)){
         return -1;
     }
