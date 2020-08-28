@@ -278,16 +278,19 @@ router.post('/S204AutoBetHomeInfo', async (req, res) =>{
 router.post('/S204AutoBetCancelAll', async (req, res) =>{
     var result ={};
     try{
-        var {store_id, cancel} = req.body;
+        var {store_id, cancel, agency} = req.body;
         if(!store_id || !cancel){
             return res.json({result: 60421});
         }
         if(cancel != 1 && cancel != -1){
             return res.json({result: 60421});
         }
+        if(functions.check_IsNumber(agency) === -1){
+            return res.json({result: 60421});
+        }
         cancel = functions.check_State(cancel);
 
-        result = await store.updateS204AutoBetCancelAll(store_id, cancel);
+        result = await store.updateS204AutoBetCancelAll(store_id, cancel, agency);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }

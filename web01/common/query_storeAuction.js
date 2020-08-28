@@ -680,8 +680,9 @@ const updateS204AutoBetCancelAll = async(store_id, cancel)=>{
             UPDATE autobet SET
                 state = $2
             WHERE store_id = $1
+                AND agency = $3
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, cancel], -60422);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, cancel, agency], -60422);
         if(errcode){
             return {result: errcode};
         }
@@ -870,7 +871,7 @@ const selectS205AutoBetInfoAfter = async(device_volume_id, condition, store_id)=
             FROM autobet_max AS max
             INNER JOIN payment
                 ON payment.id = max.payment_id
-            INNER JOIN autobet
+            LEFT JOIN autobet
                 ON autobet.device_volume_id = $1
                 AND autobet.condition = $2
                 AND autobet.payment_id = payment.id
