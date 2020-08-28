@@ -1194,14 +1194,13 @@ const selectS205AutoBetInfoLoad = async(store_id, device_volume_id, condition, d
             a.device_volume_id, a.condition,
             a.agency, a.change_type,
             a.plan, a.delivery,
-            a.autobet_name, a.device_name
+            a.device_name, a.load_time
         FROM(
             SELECT DISTINCT ON (autobet.condition)
                 autobet.device_volume_id, autobet.condition,
                 autobet.agency, autobet.change_type,
                 autobet.plan, autobet.delivery,
-                autobet.load_time, autobet.name AS autobet_name,
-                device.name AS device_name
+                autobet.load_time, device.name AS device_name
             FROM autobet
             INNER JOIN device
                 ON device.id = $4
@@ -1228,14 +1227,13 @@ const selectS205AutoBetInfoLoad = async(store_id, device_volume_id, condition, d
     }
 };
 
-const selectS205AutoBetInfoLoad2 = async(store_id, device_volume_id, condition, autobet_name)=>{
+const selectS205AutoBetInfoLoad2 = async(store_id, device_volume_id, condition)=>{
     var result = {};
     try{
         const querytext = `
             WITH cte AS(
                 UPDATE autobet SET
-                    load_time = current_timestamp,
-                    name = $4
+                    load_time = current_timestamp
                 WHERE store_id = $1
                     AND device_volume_id = $2
                     AND condition = $3
@@ -1250,7 +1248,7 @@ const selectS205AutoBetInfoLoad2 = async(store_id, device_volume_id, condition, 
                 AND payment.id = autobet.payment_id
             ORDER BY payment.price DESC
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition, autobet_name], -60553);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition], -60553);
         if(errcode){
             return {result: errcode};
         }
