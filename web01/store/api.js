@@ -279,7 +279,7 @@ router.post('/S204AutoBetCancelAll', async (req, res) =>{
     var result ={};
     try{
         var {store_id, cancel, agency} = req.body;
-        if(!store_id || !cancel){
+        if(!store_id || !cancel || !agency){
             return res.json({result: 60421});
         }
         if(cancel != 1 && cancel != -1){
@@ -293,6 +293,18 @@ router.post('/S204AutoBetCancelAll', async (req, res) =>{
         result = await store.updateS204AutoBetCancelAll(store_id, cancel, agency);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
+        }
+        if(cancel === 1){
+            result = await store.updateS204AutoBetactivateAll(store_id, agency);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+        if(cancel === -1){
+            result = await store.updateS204AutoBetInactivateAll(store_id, agency);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
         }
         return res.json(result);
     }
@@ -523,6 +535,10 @@ router.post('/S205AutoBetSet', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        result = await store.updateS205AutoBetActivate(store_id, device_volume_id, condition);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
         result = await store.updateS205BeforeAutoBetDealSend();
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -554,53 +570,53 @@ router.post('/S205AutoBetLoad', async (req, res) =>{
         var {
             store_id,
             device_id,
-            volume,
-            agency,
-            change_type,
-            plan,
-            delivery,
-            step
+            agency
         } = req.body;
-        if(!store_id || !device_id || !volume || !agency || !change_type ||
-            !plan || !delivery || !step){
-            return res.json({result: 60551});
-        }
-        if(
-            functions.check_OneTwo(change_type) === -1 ||
-            functions.check_OneTwo(plan) === -1 ||
-            functions.check_OneTwo(delivery) === -1 ||
-            functions.check_IsNumber(agency) === -1 ||
-            functions.check_IsNumber(device_id) === -1 ||
-            functions.check_IsNumber(volume) === -1 ||
-            functions.check_OneTwo(step) === -1
-        ){
+        if(!store_id || !device_id || !agency){
             return res.json({result: 60551});
         }
 
-        var device_volume_id = functions.generate_dvi(device_id, volume);
-        var condition = functions.generate_condition(
-                            agency, 
-                            change_type, 
-                            plan, 
-                            delivery
-                        );
-        if(step === 1){
-            result = await store.selectS205AutoBetInfoLoad(store_id, device_volume_id, condition, device_id);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
-        }
-        if(step === 2){
-            result = await store.selectS205AutoBetInfoLoad2(store_id, device_volume_id, condition);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
+        result = await store.selectS205AutoBetInfoLoad(store_id, device_id, agency);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: s301 - MyOngoingDeal/' + err);
+        console.log('router ERROR: S205AutoBetLoad/' + err);
         result.result = -60551;
+        return res.json(result);
+    }
+});
+
+router.post('/S205AutoBetLoad2', async (req, res) =>{
+    var result ={};
+    try{
+        var {
+            store_id,
+            device_id,
+            volume,
+            condition
+        } = req.body;
+        if(!store_id || 
+            functions.check_IsNumber(device_id) === -1 || 
+            functions.check_IsNumber(volume) === -1 || 
+            functions.check_IsNumber(condition) === -1){
+            return res.json({result: 605511});
+        }
+
+        var device_volume_id = functions.generate_dvi(device_id, volume);
+        
+        result = await store.selectS205AutoBetInfoLoad2(store_id, device_volume_id, condition);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S205AutoBetLoad2/' + err);
+        result.result = -605511;
         return res.json(result);
     }
 });
@@ -648,6 +664,19 @@ router.post('/S205AutoBetCancel', async (req, res) =>{
         result = await store.updateS205AutoBetCancel(store_id, device_volume_id, condition, cancel);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
+        }
+
+        if(cancel === 1){
+            result = await store.updateS205AutoBetActivate(store_id, device_volume_id, condition);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+        if(cancel === -1){
+            result = await store.updateS205AutoBetInactivate(store_id, device_volume_id, condition);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
         }
         return res.json(result);
     }

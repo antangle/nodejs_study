@@ -673,7 +673,7 @@ const selectS204AutoBetInfo = async(store_id)=>{
     }
 };
 
-const updateS204AutoBetCancelAll = async(store_id, cancel)=>{
+const updateS204AutoBetCancelAll = async(store_id, cancel, agency)=>{
     var result = {};
     try{
         const querytext = `
@@ -683,6 +683,89 @@ const updateS204AutoBetCancelAll = async(store_id, cancel)=>{
                 AND agency = $3
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, cancel, agency], -60422);
+        if(errcode){
+            return {result: errcode};
+        }
+        //등록된 자동입찰 없음
+        if(rowCount === 0){
+            return {result: 60422}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -60421;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const updateS204AutoBetactivateAll = async(store_id, agency)=>{
+    var result = {};
+    try{
+        const querytext = `
+        UPDATE autobet_max SET
+            discount_price = autobet.discount_price,
+            max_autobet_id = autobet.id
+        FROM (
+            SELECT 
+                id, device_volume_id, 
+                condition, payment_id, 
+                discount_price
+            FROM autobet
+            WHERE autobet.store_id = $1
+                AND autobet.agency = $2
+        ) autobet
+        WHERE autobet_max.discount_price < autobet.discount_price
+            AND autobet_max.device_volume_id = autobet.device_volume_id
+            AND autobet_max.condition = autobet.condition
+            AND autobet_max.payment_id = autobet.payment_id
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, agency], -60562);
+        if(errcode){
+            return {result: errcode};
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -60561;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const updateS204AutoBetInactivateAll = async(store_id, agency)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE autobet_max SET
+                discount_price = autobet.discount_price,
+                max_autobet_id = autobet.id
+            FROM (
+                SELECT DISTINCT ON (max.payment_id)
+                    a.id, a.device_volume_id, 
+                    a.condition, a.payment_id,
+                    COALESCE((MAX(b.discount_price) OVER (PARTITION BY b.payment_id)), 0) AS discount_price
+                FROM autobet_max AS max
+                INNER JOIN autobet a
+                    ON a.store_id = $1
+                    AND a.agency = $2
+                LEFT JOIN autobet b
+                    ON b.device_volume_id = a.device_volume_id
+                    AND b.condition = a.condition
+                    AND b.payment_id = a.payment_id
+                    AND b.state = 1
+                WHERE max.device_volume_id = a.device_volume_id
+                    AND max.condition = a.condition
+                    AND max.payment_id = a.payment_id
+                    AND max.max_autobet_id = a.id
+            ) autobet
+            WHERE autobet_max.device_volume_id = autobet.device_volume_id
+                AND autobet_max.condition = autobet.condition
+                AND autobet_max.payment_id = autobet.payment_id
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, agency], -60422);
         if(errcode){
             return {result: errcode};
         }
@@ -947,14 +1030,6 @@ const upsertS205AutoBet = async(paramArray)=>{
     var result = {};
     try{
         const querytext = `
-            WITH cte AS(
-                UPDATE autobet_max
-                    SET discount_price = $9
-                WHERE device_volume_id = $2
-                    AND condition = $4
-                    AND payment_id = $3
-                    AND discount_price < $9
-            )
             INSERT INTO autobet(
                 store_id, device_volume_id, 
                 payment_id, condition,
@@ -980,7 +1055,6 @@ const upsertS205AutoBet = async(paramArray)=>{
                 create_time = current_timestamp,
                 is_payment_main = excluded.is_payment_main
         `;
-        console.log(paramArray);
         for(var i=0; i<paramArray.length;i++){
             var {rows, rowCount, errcode} = await query(querytext, paramArray[i], -60532);
             if(errcode){
@@ -1186,7 +1260,7 @@ const insertS205PartyAfterAutobet = async()=>{
     }
 };
 
-const selectS205AutoBetInfoLoad = async(store_id, device_volume_id, condition, device_id)=>{
+const selectS205AutoBetInfoLoad = async(store_id, device_id, agency)=>{
     var result = {};
     try{
         const querytext = `
@@ -1194,23 +1268,32 @@ const selectS205AutoBetInfoLoad = async(store_id, device_volume_id, condition, d
             a.device_volume_id, a.condition,
             a.agency, a.change_type,
             a.plan, a.delivery,
-            a.device_name, a.load_time
+            a.device_name, a.load_time,
+            a.volume, a.device_id
         FROM(
-            SELECT DISTINCT ON (autobet.condition)
+            SELECT DISTINCT ON (autobet.device_volume_id, autobet.condition)
                 autobet.device_volume_id, autobet.condition,
                 autobet.agency, autobet.change_type,
                 autobet.plan, autobet.delivery,
-                autobet.load_time, device.name AS device_name
+                autobet.load_time, device.name AS device_name,
+                detail.volume, detail.device_id
             FROM autobet
             INNER JOIN device
-                ON device.id = $4
+                ON device.id = $2
+            INNER JOIN (
+                SELECT DISTINCT ON (device_volume_id)
+                    device_id, volume, device_volume_id
+                FROM device_detail
+                WHERE device_id = $2
+            ) detail
+                ON true
             WHERE autobet.store_id = $1
-                AND autobet.device_volume_id = $2
-                AND autobet.condition = $3
+                AND autobet.device_volume_id = detail.device_volume_id
+                AND autobet.agency = $3
         ) a
         ORDER BY a.load_time DESC
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition, device_id], -60552);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_id, agency], -60552);
         if(errcode){
             return {result: errcode};
         }
@@ -1248,18 +1331,18 @@ const selectS205AutoBetInfoLoad2 = async(store_id, device_volume_id, condition)=
                 AND payment.id = autobet.payment_id
             ORDER BY payment.price DESC
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition], -60553);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition], -605512);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -60554};
+            return {result: -605513};
         }
         result = {result: define.const_SUCCESS, info: rows};
         return result;
     }
     catch(err){
-        result.result = -60551;
+        result.result = -605511;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -1281,6 +1364,89 @@ const updateS205AutoBetCancel = async(store_id, device_volume_id, condition, can
         }
         if(rowCount === 0){
             return {result: -60563};
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -60561;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const updateS205AutoBetInactivate = async(store_id, device_volume_id, condition)=>{
+    var result = {};
+    try{
+        const querytext = `
+        UPDATE autobet_max SET
+            discount_price = autobet.discount_price,
+            max_autobet_id = autobet.id
+        FROM (
+            SELECT DISTINCT ON (max.payment_id)
+                a.id, a.payment_id,
+                COALESCE((MAX(b.discount_price) OVER (PARTITION BY b.payment_id)), 0) AS discount_price
+            FROM autobet_max AS max
+            INNER JOIN autobet a
+                ON a.store_id = $1
+                AND a.device_volume_id = $2
+                AND a.condition = $3
+            LEFT JOIN autobet b
+                ON b.device_volume_id = $2
+                AND b.condition = $3
+                AND b.payment_id = a.payment_id
+                AND b.state = 1
+            WHERE max.device_volume_id = $2
+                AND max.condition = $3
+                AND max.payment_id = a.payment_id
+                AND max.max_autobet_id = a.id
+        ) autobet
+        WHERE autobet_max.device_volume_id = $2
+            AND autobet_max.condition = $3
+            AND autobet_max.payment_id = autobet.payment_id
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition], -60562);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60563};
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -60561;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+//cancel = 1, 활성화
+const updateS205AutoBetActivate = async(store_id, device_volume_id, condition)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE autobet_max SET
+                discount_price = autobet.discount_price,
+                max_autobet_id = autobet.id
+            FROM (
+                SELECT 
+                    autobet.id, autobet.payment_id, 
+                    autobet.discount_price
+                FROM autobet
+                WHERE autobet.store_id = $1
+                    AND autobet.device_volume_id = $2
+                    AND autobet.condition = $3
+            ) autobet
+            WHERE autobet_max.discount_price < autobet.discount_price
+                AND autobet_max.device_volume_id = $2
+                AND autobet_max.condition = $3
+                AND autobet_max.payment_id = autobet.payment_id
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, device_volume_id, condition], -60562);
+        if(errcode){
+            return {result: errcode};
         }
         result = {result: define.const_SUCCESS};
         return result;
@@ -1518,6 +1684,8 @@ module.exports = {
     //자동입찰
     selectS204AutoBetInfo,
     updateS204AutoBetCancelAll,
+    updateS204AutoBetactivateAll,
+    updateS204AutoBetInactivateAll,
 
     //기기정하기
     selectS204AutoBetDeviceLatest,
@@ -1531,6 +1699,8 @@ module.exports = {
     //autobet, autobet_max에 등록
     upsertS205AutoBet,
     updateS205AutoBetCancel,
+    updateS205AutoBetInactivate,
+    updateS205AutoBetActivate,
 
     updateS205BeforeAutoBetDealSend,
     insertS205AutoBetDealSend,
