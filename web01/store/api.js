@@ -15,6 +15,7 @@ const functions = require('../../controller/function');
 const {helper, comparePassword} = require('../../controller/validate');
 const { kStringMaxLength } = require('buffer');
 const { stringify } = require('querystring');
+const { Console } = require('console');
 
 router.post('/S101HomepageInfo', async (req, res) =>{
     var result ={};
@@ -461,7 +462,8 @@ router.post('/S205AutoBetSet', async (req, res) =>{
         } = req.body;
         console.log(payment_jsonArray);
         if(payment_jsonArray === undefined){
-            return res.json({result: 60531});
+            console.log('why?');
+            return res.json({result: 605315});
         }
         //agency는 1,2,3 나머지 type 들은 1,2
         if(!store_id || !device_id || !volume || !agency || !change_type ||
