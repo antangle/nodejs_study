@@ -456,10 +456,10 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             change_type,
             plan,
             delivery,
-            data,
+            info,
             state
         } = req.body;
-        console.log(data);
+        console.log(info);
         //agency는 1,2,3 나머지 type 들은 1,2
         if(!store_id || !device_id || !volume || !agency || !change_type ||
             !plan || !delivery || !state){
