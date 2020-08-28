@@ -482,7 +482,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
        
         var paramArray = [];
         for(var i=0; i<payment_jsonArray.length; ++i){
-            var payment_id = functions.check_IsNumber(data.payment_jsonArray[i].payment_id);
+            var payment_id = functions.check_IsNumber(payment_jsonArray[i].payment_id);
             if(payment_id === -1){
                 return res.json({result: 60531});
             }
