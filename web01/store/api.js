@@ -460,9 +460,9 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             payment_jsonArray,
             state
         } = req.body;
+        console.log(req.body);
         console.log(payment_jsonArray[0]);
         if(payment_jsonArray === undefined){
-            console.log('why?');
             return res.json({result: 605315});
         }
         //agency는 1,2,3 나머지 type 들은 1,2
@@ -479,6 +479,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             functions.check_IsNumber(device_id) === -1 ||
             functions.check_IsNumber(volume) === -1
         ){
+            console.log('here?');
             return res.json({result: 60531});
         }
 
