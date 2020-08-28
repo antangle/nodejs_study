@@ -459,11 +459,10 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             payment_jsonArray,
             state
         } = req.body;
-        console.log(req.body);
+        console.log(payment_jsonArray);
         //agency는 1,2,3 나머지 type 들은 1,2
         if(!store_id || !device_id || !volume || !agency || !change_type ||
             !plan || !delivery || !state){
-            console.log('hihi')
             return res.json({result: 60531});
         }
 
@@ -475,7 +474,6 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             functions.check_IsNumber(device_id) === -1 ||
             functions.check_IsNumber(volume) === -1
         ){
-            console.log('hi');
             return res.json({result: 60531});
         }
 
