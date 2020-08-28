@@ -456,15 +456,13 @@ router.post('/S205AutoBetSet', async (req, res) =>{
             change_type,
             plan,
             delivery,
-            info,
+            payment_jsonArray,
             state
         } = req.body;
-        var jsondata = JSON.stringify(req.body);
-        console.log(req.body);
-        console.log(jsondata);
+        console.log(payment_jsonArray);
         //agency는 1,2,3 나머지 type 들은 1,2
         if(!store_id || !device_id || !volume || !agency || !change_type ||
-            !plan || !delivery || !state){
+            !plan || !delivery || !payment_jsonArray|| !state){
             return res.json({result: 60531});
         }
 
@@ -481,7 +479,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
 
         state = functions.check_State(state);
         var device_volume_id = functions.generate_dvi(device_id, volume);
-        
+       
         var paramArray = [];
         for(var i=0; i<payment_jsonArray.length; ++i){
             var payment_id = functions.check_IsNumber(data.payment_jsonArray[i].payment_id);
