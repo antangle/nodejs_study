@@ -299,6 +299,22 @@ router.post('/S204AutoBetCancelAll', async (req, res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            result = await store.updateS205BeforeAutoBetDealSend();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.insertS205AutoBetDealSend();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.updateS205AfterAutoBetDealSend();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.insertS205PartyAfterAutobet();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
         }
         if(cancel === -1){
             result = await store.updateS204AutoBetInactivateAll(store_id, agency);
@@ -668,6 +684,22 @@ router.post('/S205AutoBetCancel', async (req, res) =>{
 
         if(cancel === 1){
             result = await store.updateS205AutoBetActivate(store_id, device_volume_id, condition);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.updateS205BeforeAutoBetDealSend();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.insertS205AutoBetDealSend();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.updateS205AfterAutoBetDealSend();
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            result = await store.insertS205PartyAfterAutobet();
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
