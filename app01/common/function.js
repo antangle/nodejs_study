@@ -86,8 +86,6 @@ function generate_dvi(device_id, volume){
     return device_id.toString() + '_' + volume.toString();
 }
 
-
-
 module.exports ={
     decodejwt,
     check_DiscountPrice,

@@ -378,7 +378,7 @@ const UserUpdateToken008 = async(user_id, token) =>{
         `;
         var {rowCount} = await query(querytext, [user_id, token]);
         if(rowCount !== 1){
-            return {result:-82, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-82, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'};
         }
         result ={result: define.const_SUCCESS};
         return result;
@@ -400,7 +400,7 @@ const UserDeleteToken008 = async(user_id) =>{
         `;
         var {rowCount} = await query(querytext, [user_id]);
         if(rowCount !== 1){
-            return {result:-84, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-84, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'};
         }
         result ={result: define.const_SUCCESS};
         return result;
@@ -423,7 +423,7 @@ const UserShutAccount008 = async(user_id) =>{
             `;
         var {rowCount} = await query(querytext, [user_id]);
         if(rowCount !== 1){
-            return {result:-86, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'}
+            return {result:-86, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'};
         }
         result = {result: define.const_SUCCESS};
         return result;
@@ -484,7 +484,7 @@ const checkDupinfoPartner = async(dupinfo) => {
             return {result: 90231};    
         }
         if(rowcount > 1){
-            return {result:-90234}
+            return {result:-90234};
         }
         return result;
     }
@@ -510,10 +510,10 @@ const postP004LoginIdCheck = async(login_id)=>{
             return {result: -errcode}
         }
         if(rowCount > 1){
-            return {result: -9034}
+            return {result: -9034};
         }
         else if(rowCount <1){
-            return {result: -9035}
+            return {result: -9035};
         }
         result = {result: rows[0].match};
         return result;
@@ -564,12 +564,12 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
             return {result: errcode};
         }
         if(rowCount > 1){
-            return {result: -9045}
+            return {result: -9045};
         }
         else if(rowCount <1){
-            return {result: -9046}
+            return {result: -9046};
         }
-        result ={result: define.const_SUCCESS, partner_id: rows[0].id};
+        result = {result: define.const_SUCCESS, partner_id: rows[0].id};
         return result;
     }
     catch(err){
@@ -590,13 +590,13 @@ const postP007LocationCode = async(sido_code, sgg_code, partner_id)=>{
             `;
         var {rowCount, errcode} = await query(querytext, [sido_code, sgg_code, partner_id], -90723);
         if(errcode){
-            return {result: errcode}
+            return {result: errcode};
         }
         if(rowCount > 1){
-            return {result: -90724}
+            return {result: -90724};
         }
         else if(rowCount <1){
-            return {result: -90725}
+            return {result: -90725};
         }
         result = {result: define.const_SUCCESS};
         return result;

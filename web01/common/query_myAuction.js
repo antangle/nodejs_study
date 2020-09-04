@@ -672,29 +672,42 @@ const get211StoreDetails = async(deal_id)=>{
             SELECT store.id AS store_id, store.score AS avg_score, 
                 store.score_weight AS review_count,
                 store.comment AS store_comment,
-                score.score AS user_score,
-                score.comment AS user_comment,
-                score.create_date,
-                device.name AS device_name,
                 deal.store_nick,
                 sd.name AS sido_name, sgg.name AS sgg_name,
-                users.hidden_login_id AS user_nick
+                review.score AS user_score,
+                review.comment AS user_comment,
+                review.create_date,
+                review.name AS device_name,
+                review.hidden_login_id AS user_nick
             FROM deal
             INNER JOIN store
                 ON deal.id = $1
                 AND store.id = deal.store_id
-            INNER JOIN device
-                ON deal.device_id = device.id
             LEFT JOIN location_sd AS sd
-                ON store.sido_code = sd.code
+                ON sd.code = store.sido_code
             LEFT JOIN location_sgg AS sgg
-                ON store.sgg_code = sgg.code
-            LEFT JOIN score
-                ON score.store_id = deal.store_id
-            LEFT JOIN users
-                ON users.id = score.user_id
-            ORDER BY score.create_date DESC
-            LIMIT 1
+                ON sgg.code = store.sgg_code
+            LEFT JOIN (
+                SELECT 
+                    score.score, score.comment,
+                    score.create_date, device.name,
+                    users.hidden_login_id, deal.store_id
+                FROM score
+                INNER JOIN deal
+                    ON deal.id = score.deal_id
+                INNER JOIN users
+                    ON users.id = score.user_id
+                INNER JOIN device
+                    ON device.id = deal.device_id
+                WHERE score.store_id = (
+                    SELECT deal.store_id
+                    FROM deal
+                    WHERE deal.id = $1
+                )
+                ORDER BY score.create_date DESC
+                LIMIT 1
+            ) review
+                ON review.store_id = store.id
             `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21112);
         if(errcode){
@@ -738,7 +751,7 @@ const get212AllStoreReviews = async(deal_id)=>{
                 )
             INNER JOIN score
                 ON score.store_id = store.id
-                AND deal.id = score.deal_id
+                AND score.deal_id = deal.id
             INNER JOIN users
                 ON users.id = score.user_id
             INNER JOIN device_detail AS detail

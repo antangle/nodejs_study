@@ -35,10 +35,10 @@ const get501StoreAuction = async(store_id)=>{
     `;
     var {rows, rowCount, errcode} = await query(querytext, [store_id], -50112);
     if(errcode){
-        return {result: errcode, myDeal: []};
+        return {result: errcode};
     }
     if(rowCount === 0){
-        return {result: 50112, myDeal: []}
+        return {result: 50112}
     }
     result = {myDeal: rows};
     result.result = define.const_SUCCESS;
@@ -435,7 +435,7 @@ const insert602DealSend = async(paramArray) => {
             discount_payment, period,
             create_time, deal_order,
             state, store_nick,
-            comment
+            comment, condition
         )
         SELECT $1, $2,
             auction.user_id, auction.device_detail_id,
@@ -445,7 +445,7 @@ const insert602DealSend = async(paramArray) => {
             payment.price*6, auction.period,
             current_timestamp, auction.now_order +1,
             1, $4,
-            $5
+            $5, auction.condition
         FROM auction
         INNER JOIN payment
             ON payment.id = auction.payment_id
@@ -545,10 +545,7 @@ const insert602Party = async(store_id, auction_id)=>{
         if(errcode){
             return {result: errcode};
         }
-        if(rowCount === 0){
-            return {result: -60235};
-        }
-        else if (rowCount > 1){
+        if(rowCount > 1){
             return {result: -60236};
         }
         result.result = define.const_SUCCESS;
@@ -741,12 +738,13 @@ const updateS204AutoBetInactivateAll = async(store_id, agency)=>{
         const querytext = `
             UPDATE autobet_max SET
                 discount_price = autobet.discount_price,
-                max_autobet_id = autobet.id
+                max_autobet_id = autobet.b_id
             FROM (
                 SELECT DISTINCT ON (max.payment_id)
                     a.id, a.device_volume_id, 
                     a.condition, a.payment_id,
-                    COALESCE((MAX(b.discount_price) OVER (PARTITION BY b.payment_id)), 0) AS discount_price
+                    COALESCE((MAX(b.discount_price) OVER (PARTITION BY b.payment_id)), 0) AS discount_price,
+                    b.id AS b_id
                 FROM autobet_max AS max
                 INNER JOIN autobet a
                     ON a.store_id = $1
@@ -765,7 +763,7 @@ const updateS204AutoBetInactivateAll = async(store_id, agency)=>{
                 AND autobet_max.condition = autobet.condition
                 AND autobet_max.payment_id = autobet.payment_id
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, agency], -60422);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, agency], -60423);
         if(errcode){
             return {result: errcode};
         }
@@ -1026,6 +1024,7 @@ const insertS205AutoBetMax = async()=>{
     }
 };
 
+
 const upsertS205AutoBet = async(paramArray)=>{
     var result = {};
     try{
@@ -1036,15 +1035,21 @@ const upsertS205AutoBet = async(paramArray)=>{
                 agency, change_type, 
                 plan, delivery,
                 discount_price, state,
-                is_payment_main, device_id
+                device_id
             )
             SELECT 
-                $1, $2,
-                $3, $4,
-                $5, $6,
-                $7, $8,
-                $9, $10,
-                $11, $12
+                (json_array::json ->> 'store_id')::varchar AS store_id,
+                (json_array::json ->> 'device_volume_id')::varchar AS device_volume_id,
+                (json_array::json ->> 'payment_id')::int AS payment_id,
+                (json_array::json ->> 'condition')::int AS condition,
+                (json_array::json ->> 'agency')::int AS agency,
+                (json_array::json ->> 'change_type')::int AS change_type,
+                (json_array::json ->> 'plan')::int AS plan,
+                (json_array::json ->> 'delivery')::int AS delivery,
+                (json_array::json ->> 'discount_price')::int AS discount_price,
+                (json_array::json ->> 'state')::int AS state,
+                (json_array::json ->> 'device_id')::int AS device_id
+            FROM unnest($1 :: text[]) AS json_array
             ON CONFLICT(
                 device_volume_id, condition,
                 payment_id, store_id
@@ -1055,18 +1060,15 @@ const upsertS205AutoBet = async(paramArray)=>{
                 create_time = current_timestamp,
                 is_payment_main = excluded.is_payment_main
         `;
-        for(var i=0; i<paramArray.length;i++){
-            var {rows, rowCount, errcode} = await query(querytext, paramArray[i], -60532);
-            if(errcode){
-                return {result: errcode};
-            }
-            if(rowCount === 0){
-                return {result: -60533}
-            }
-            if(rowCount > 1){
-                return {result: -60534};
-            }
+        var {rows, rowCount, errcode} = await query(querytext, [paramArray], -60532);
+        console.log(rows);
+        if(errcode){
+            return {result: errcode};
         }
+        if(rowCount === 0){
+            return {result: -60533}
+        }
+        
         result = {result: define.const_SUCCESS};
         return result;
     }
@@ -1095,6 +1097,7 @@ const updateS205BeforeAutoBetDealSend = async()=>{
             WHERE deal.store_id = autobet.store_id
                 AND deal.auction_id = auction.id
                 AND deal.state = 1
+                AND deal.discount_price < autobet.discount_price
             `;
         var {rows, rowCount, errcode} = await query(querytext, [], -60535);
         if(errcode){
@@ -1210,6 +1213,7 @@ const updateS205AfterAutoBetDealSend = async()=>{
             GROUP BY auction.id
         ) AS joined_table
         WHERE joined_table.id = auction.id
+            AND auction.now_discount_price < joined_table.max_discount_price 
         `;
         var {rows, rowCount, errcode} = await query(querytext, [], -60537);
         if(errcode){
@@ -1381,11 +1385,12 @@ const updateS205AutoBetInactivate = async(store_id, device_volume_id, condition)
         const querytext = `
         UPDATE autobet_max SET
             discount_price = autobet.discount_price,
-            max_autobet_id = autobet.id
+            max_autobet_id = autobet.b_id
         FROM (
             SELECT DISTINCT ON (max.payment_id)
                 a.id, a.payment_id,
-                COALESCE((MAX(b.discount_price) OVER (PARTITION BY b.payment_id)), 0) AS discount_price
+                COALESCE((MAX(b.discount_price) OVER (PARTITION BY b.payment_id)), 0) AS discount_price,
+                b.id AS b_id
             FROM autobet_max AS max
             INNER JOIN autobet a
                 ON a.store_id = $1
