@@ -1599,7 +1599,7 @@ const get702MyPreviousDeal = async(store_id)=>{
             ON user_nick.id = auction.user_id
         LEFT JOIN users AS user_phone 
             ON auction.user_id = user_phone.id
-            AND auction.win_time + interval '1 day' > current_timestamp
+            AND auction.win_time + interval '3 days' > current_timestamp
         ORDER BY deal.create_time
     `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id], -7022);
