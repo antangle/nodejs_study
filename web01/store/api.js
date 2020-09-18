@@ -445,11 +445,12 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
             discount_price,
         } = req.body;
         //agency는 1,2,3 나머지 type 1,2
-
+        discount_price = functions.check_DiscountPrice(discount_price);
         store_id = functions.check_StringID(store_id);
         
         if(
             store_id === -1 ||
+            discount_price === -1 ||
             functions.check_IsNumber(main_payment_id) === -1 ||
             functions.check_IsNumber(discount_price) === -1 ||
             functions.check_IsNumber(autobet_max_id) === -1
