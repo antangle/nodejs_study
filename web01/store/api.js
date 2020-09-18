@@ -450,14 +450,15 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         
         if(
             store_id === -1 ||
-            discount_price === -1 ||
             functions.check_IsNumber(main_payment_id) === -1 ||
             functions.check_IsNumber(discount_price) === -1 ||
             functions.check_IsNumber(autobet_max_id) === -1
         ){
             return res.json({result: 60441});
         }
-        
+        if(discount_price === -1){
+            return res.json({result: 60443});
+        }
         /*
             store_id, device_volume_id, 
             main_payment_id, condition,
