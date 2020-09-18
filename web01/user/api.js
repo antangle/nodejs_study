@@ -257,25 +257,20 @@ router.post('/selectStep3AutobetMaxInfo', async(req,res) =>{
             device_detail_id, 
             payment_id, 
             agency_use, 
-            agency_hope,
-            period,
-            delivery
+            agency_hope
         } = req.body;
         if(
             functions.check_IsNumber(device_detail_id) === -1 ||
             functions.check_IsNumber(payment_id) === -1 ||
             functions.check_OneTwoThree(agency_use) === -1 ||
-            functions.check_OneTwoThree(agency_hope) === -1 ||
-            functions.check_IsNumber(period) === -1 ||
-            functions.check_OneTwo(delivery) === -1
+            functions.check_OneTwoThree(agency_hope) === -1
         ){
             return res.json({result: 10331});
         }
         var type = functions.check_type(agency_use, agency_hope);
-        var plan = functions.check_plan(period);
 
         var condition = functions.generate_condition(
-            agency_hope, type, plan, delivery
+            agency_hope, type
         );
 
         result = await buy.selectAutobetMax(device_detail_id, condition, payment_id);

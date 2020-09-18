@@ -721,7 +721,7 @@ const selectS204AutoBetSet = async(store_id, agency, brand_id)=>{
             FROM (
                 SELECT
                     DISTINCT ON (autobet.autobet_max_id)
-                    device.name, device.brand_id,
+                    device.name, device.brand_id, device.birth,
                     SUBSTRING(autobet.device_volume_id, '(?<=_)[0-9]+')::INTEGER AS volume,
                     autobet.change_type, autobet.discount_price,
                     autobet.state,
@@ -743,7 +743,8 @@ const selectS204AutoBetSet = async(store_id, agency, brand_id)=>{
                 WHERE autobet.store_id = $1
                     AND autobet.agency = $2
             ) temp
-            ORDER BY temp.state DESC
+            ORDER BY temp.birth DESC,
+                temp.change_type ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, agency, brand_id], -60412);
         if(errcode){
@@ -793,15 +794,19 @@ const selectS204AutoBetUnset = async(store_id, agency, brand_id)=>{
                 WHERE autobet.store_id = $1
                     AND autobet.agency = $2
             )
+        ORDER BY device.birth DESC,
+            max.change_type ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, agency, brand_id], -60422);
         if(errcode){
             return {result: errcode};
         }
         //미설정된 기기가 없을 시
+        /*
         if(rowCount === 0){
             return {result: 60422};
         }
+        */
         result = {result: define.const_SUCCESS, info: rows, unsetCount: rowCount};
         return result;
     }

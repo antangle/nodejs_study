@@ -589,13 +589,25 @@ const selectAutobetMax = async(device_detail_id, condition, payment_id)=>{
   var result = {};
   try{
     const querytext = `
-      SELECT max.discount_price
-      FROM autobet_max AS max
-      INNER JOIN device_detail AS detail
-        ON detail.id = $1
-      WHERE max.device_volume_id = detail.device_volume_id
-        AND max.condition = $2
-        AND max.payment_id = $3
+      SELECT
+        
+      FROM payment
+      INNER JOIN autobet_max AS max
+        ON max.id = $2
+      INNER JOIN device
+        ON device.id = SUBSTRING(max.device_volume_id, '[0-9]+(?=_)')::INTEGER
+      INNER JOIN official
+        ON official.device_volume_id = max.device_volume_id
+        AND official.payment_id = payment.id
+      INNER JOIN store
+        ON store.id = $1
+      WHERE payment.price >= (
+          SELECT price
+          FROM payment
+          WHERE id = $3
+        )
+        AND payment.agency = max.agency
+        AND payment.generation = device.generation
     `;
     var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, condition, payment_id], -10332);
     if(errcode){
