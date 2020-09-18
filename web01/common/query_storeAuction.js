@@ -773,7 +773,7 @@ const selectS204AutoBetUnset = async(store_id, agency, brand_id)=>{
             device.id,
             device.name, 
             SUBSTRING(max.device_volume_id, '(?<=_)[0-9]+')::INTEGER AS volume,
-            max.change_type AS type, 
+            max.change_type,
             payment.alias,
             payment.id AS main_payment_id, 
             max.discount_price AS max_discount_price,
