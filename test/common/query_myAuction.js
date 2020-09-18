@@ -434,10 +434,9 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
                 FROM deal
                 WHERE id = $1
             )
-            AND user_id = $2
+                AND user_id = $2
         `;
         var {rows, rowCount, errcode} = await query(querytext1, [deal_id, user_id], -20812);
-        console.log(rowCount);
         if(errcode){
             return {result: errcode};
         }
@@ -826,6 +825,36 @@ const get213InfoForReport = async(deal_id)=>{
     }
 };
 
+const update214CancelAuction = async(auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE auction SET
+                state = -2,
+                finish_time = ('2000-01-01'::timestamptz)
+            WHERE id = $1
+                AND create_time + interval '1 hour' > current_timestamp
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id], -2142);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: 2142}
+        }
+        else if(rowCount > 1){
+            return {result: -2143}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -2141;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
@@ -844,6 +873,7 @@ module.exports = {
     get211StoreDetails,
     get212AllStoreReviews,
     get213InfoForReport,
-    post213Report
+    post213Report,
+    update214CancelAuction
 };
    

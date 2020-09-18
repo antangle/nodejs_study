@@ -4,14 +4,13 @@ const router = express.Router();
 router.use(express.json({limit: '50mb'}));
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 
-const path = require('path')
-const dotenv = require('dotenv');
-dotenv.config({path: path.join(__dirname, '/../../.env')});
-
 const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
-const functions = require('../common/function');
+const functions = require('../../controller/function');
+const fcm_user = require('../common/fcm_user');
+const fcm_store = require('../common/fcm_store');
+const fcm_query = require('../common/query_fcm');
 const {helper, comparePassword} = require('../../controller/validate');
 const { kStringMaxLength } = require('buffer');
 const { stringify } = require('querystring');
@@ -147,7 +146,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
-        
+        var curr_deal_id;
         discount_price = functions.check_DiscountPrice(discount_price);
         if(discount_price === -1){
             return res.json({result: 60221});
@@ -178,6 +177,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            curr_deal_id = result.deal_id
             result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
@@ -205,11 +205,29 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            curr_deal_id = result.deal_id
             result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count, cancel);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
         }
+        //push notifications
+
+        var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        var push_token = fcm_response.push_token;
+        
+        var message = await fcm_user.sendMessageToDeviceUser(push_token, define.payload_user, define.option_user);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+        result.successCount = message.successCount;
+
         return res.json(result);
     }
     catch(err){
@@ -223,6 +241,7 @@ router.delete('/HandlerDelete', async (req, res) =>{
     var result ={};
     try{
         var {pwd} = req.body;
+
         if(!pwd){
             return res.json({result: 60311});
         }
@@ -250,14 +269,77 @@ router.delete('/HandlerDelete', async (req, res) =>{
     }
 });
 
-router.post('/S204AutoBetHomeInfo', async (req, res) =>{
+router.post('/S204UpdateDeliveryDefault', async (req, res) =>{
     var result ={};
     try{
-        var {store_id} = req.body;
-        if(!store_id){
+        var {store_id, delivery} = req.body;
+        
+        store_id = functions.check_StringID(store_id);
+
+        if(
+            store_id === -1 ||
+            functions.check_OneTwo(delivery) === -1){
             return res.json({result: 60411});
         }
-        result = await store.selectS204AutoBetInfo(store_id);
+
+        result = await store.updateS204StoreDelivery(store_id, delivery);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.updateS204AutobetDelivery(store_id, delivery);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204UpdateDeliveryDefault/' + err);
+        result.result = -60401;
+        return res.json(result);
+    }
+});
+
+router.post('/S204AutoBetSet', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id, agency, brand_id} = req.body;
+        
+        store_id = functions.check_StringID(store_id);
+
+        if(
+            store_id === -1 ||
+            functions.check_IsNumber(agency) === -1 ||
+            functions.check_IsNumber(brand_id) === -1){
+            return res.json({result: 60411});
+        }
+
+        result = await store.selectS204AutoBetSet(store_id, agency, brand_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204AutoBetSet/' + err);
+        result.result = -60411;
+        return res.json(result);
+    }
+});
+
+router.post('/S204AutoBetUnset', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id, agency, brand_id} = req.body;
+    
+        if(
+            store_id === -1 ||
+            functions.check_IsNumber(agency) === -1 ||
+            functions.check_IsNumber(brand_id) === -1){
+            return res.json({result: 60421});
+        }
+
+        result = await store.selectS204AutoBetUnset(store_id, agency, brand_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -265,189 +347,119 @@ router.post('/S204AutoBetHomeInfo', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: S204AutoBetHomeInfo/' + err);
-        result.result = -60411;
+        result.result = -60421;
         return res.json(result);
     }
 });
 
-router.post('/S204AutoBetCancelAll', async (req, res) =>{
+router.post('/S204AutoBetCancel', async (req, res) =>{
     var result ={};
     try{
-        var {store_id, cancel} = req.body;
-        if(!store_id || !cancel){
-            return res.json({result: 60421});
-        }
-        if(cancel != 1 && cancel != -1){
-            return res.json({result: 60421});
-        }
-        cancel = functions.check_State(cancel);
+        var {store_id, autobet_max_id, state} = req.body;
 
-        result = await store.updateS204AutoBetCancelAll(store_id, cancel);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: S204AutoBetCancelAll/' + err);
-        result.result = -60411;
-        return res.json(result); 
+        store_id = functions.check_StringID(store_id);
+        state = functions.check_State(state);
 
-    }
-});
-
-router.post('/S205AutoBetInfoBefore', async (req, res) =>{
-    var result ={};
-    try{
-        var {store_id, device_id} = req.body;
-        if(!store_id || !device_id){
-            return res.json({result: 60511});
-        }
-        result = await store.selectS205AutoBetInfoBefore(store_id, device_id);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: S205AutoBetInfoBefore/' + err);
-        result.result = -60511;
-        return res.json(result);
-    }
-});
-
-router.post('/S205AutoBetInfoAfter', async (req, res) =>{
-    var result ={};
-    try{
-        var {
-            device_id,
-            volume,
-            agency,
-            change_type,
-            plan,
-            delivery
-        } = req.body;
-        if(!device_id || !volume || !agency || 
-            !change_type || !plan || !delivery){
-            return res.json({result: 60521});
-        }
         if(
-            functions.check_OneTwo(change_type) === -1 ||
-            functions.check_OneTwo(plan) === -1 ||
-            functions.check_OneTwo(delivery) === -1 ||
-            functions.check_IsNumber(agency) === -1 ||
-            functions.check_IsNumber(device_id) === -1 ||
-            functions.check_IsNumber(volume) === -1
+            store_id === -1 || state === -2 ||
+            functions.check_IsNumber(autobet_max_id) === -1
         ){
-            return res.json({result: 60521});
+            return res.json({result: 60431});
         }
-        var device_volume_id = functions.generate_dvi(device_id, volume);
-        var condition = functions.generate_condition(
-            agency,
-            change_type,
-            plan,
-            delivery
-        );
-
-        result = await store.selectS205AutoBetInfoAfter(device_volume_id, condition);
+        //autobet 테이블의 state 업데이트
+        result = await store.updateS204AutoBetState(store_id, autobet_max_id, state);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        
+        if(state === 1){
+            //activate 시, autobet_max 업데이트
+            result = await store.updateS204AutoBetMaxActivate(store_id, autobet_max_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            //activate 시, 해당 자동입찰 관한 deal insert
+            result = await store.insertS204AutoBetDealSend(store_id, autobet_max_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            //activate 시, 해당 입찰된 deal에 관련된 auction update
+            result = await store.updateS204AfterAutoBetDealSend(store_id, autobet_max_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+            //activate 시, 해당 자동입찰 deal 관한 party insert
+            result = await store.insertS204PartyAfterAutobet(store_id, autobet_max_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+        else if(state === -1){
+            //inactivate 시 autobet_max 관련 업데이트
+            result = await store.updateS204AutoBetMaxInactivate(autobet_max_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: S205AutoBetInfo/' + err);
-        result.result = -60521;
+        console.log('router ERROR: S204AutoBetHomeInfo/' + err);
+        result.result = -60431;
         return res.json(result);
     }
 });
 
-router.post('/S205AutoBetSet', async (req, res) =>{
+router.post('/S204AutoBetUpsert', async (req, res) =>{
     var result ={};
     try{
         var {
             store_id,
-            device_id,
-            volume,
-            agency,
-            change_type,
-            plan,
-            delivery,
-            payment_jsonArray,
-            state
+            main_payment_id,
+            autobet_max_id,
+            discount_price,
         } = req.body;
-        //agency는 1,2,3 나머지 type 들은 1,2
-        if(!store_id || !device_id || !volume || !agency || !change_type ||
-            !plan || !delivery || !payment_jsonArray || !state){
-            return res.json({result: 60531});
-        }
+        //agency는 1,2,3 나머지 type 1,2
 
-        if(
-            functions.check_OneTwo(change_type) === -1 ||
-            functions.check_OneTwo(plan) === -1 ||
-            functions.check_OneTwo(delivery) === -1 ||
-            functions.check_IsNumber(agency) === -1 ||
-            functions.check_IsNumber(device_id) === -1 ||
-            functions.check_IsNumber(volume) === -1
-        ){
-            return res.json({result: 60531});
-        }
-
-        state = functions.check_State(state);
-        var device_volume_id = functions.generate_dvi(device_id, volume);
+        store_id = functions.check_StringID(store_id);
         
-        var paramArray = [];
-        for(var i=0; i<payment_jsonArray.length; ++i){
-            var payment_id = functions.check_IsNumber(payment_jsonArray[i].payment_id);
-            if(payment_id === -1){
-                return res.json({result: 60531});
-            }
-            
-            var discount_price = functions.check_DiscountPrice(payment_jsonArray[i].discount_price);
-            if(discount_price === -1){
-                return res.json({result: 60531});
-            }
+        if(
+            store_id === -1 ||
+            functions.check_IsNumber(main_payment_id) === -1 ||
+            functions.check_IsNumber(discount_price) === -1 ||
+            functions.check_IsNumber(autobet_max_id) === -1
+        ){
+            return res.json({result: 60441});
+        }
 
-            var is_payment_main = functions.check_IsNumber(payment_jsonArray[i].is_payment_main);
-            //unique 조건 4개를 하나로 합치기 위해 condition 생성
-            var condition = functions.generate_condition(
-                agency, 
-                change_type, 
-                plan, 
-                delivery
-            );
-            paramArray.push([
-                store_id,
-                device_volume_id,
-                payment_id,
-                condition,
-                agency,
-                change_type,
-                plan,
-                delivery,
-                discount_price,
-                state,
-                is_payment_main,
-                device_id
-            ]);
-        }
-        result = await store.upsertS205AutoBet(paramArray);
+        var paramArray = [
+            store_id, autobet_max_id,
+            main_payment_id, discount_price,
+        ];
+
+        result = await store.upsertS204AutoBet(paramArray);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result = await store.updateS205BeforeAutoBetDealSend();
+        
+        result = await store.updateS204BeforeAutoBetDealSend(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result = await store.insertS205AutoBetDealSend();
+        result = await store.updateS204AutoBetCurrentMax(store_id, discount_price, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result = await store.updateS205AfterAutoBetDealSend();
+        result = await store.insertS204AutoBetDealSend(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result = await store.insertS205PartyAfterAutobet();
+        result = await store.updateS204AfterAutoBetDealSend(store_id, autobet_max_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        result = await store.insertS204PartyAfterAutobet(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
@@ -455,117 +467,7 @@ router.post('/S205AutoBetSet', async (req, res) =>{
     }
     catch(err){
         console.log('router ERROR: S205AutoBetSet/' + err);
-        result.result = -60531;
-        return res.json(result);
-    }
-});
-
-router.post('/S205AutoBetLoad', async (req, res) =>{
-    var result ={};
-    try{
-        var {
-            store_id,
-            device_id,
-            volume,
-            agency,
-            change_type,
-            plan,
-            delivery,
-            step
-        } = req.body;
-        if(!store_id || !device_id || !volume || !agency || !change_type ||
-            !plan || !delivery || !step){
-            return res.json({result: 60551});
-        }
-        if(
-            functions.check_OneTwo(change_type) === -1 ||
-            functions.check_OneTwo(plan) === -1 ||
-            functions.check_OneTwo(delivery) === -1 ||
-            functions.check_IsNumber(agency) === -1 ||
-            functions.check_IsNumber(device_id) === -1 ||
-            functions.check_IsNumber(volume) === -1 ||
-            functions.check_OneTwo(step) === -1
-        ){
-            return res.json({result: 60551});
-        }
-
-        var device_volume_id = functions.generate_dvi(device_id, volume);
-        var condition = functions.generate_condition(
-                            agency, 
-                            change_type, 
-                            plan, 
-                            delivery
-                        );
-        if(step === 1){
-            result = await store.selectS205AutoBetInfoLoad(store_id, device_volume_id, condition, agency);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
-        }
-        if(step === 2){
-            result = await store.selectS205AutoBetInfoLoad2(store_id, device_volume_id, condition, agency);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
-        }
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: s301 - MyOngoingDeal/' + err);
-        result.result = -60551;
-        return res.json(result);
-    }
-});
-
-router.post('/S205AutoBetCancel', async (req, res) =>{
-    var result ={};
-    try{
-        var {
-            store_id,
-            device_id,
-            volume,
-            agency,
-            change_type,
-            plan,
-            delivery,
-            cancel
-        } = req.body;
-        if(!store_id || !device_id || !volume || !agency || !change_type ||
-            !plan || !delivery || !cancel){
-            return res.json({result: 60561});
-        }
-        if(
-            functions.check_OneTwo(change_type) === -1 ||
-            functions.check_OneTwo(plan) === -1 ||
-            functions.check_OneTwo(delivery) === -1 ||
-            functions.check_IsNumber(agency) === -1 ||
-            functions.check_IsNumber(device_id) === -1 ||
-            functions.check_IsNumber(volume) === -1
-        ){
-            return res.json({result: 60561});
-        }
-        if(cancel != 1 && cancel != -1){
-            return res.json({result: 60561});
-        }
-        cancel = functions.check_State(cancel);
-
-        var device_volume_id = functions.generate_dvi(device_id, volume);
-        var condition = functions.generate_condition(
-                            agency, 
-                            change_type, 
-                            plan, 
-                            delivery
-                        );
-        
-        result = await store.updateS205AutoBetCancel(store_id, device_volume_id, condition, cancel);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
-        return res.json(result);
-    }
-    catch(err){
-        console.log('router ERROR: s301 - MyOngoingDeal/' + err);
-        result.result = -60561;
+        result.result = -60441;
         return res.json(result);
     }
 });
@@ -707,6 +609,23 @@ router.post('/myPageHelpS402', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
+        //notification
+        var fcm_response = await fcm_query.getAdminPushTokenStore();
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        var push_token = fcm_response.push_token;
+        
+        var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_store, define.option_admin_store);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+        result.successCount = message.successCount;
+                
         return res.json(result);
     }
     catch(err){

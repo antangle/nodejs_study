@@ -58,7 +58,6 @@ app.use('/what', (req, res) =>{
   res.send('Backend');
 });
 
-
 app.use('/', (req, res) =>{
   res.send('Welcome to Backend');
 });
