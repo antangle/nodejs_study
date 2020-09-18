@@ -9,28 +9,29 @@ const buy = require('../common/query_buy');
 const auction = require('../common/query_myAuction');
 const myPage = require('../common/query_myPage');
 const define = require('../../definition/define');
-const functions = require('../common/function');
+const functions = require('../../controller/function');
+const fcm_store = require('../common/fcm_store');
+const fcm_query = require('../common/query_fcm');
 
 router.get('/test', async(req, res)=>{
     try{
-        var {device_id} = req.query;
-        var result = {}
-        var array = [];
-        /*
-        for(var device_id=1; device_id<54; ++device_id){
-            result = await buy.test(device_id);
-            if(!result.errDevice){
-                for(var i=0; i<result.rowCount; ++i){
-                    if(result.rows[i].discount_official === null){
-                        array.push(result.rows[i].device_id)
-                        break;
-                    }
-                }
+        var payload = {
+            notification: {
+                title: "test_2",
+                body: "1"
+            },
+            data: {
+                test_data: "i hate yasuo",
+                lol: "gankplank"
             }
+        };
+        var options = {
+            dryRun: true
         }
-        */
-        result = await buy.test(device_id);
-        return res.json(result);
+        var push_token = "cpsMqQNXpsc:APA91bGhfU111LWjAZloi5NR8Tzd2WkGL7T-TEpffPrCt3CIVR2rRsvPokQUqCIT1Z6z7SVE5tJSZ5_QxsqpdHtjh8oN7XlAfZrZtXz6V4BVA7hanWrSh-gWvGSDknsDni1wloC92unn";
+        let fcm_response = await fcm.sendMessage(push_token, payload, options);
+        console.log(fcm_response);
+        return res.json({result: 1});
     }
     catch(err){
         console.log('router ERROR: test - /' + err);
@@ -286,18 +287,13 @@ router.post('/postSaveStep3', async (req, res) =>{
         //TODO: contract_list 에 대한 정규식 필요함
         if(!postInput.user_id || !postInput.payment_id ||
             !postInput.agency_use || !postInput.agency_hope || 
-            !postInput.period || !postInput.contract_list ||
-            !postInput.delivery){
+            !postInput.period || !postInput.contract_list ){
                 return res.json({result: 10331});
             };
         //TODO: 쿼리 단순화/ 분기해야한다
         var type = functions.check_type(postInput.agency_use, postInput.agency_hope);
-        var plan = functions.check_plan(postInput.period);
-        var delivery = postInput.delivery;
-
-        var condition = functions.generate_condition(
-            postInput.agency_hope, type, plan, delivery
-        );
+        var condition = functions.generate_condition(postInput.agency_hope, type);
+        
         postInput.condition = condition;
 
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
@@ -323,11 +319,9 @@ router.post('/postSaveStep3', async (req, res) =>{
             return res.json(kill);
         }
         */
+
         var auction_id = result.auction_id
-        result = await buy.update104BeforeAutoBetDealSend(auction_id);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
+
         result = await buy.insert104AutoBetDealSend(auction_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -517,10 +511,26 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         if(!deal_id || !user_id){
             return res.json({result: 20811});
         }
+        
         result = await auction.Update208DealConfirmation(deal_id, user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
+        var fcm_response = await fcm_query.getStorePushTokensByDealId(deal_id);
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        //해당 store한테 notification
+        var message = await fcm_store.sendMessageToDeviceStore(fcm_response.push_tokens, define.payload_store, define.options_store);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+        result.successCount = message.successCount;
+        
         return res.json(result);
     }
     catch(err){
@@ -694,6 +704,26 @@ router.post('/post213Report', async(req,res) =>{
     }
 });
 
+router.post('/214CancelAuction', async(req,res) =>{
+    var result ={};
+    try{
+        var {auction_id} = req.body;
+        if(!auction_id){
+            return res.json({result: 2141});
+        }
+        result = await auction.update214CancelAuction(auction_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: 214CancelAuction/' + err);
+        result.result = -2141;
+        return res.json(result);
+    }
+});
+
 /* mypage */
 router.post('/myPageNeededInfo401', async(req,res) =>{
     var result ={};
@@ -726,6 +756,22 @@ router.post('/myPageHelp402', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        //notification
+        var fcm_response = await fcm_query.getAdminPushTokenStore();
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        var push_token = fcm_response.push_token;
+        
+        var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_user, define.option_admin_user);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+        result.successCount = message.successCount;
+
         return res.json(result);
     }
     catch(err){
