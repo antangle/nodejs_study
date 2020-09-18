@@ -3,3 +3,6 @@ node_modules
 access.log
 TODO.js
 auto_query.js
+peachphone_store_key.json
+peachphone_user_key.json
+google-services.json

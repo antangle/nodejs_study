@@ -41,8 +41,11 @@ function check_State(state){
     if(state == 1){
         return 1;
     }
-    else{
+    else if(state == -1){
         return -1;
+    }
+    else{
+        return -2;
     }
 }
 
@@ -86,14 +89,21 @@ function check_type(now, hope){
     }
 }
 
-function generate_condition(agency, change_type, plan, delivery){
-    return (agency-1)*8 + (change_type-1)*4 + (plan-1)*2 + (delivery-1);
+function generate_condition(agency, change_type){
+    return (agency-1)*2 + change_type-1;
 }
 
 function generate_dvi(device_id, volume){
     return device_id.toString() + '_' + volume.toString();
 }
 
+function check_StringID(string_id){
+    string_id = parseInt(string_id, 10);
+    if(isNaN(string_id)){
+        return -1;
+    }
+    return string_id.toString();
+}
 
 module.exports ={
     decodejwt,
@@ -105,6 +115,7 @@ module.exports ={
     check_plan,
     check_type,
     check_StringLength,
+    check_StringID,
     generate_condition,
     generate_dvi,
 }

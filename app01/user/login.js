@@ -331,14 +331,14 @@ router.post('/postUpdateToken909', async (req, res) =>{
     try{
         result = await user.UserUpdateToken008(user_id, token);
         if(result.result != define.const_SUCCESS){
-            return res.status(400).json(result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 008 - postUserUpdateToken909/' + err);
         result.result = -909;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 
@@ -348,14 +348,14 @@ router.post('/postLogout910', async (req, res) =>{
     try{
         result = await user.UserDeleteToken008(user_id);
         if(result.result != define.const_SUCCESS){
-            return res.status(400).json(result);
+            return res.json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 008 - postUserLogout910/' + err);
         result.result = -910;
-        return res.status(400).json(result);
+        return res.json(result);
     }
 });
 

@@ -378,7 +378,7 @@ const UserUpdateToken008 = async(user_id, token) =>{
         `;
         var {rowCount} = await query(querytext, [user_id, token]);
         if(rowCount !== 1){
-            return {result:-82, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'};
+            return {result: -82, message: '로그인 정보가 일치하지 않아 등록이 불가합니다'};
         }
         result ={result: define.const_SUCCESS};
         return result;

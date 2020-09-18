@@ -327,17 +327,13 @@ router.post('/postSaveStep3', async (req, res) =>{
         if(!postInput.user_id || !postInput.payment_id ||
             !postInput.agency_use || !postInput.agency_hope || 
             !postInput.period || !postInput.contract_list ||
-            !postInput.delivery){
+            !postInput.delivery ){
                 return res.json({result: 10331});
             };
         //TODO: 쿼리 단순화/ 분기해야한다
         var type = functions.check_type(postInput.agency_use, postInput.agency_hope);
-        var plan = functions.check_plan(postInput.period);
-        var delivery = postInput.delivery;
-
-        var condition = functions.generate_condition(
-            postInput.agency_hope, type, plan, delivery
-        );
+        var condition = functions.generate_condition(postInput.agency_hope, type);
+        
         postInput.condition = condition;
 
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
@@ -363,11 +359,9 @@ router.post('/postSaveStep3', async (req, res) =>{
             return res.json(kill);
         }
         */
+
         var auction_id = result.auction_id
-        result = await buy.update104BeforeAutoBetDealSend(auction_id);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
+
         result = await buy.insert104AutoBetDealSend(auction_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -502,7 +496,7 @@ router.post('/get203MyAuctionDetails', async (req, res) =>{
         console.log('router ERROR: get203MyAuctionDetails/' + err);
         result.result = -20311;
         return res.json(result);
-    } 
+    }
 });
 
 router.post('/get204MyAuctionDetailsFinish', async (req, res) =>{

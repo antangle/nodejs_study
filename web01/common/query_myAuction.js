@@ -285,7 +285,9 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
             LEFT JOIN store
                 ON deal.auction_id = $1
                 AND store.id = deal.store_id
-            ORDER BY deal.deal_order ASC
+            ORDER BY 
+                deal.discount_price DESC,
+                deal.create_time ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id, now_order], -20315);
         if(errcode){
@@ -341,7 +343,8 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
         LEFT JOIN store
             ON deal.auction_id = $1
             AND store.id = deal.store_id
-        ORDER BY deal.discount_price DESC
+        ORDER BY deal.discount_price DESC,
+            deal.create_time ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id], -20415);
         if(errcode){
@@ -392,9 +395,8 @@ const get205DealDetail = async(deal_id, user_id)=>{
             INNER JOIN payment
                 ON payment.id = deal.payment_id
             LEFT JOIN official
-                ON official.device_id = device.id
+                ON official.device_volume_id = detail.device_volume_id
                 AND official.payment_id = payment.id
-                AND official.device_volume = detail.volume
         `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, user_id], -20512);
         if(errcode){
