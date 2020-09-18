@@ -286,7 +286,6 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
                 ON deal.auction_id = $1
                 AND store.id = deal.store_id
             ORDER BY 
-                deal.discount_price DESC,
                 deal.create_time ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id, now_order], -20315);
