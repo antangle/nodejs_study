@@ -1045,17 +1045,26 @@ const upsertS204AutoBet = async(paramArray)=>{
     }
 };
 
-const updateS204AutoBetCurrentMax = async(store_id, discount_price, autobet_max_id)=>{
+const updateS204AutoBetCurrentMax = async(store_id, autobet_max_id)=>{
     var result = {};
     try{
         const querytext = `
-            UPDATE autobet_max SET
-                current_store_id = $1,
-                discount_price = $2
-            WHERE id = $3
-                AND discount_price < $2
+        UPDATE autobet_max AS max SET
+            discount_price = temp.discount_price,
+            current_store_id = temp.store_id
+        FROM (
+            SELECT DISTINCT ON(autobet_max_id)
+                discount_price, store_id
+            FROM autobet
+            WHERE 
+                store_id = $1
+                AND autobet_max_id = $2
+                AND state = 1
+        ) temp
+        WHERE max.id = $2
+        AND max.discount_price < temp.discount_price
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [store_id, discount_price, autobet_max_id], -60444);
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, autobet_max_id], -60444);
         if(errcode){
             return {result: errcode};
         }

@@ -475,7 +475,7 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
             return res.json(result);
         }
         
-        result = await store.updateS204AutoBetCurrentMax(store_id, discount_price, autobet_max_id);
+        result = await store.updateS204AutoBetCurrentMax(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
