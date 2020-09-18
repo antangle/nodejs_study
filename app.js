@@ -54,6 +54,10 @@ app.use('/app01', app01Router);
 const testRouter = require('./test/index');
 app.use('/test', testRouter);
 
+app.use('/what', (req, res) =>{
+  res.send('Backend');
+});
+
 
 app.use('/', (req, res) =>{
   res.send('Welcome to Backend');
