@@ -1013,8 +1013,8 @@ const upsertS204AutoBet = async(paramArray)=>{
                 AND payment.agency = max.agency
                 AND payment.generation = device.generation
             ON CONFLICT(
-                device_volume_id, condition, 
-                payment_id, store_id
+                store_id, autobet_max_id,
+                payment_id
             )
             DO UPDATE SET
                 discount_price = excluded.discount_price,
