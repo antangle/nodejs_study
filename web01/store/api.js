@@ -474,8 +474,8 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        
-        result = await store.updateS204AutoBetCurrentMax(store_id, autobet_max_id);
+        //inactivate 할때랑 쿼리가 같게 일단 해놓음
+        result = await store.updateS204AutoBetCurrentMax(autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
