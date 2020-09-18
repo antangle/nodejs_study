@@ -21,7 +21,7 @@ function check_StringLength(string, min, max){
 }
 function check_DiscountPrice(discount_price){
     discount_price = parseInt(discount_price, 10);
-    if(isNaN(discount_price)){
+    if(isNaN(discount_price) || discount_price < 50000){
         return -1;
     }
     //자릿수 10000원대만 나오게 sanitize
