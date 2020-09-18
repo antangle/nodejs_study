@@ -750,9 +750,6 @@ const selectS204AutoBetSet = async(store_id, agency, brand_id)=>{
             return {result: errcode};
         }
         //autobet에 아무것도 없을시
-        if(rowCount === 0){
-            return {result: 60412};
-        }
         result = {result: define.const_SUCCESS, info: rows};
         return result;
     }
