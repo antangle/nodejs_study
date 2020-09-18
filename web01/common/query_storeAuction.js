@@ -721,9 +721,12 @@ const selectS204AutoBetSet = async(store_id, agency, brand_id)=>{
             FROM (
                 SELECT
                     DISTINCT ON (autobet.autobet_max_id)
-                    device.name, device.brand_id, device.birth,
+                    device.name, 
+                    device.brand_id, 
+                    device.birth,
                     SUBSTRING(autobet.device_volume_id, '(?<=_)[0-9]+')::INTEGER AS volume,
-                    autobet.change_type, autobet.discount_price,
+                    autobet.change_type, 
+                    autobet.discount_price,
                     autobet.state,
                     max.discount_price AS max_discount_price,
                     max.id AS autobet_max_id,
@@ -768,9 +771,12 @@ const selectS204AutoBetUnset = async(store_id, agency, brand_id)=>{
         const querytext = `
         SELECT
             device.id,
-            device.name, SUBSTRING(max.device_volume_id, '(?<=_)[0-9]+')::INTEGER AS volume,
-            max.change_type AS type, payment.alias,
-            payment.id AS main_payment_id, max.discount_price AS max_discount_price,
+            device.name, 
+            SUBSTRING(max.device_volume_id, '(?<=_)[0-9]+')::INTEGER AS volume,
+            max.change_type AS type, 
+            payment.alias,
+            payment.id AS main_payment_id, 
+            max.discount_price AS max_discount_price,
             max.id AS autobet_max_id,
             store.is_delivery
         FROM autobet_max AS max
