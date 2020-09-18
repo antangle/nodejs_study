@@ -13,7 +13,7 @@ const functions = require('../../controller/function');
 const fcm_store = require('../common/fcm_store');
 const fcm_query = require('../common/query_fcm');
 
-router.get('/test', async(req, res)=>{
+router.get('/test1', async(req, res)=>{
     try{
         var payload = {
             notification: {
@@ -30,7 +30,6 @@ router.get('/test', async(req, res)=>{
         }
         var push_token = "cpsMqQNXpsc:APA91bGhfU111LWjAZloi5NR8Tzd2WkGL7T-TEpffPrCt3CIVR2rRsvPokQUqCIT1Z6z7SVE5tJSZ5_QxsqpdHtjh8oN7XlAfZrZtXz6V4BVA7hanWrSh-gWvGSDknsDni1wloC92unn";
         let fcm_response = await fcm.sendMessage(push_token, payload, options);
-        console.log(fcm_response);
         return res.json({result: 1});
     }
     catch(err){
