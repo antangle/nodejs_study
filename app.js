@@ -19,9 +19,15 @@ app.set('jwt-secret', process.env.JWT_SECRET);
 //later configure cors option
 app.use(cors());
 
-
+if(process.env.ENVIRONMENT === 'pro'){
+  var accessLogStream = fs.createWriteStream(
+    path.join(__dirname, '/access.log'), {flags: 'a'}
+  );
+  app.use(morgan('combined', {stream: accessLogStream}));
+}
+else if(process.env.ENVIRONMENT === 'dev'){
   app.use(morgan('dev'));
-
+}
 
 
 app.use(express.json());
