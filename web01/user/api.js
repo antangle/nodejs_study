@@ -5,9 +5,9 @@ router.use(express.json({limit: '50mb'}));
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const {helper} = require('../../controller/validate');
-const buy = require('../common/query_buy');
-const auction = require('../common/query_myAuction');
-const myPage = require('../common/query_myPage');
+const buy = require('../../common/query_buy');
+const auction = require('../../common/query_myAuction');
+const myPage = require('../../common/query_myPage');
 const define = require('../../definition/define');
 const functions = require('../../controller/function');
 
@@ -265,10 +265,10 @@ router.post('/selectStep3AutobetMaxInfo', async(req,res) =>{
             functions.check_OneTwoThree(agency_use) === -1 ||
             functions.check_OneTwoThree(agency_hope) === -1
         ){
-            return res.json({result: 10331});
+            return res.json({result: 10341});
         }
         var type = functions.check_type(agency_use, agency_hope);
-
+    
         var condition = functions.generate_condition(
             agency_hope, type
         );
@@ -281,7 +281,7 @@ router.post('/selectStep3AutobetMaxInfo', async(req,res) =>{
     }
     catch(err){
         console.log('router ERROR: selectStep3AutobetMaxInfo/' + err);
-        return res.json({result: -10331});
+        return res.json({result: -10341});
     }
 });
 

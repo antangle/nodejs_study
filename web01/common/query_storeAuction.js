@@ -376,22 +376,41 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
 
 //재입찰일 경우, 이전 store_nick 가져오고, 이전 입찰들의 state = -1로 변화
 //취소 시 cancel 값 -2.
-const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
+const updateBefore602DealSend = async(deal_id, store_id)=>{
     var result = {};
     try{
-        let querytext;
-        if(cancel === -1){
-            querytext = `
+        let querytext =`
                 UPDATE deal SET
                 state = -1
                 WHERE id = $1
                 AND store_id = $2
                 AND state != 2
             `;
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
+        if(errcode){
+            return {result: errcode};
+        } 
+        if(rowCount === 0){
+            return {result: -60226};
         }
-        else if(cancel === 1){
-            //취소 할 시 해당 auction관련 모든 deal_state = -2
-            querytext = `
+        else if(rowCount > 1 && cancel === -1){
+            return {result: -60227};
+        }
+        result.rowCount = rowCount;
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+        result.result = -60221;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    } 
+};
+
+const updateBefore602DealSendCancel = async(deal_id, store_id)=>{
+    var result = {};
+    try{
+        querytext = `
                 UPDATE deal SET
                 state = -2
                 WHERE auction_id = (
@@ -401,17 +420,17 @@ const updateBefore602DealSend = async(deal_id, store_id, cancel)=>{
                 AND store_id = $2
                 AND state != 2
             `;
-        }
-        var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -602250);
         if(errcode){
             return {result: errcode};
-        }
+        } 
         if(rowCount === 0){
-            return {result: -60226};
+            return {result: -602260};
         }
         else if(rowCount > 1 && cancel === -1){
-            return {result: -60227};
+            return {result: -602270};
         }
+        result.rowCount = rowCount;
         result.result = define.const_SUCCESS;
         return result;
     }
@@ -506,12 +525,6 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
             store_count = store_count + $3
             WHERE id = $1
         `;
-        /*var paramArray = [
-            store_id,
-            auction_id,
-            discount_price,
-            tempNick
-        ]*/
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, discount_price, store_count], -60231);
         if(errcode){
             return {result: errcode};
@@ -529,6 +542,71 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
         result.result = -60221;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
+    }
+};
+
+const updateAfter602DealSendInsertCancel = async(auction_id, store_count) => {
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE auction
+            SET now_discount_price = (
+                CASE WHEN now_discount_price < $2
+                THEN $2
+                WHEN now_discount_price >= $2
+                THEN now_discount_price
+                END
+            ),
+            now_order = now_order +1,
+            store_count = store_count + $3
+            WHERE id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id, discount_price, store_count], -60231);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60232};
+        }
+        else if(rowCount > 1){
+            return {result: -60233};
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+        result.result = -60221;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const updateStorePoint = async(store_id, point)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store SET
+                point = point + $2
+            WHERE id = $1
+            RETURNING *
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, point], -60243);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60244};
+        }
+        if(rowCount > 1){
+            return {result: -60245}
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -60221;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
     }
 };
 
@@ -975,24 +1053,24 @@ const updateS204AutoBetMaxInactivate = async(autobet_max_id)=>{
     }
 };
 
-
 /*
-store_id, device_volume_id, 
+store_id, device_volume_id,
 main_payment_id, condition,
-autobet_max_id, device_id, 
-discount_price, agency, 
+autobet_max_id, device_id,
+discount_price, agency,
 change_type, state
 */
+
 //특정 요금제보다 높은 가격의 payment 들에 대해 autobet upsert
 const upsertS204AutoBet = async(paramArray)=>{
     var result = {};
     try{
         const querytext = `
             INSERT INTO autobet(
-                store_id, device_volume_id, 
+                store_id, device_volume_id,
                 payment_id, condition,
-                autobet_max_id, device_id, 
-                discount_price, agency, 
+                autobet_max_id, device_id,
+                discount_price, agency,
                 change_type, delivery
             )
             SELECT
@@ -1505,10 +1583,14 @@ module.exports = {
     delete601CutAuction,
     get602Auction,
     get602NeededInfoForDeal,
+    updateBefore602DealSend,
+    updateBefore602DealSendCancel,
     insert602DealSend,
     updateAfter602DealSendInsert,
-    updateBefore602DealSend,
-    
+    updateAfter602DealSendInsertCancel,
+    updateStorePoint,
+
+
     //참여건
     insert602Party,
     deleteParty,

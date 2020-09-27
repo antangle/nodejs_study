@@ -3,7 +3,7 @@
 const admin = require("firebase-admin");
 const path = require('path');
 
-var serviceAccount = require(path.join(__dirname, '../../peachphone_user_key.json'));
+var serviceAccount = require(path.join(__dirname, '../peachphone_user_key.json'));
 
 var peachphone_user = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

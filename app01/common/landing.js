@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
-const Pool = require('./pool');
+const Pool = require('../../common/pool');
 
 const pool = Pool.pool;
 const query = Pool.query;

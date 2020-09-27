@@ -8,8 +8,8 @@ const define = require('../../definition/define')
 const store = require('../common/query_storeAuction')
 const myPage = require('../common/query_myPage');
 const functions = require('../../controller/function');
-const fcm_user = require('../common/fcm_user');
-const fcm_store = require('../common/fcm_store');
+const fcm_user = require('../../common/fcm_user');
+const fcm_store = require('../../common/fcm_store');
 const fcm_query = require('../common/query_fcm');
 const {helper, comparePassword} = require('../../controller/validate');
 const { kStringMaxLength } = require('buffer');
@@ -146,7 +146,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
-        var curr_deal_id;
+        var curr_deal_id, now_discount_price;
         discount_price = functions.check_DiscountPrice(discount_price);
         if(discount_price === -1){
             return res.json({result: 60221});
@@ -166,9 +166,9 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(!info.data.deal_id){
             //내 첫입찰
             var paramArray = [
-                store_id, 
-                auction_id, 
-                discount_price, 
+                store_id,
+                auction_id,
+                discount_price,
                 info.store_nick
             ];
             store_count = 1;
@@ -182,6 +182,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            now_discount_price = result.now_discount_price;
+            
             result = await store.insert602Party(store_id, auction_id);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
@@ -206,11 +208,19 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 return res.json(result);
             }
             curr_deal_id = result.deal_id
-            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count, cancel);
+            
+            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            now_discount_price = result.now_discount_price;
         }
+        //point
+        var point = functions.set_point(discount_price, now_discount_price);
+        result = await store.updateStorePoint(store_id, point);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }          
         //push notifications
 
         var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
@@ -378,6 +388,7 @@ router.post('/S204AutoBetCancel', async (req, res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
+            
             //activate 시, 해당 자동입찰 관한 deal insert
             result = await store.insertS204AutoBetDealSend(store_id, autobet_max_id);
             if(result.result !== define.const_SUCCESS){
@@ -423,7 +434,6 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         //agency는 1,2,3 나머지 type 1,2
 
         store_id = functions.check_StringID(store_id);
-        
         if(
             store_id === -1 ||
             functions.check_IsNumber(main_payment_id) === -1 ||
@@ -462,7 +472,8 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         result = await store.insertS204PartyAfterAutobet(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
-        }
+        }       
+
         return res.json(result);
     }
     catch(err){

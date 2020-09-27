@@ -51,10 +51,9 @@ const app01Router = require('./app01/index');
 app.use('/app01', app01Router);
 
 //test
-/*
 const testRouter = require('./test/index');
 app.use('/test', testRouter);
-*/
+
 app.use('/what', (req, res) =>{
   res.send('Backend');
 });

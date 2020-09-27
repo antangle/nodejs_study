@@ -500,6 +500,7 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
             now_order = now_order +1,
             store_count = store_count + $3
             WHERE id = $1
+            RETURNING now_discount_price
         `;
         /*var paramArray = [
             store_id,
@@ -517,6 +518,52 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
         else if(rowCount > 1){
             return {result: -60233};
         }
+        result.now_discount_price = rows[0].now_discount_price;
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+        result.result = -60221;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+
+const updateAfter602DealSendInsertCancel = async(auction_id, store_count) => {
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE auction
+            SET now_discount_price = (
+                CASE WHEN now_discount_price < $2
+                THEN $2
+                WHEN now_discount_price >= $2
+                THEN now_discount_price
+                END
+            ),
+            now_order = now_order +1,
+            store_count = store_count + $2
+            WHERE id = $1
+            RETURNING now_discount_price
+        `;
+        /*var paramArray = [
+            store_id,
+            auction_id,
+            discount_price,
+            tempNick
+        ]*/
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id, store_count], -60231);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60232};
+        }
+        else if(rowCount > 1){
+            return {result: -60233};
+        }
+        result.now_discount_price = rows[0].now_discount_price;
         result.result = define.const_SUCCESS;
         return result;
     }
@@ -630,6 +677,35 @@ const updatePartyOnPurchase = async(store_id, auction_id)=>{
     }
 };
 
+const updateStorePoint = async(store_id, point)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store SET
+                point = point + $2
+            WHERE id = $1
+            RETURNING *
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, point], -60243);
+        console.log(store_id);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -60244};
+        }
+        if(rowCount > 1){
+            return {result: -60245}
+        }
+        result.result = define.const_SUCCESS;
+        return result;
+    }
+    catch(err){
+      result.result = -60221;
+      console.log(`ERROR: ${result.result}/` + err);
+      return result;
+    }
+};
 
 const updateS204StoreDelivery = async(store_id, delivery)=>{
     var result = {};
@@ -879,12 +955,13 @@ const updateS204AutoBetMaxActivate = async(store_id, autobet_max_id)=>{
             ) temp
             WHERE max.id = $2
             AND max.discount_price < temp.discount_price
+            RETURNING current_store_id
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, autobet_max_id], -60433);
         if(errcode){
             return {result: errcode};
         }
-        result = {result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS, current_store_id: rows[0].current_store_id};
         return result;
     }
     catch(err){
@@ -1021,7 +1098,7 @@ const updateS204AutoBetCurrentMax = async(store_id, discount_price, autobet_max_
         if(errcode){
             return {result: errcode};
         }
-        result = {result: define.const_SUCCESS};
+        result = {result: define.const_SUCCESS, current_store_id: rows[0].current_store_id};
         return result;
     }
     catch(err){
@@ -1224,6 +1301,54 @@ const insertS204PartyAfterAutobet = async(store_id, autobet_max_id)=>{
         ON CONFLICT (store_id, auction_id) DO NOTHING
         `;
         var {rows, rowCount, errcode} = await query(querytext, [store_id, autobet_max_id], -60448);
+        if(errcode){
+            return {result: errcode};
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -60441;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+
+const updateStorePointAutobet = async(store_id, autobet_max_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+        UPDATE store SET
+            point = point + 
+        FROM(
+            SELECT CASE WHEN
+                deal.discount_price >= autobet_max.discount_price
+                    THEN 
+                WHEN 
+            FROM auction
+            INNER JOIN device_detail AS detail
+                ON detail.id = auction.device_detail_id
+            INNER JOIN autobet
+                ON autobet.store_id = $1
+                AND autobet.autobet_max_id = $2
+                AND autobet.state = 1
+            INNER JOIN autobet_max
+                ON autobet_max.id = $2
+            INNER JOIN deal
+                ON deal.store_id = autobet.store_id
+                AND deal.auction_id = auction.id
+                AND deal.state = 1
+            WHERE detail.device_volume_id = autobet.device_volume_id
+                AND auction.condition = autobet.condition
+                AND auction.payment_id = autobet.payment_id
+                AND auction.finish_time > current_timestamp
+                AND auction.delivery <= autobet.delivery
+                AND deal.discount_price = autobet.discount_price
+        ) a
+        WHERE store.id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, autobet_max_id], -60449);
         if(errcode){
             return {result: errcode};
         }
@@ -1461,7 +1586,10 @@ module.exports = {
     //참여건
     insert602Party,
     deleteParty,
+    //포인트제
+    updateStorePoint,
 
+    //자동입찰
     updateS204StoreDelivery,
     updateS204AutobetDelivery,
 

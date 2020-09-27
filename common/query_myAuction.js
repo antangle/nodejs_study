@@ -1,5 +1,5 @@
 const Pool = require('./pool');
-const define = require('../../definition/define');
+const define = require('../definition/define');
 
 const pool = Pool.pool;
 const query = Pool.query;
@@ -83,8 +83,7 @@ const get201AuctionInfo = async(user_id)=>{
         SELECT auc.id as auction_id, auc.device_detail_id,
             auc.payment_id, auc.agency_use,
             auc.agency_hope, auc.finish_time,
-            auc.now_discount_price, auc.state,
-            auc.win_state,
+            auc.now_discount_price, auc.state, auc.win_state,
             auc.win_deal_id, payment.alias,
             device.name, detail.color_name,
             detail.volume, image.url_2x
@@ -181,7 +180,7 @@ const update202AuctionState = async(user_id)=>{
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -20213};
+            return {result: -20213}
         }
         var count = 0;
         //state가 전부 -1이면 출력값 없어야함.
@@ -244,7 +243,8 @@ const get202AuctionInfo = async(user_id)=>{
         if(rowCount === 0){
             return {result: -20216}
         }
-        result = {auction: rows, rowCount: rowCount, result: define.const_SUCCESS};
+        result = {auction: rows, rowCount: rowCount};
+        result.result = define.const_SUCCESS;
         return result;
     }
     catch(err){
@@ -266,7 +266,7 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
                 auction.contract_list, auction.period, auction.finish_time,
                 auction.state, auction.store_count,
                 detail.cost_price, deal.discount_official,
-                deal.discount_payment,
+                deal.discount_payment, deal.comment,
                 payment.price AS payment_price,
                 device.name
             FROM auction
@@ -285,7 +285,8 @@ const get203AuctionDeals = async(auction_id, user_id, now_order)=>{
             LEFT JOIN store
                 ON deal.auction_id = $1
                 AND store.id = deal.store_id
-            ORDER BY deal.deal_order DESC
+            ORDER BY 
+                deal.create_time ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id, now_order], -20315);
         if(errcode){
@@ -315,7 +316,7 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT deal.id AS deal_id, deal.store_id,
+        SELECT deal.id AS deal_id, deal.store_id, 
             deal.store_nick AS store_nick, store.score,
             deal.discount_price, deal.create_time AS deal_create_time,
             auction.finish_time AS auction_finish_time,
@@ -323,7 +324,7 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
             auction.contract_list, auction.period, auction.finish_time,
             auction.state, auction.store_count,
             detail.cost_price, deal.discount_official,
-            deal.discount_payment,
+            deal.discount_payment, deal.comment,
             payment.price AS payment_price,
             device.name
         FROM auction
@@ -341,7 +342,8 @@ const get204AuctionDealsFinish = async(auction_id, user_id)=>{
         LEFT JOIN store
             ON deal.auction_id = $1
             AND store.id = deal.store_id
-        ORDER BY deal.discount_price DESC
+        ORDER BY deal.discount_price DESC,
+            deal.create_time ASC
         `;
         var {rows, rowCount, errcode} = await query(querytext, [auction_id, user_id], -20415);
         if(errcode){
@@ -366,7 +368,7 @@ const get205DealDetail = async(deal_id, user_id)=>{
         const querytext = `
             SELECT deal.id AS deal_id, deal.store_nick AS store_nick, 
                 deal.contract_list, deal.discount_official, 
-                deal.discount_price,
+                deal.discount_price, deal.comment,
                 deal.discount_payment, deal.month_price,
                 deal.gift, deal.create_time AS deal_create_time,
                 deal.period, deal.agency,
@@ -392,9 +394,8 @@ const get205DealDetail = async(deal_id, user_id)=>{
             INNER JOIN payment
                 ON payment.id = deal.payment_id
             LEFT JOIN official
-                ON official.device_id = device.id
+                ON official.device_volume_id = detail.device_volume_id
                 AND official.payment_id = payment.id
-                AND official.device_volume = detail.volume
         `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, user_id], -20512);
         if(errcode){
@@ -437,7 +438,6 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
             AND user_id = $2
         `;
         var {rows, rowCount, errcode} = await query(querytext1, [deal_id, user_id], -20812);
-        console.log(rowCount);
         if(errcode){
             return {result: errcode};
         }
@@ -521,7 +521,7 @@ const get210InfoForReview = async(deal_id)=>{
     var result = {};
     try{
         const querytext = `
-            SELECT deal.id AS deal_id,
+            SELECT deal.id AS deal_id, 
                 deal.store_nick, detail.volume, 
                 detail.color_name, device.name
             FROM deal
@@ -564,16 +564,16 @@ const insert210Review = async(jsondata)=>{
     var result = {};
     try{
         const querytext = `
-        WITH cte AS(
-            SELECT score 
-            FROM score 
-            WHERE deal_id = $3
-        )
-        INSERT INTO score(
-            user_id, store_id, 
-            score, comment, 
-            deal_id, create_date
-        )
+            WITH cte AS(
+                SELECT score 
+                FROM score 
+                WHERE deal_id = $3
+            )
+            INSERT INTO score(
+                user_id, store_id, 
+                score, comment, 
+                deal_id, create_date
+            )
             SELECT 
                 user_id, store_id, 
                 $1, $2, 
@@ -583,15 +583,15 @@ const insert210Review = async(jsondata)=>{
                 SELECT 1 FROM deal
                 WHERE deal.id = $3
             )
-                AND deal.id = $3
-                AND deal.user_id = $4
+            AND deal.id = $3
+            AND deal.user_id = $4
             ON CONFLICT (deal_id) DO UPDATE 
             SET score = $1,
                 comment = $2,
                 create_date = current_date
-        RETURNING (
-            SELECT cte.score FROM cte
-        )
+            RETURNING (
+                SELECT cte.score FROM cte
+            )
         `;
         var {score, comment, deal_id, user_id} = jsondata;
         var {rows, rowCount, errcode} = await query(querytext, [score, comment, deal_id, user_id], -21022);
@@ -673,29 +673,42 @@ const get211StoreDetails = async(deal_id)=>{
             SELECT store.id AS store_id, store.score AS avg_score, 
                 store.score_weight AS review_count,
                 store.comment AS store_comment,
-                score.score AS user_score,
-                score.comment AS user_comment,
-                score.create_date,
-                device.name AS device_name,
                 deal.store_nick,
                 sd.name AS sido_name, sgg.name AS sgg_name,
-                users.hidden_login_id AS user_nick
+                review.score AS user_score,
+                review.comment AS user_comment,
+                review.create_date,
+                review.name AS device_name,
+                review.hidden_login_id AS user_nick
             FROM deal
             INNER JOIN store
                 ON deal.id = $1
                 AND store.id = deal.store_id
-            INNER JOIN device
-                ON deal.device_id = device.id
             LEFT JOIN location_sd AS sd
-                ON store.sido_code = sd.code
+                ON sd.code = store.sido_code
             LEFT JOIN location_sgg AS sgg
-                ON store.sgg_code = sgg.code
-            LEFT JOIN score
-                ON score.store_id = deal.store_id
-            LEFT JOIN users
-                ON users.id = score.user_id
-            ORDER BY score.create_date DESC
-            LIMIT 1
+                ON sgg.code = store.sgg_code
+            LEFT JOIN (
+                SELECT 
+                    score.score, score.comment,
+                    score.create_date, device.name,
+                    users.hidden_login_id, deal.store_id
+                FROM score
+                INNER JOIN deal
+                    ON deal.id = score.deal_id
+                INNER JOIN users
+                    ON users.id = score.user_id
+                INNER JOIN device
+                    ON device.id = deal.device_id
+                WHERE score.store_id = (
+                    SELECT deal.store_id
+                    FROM deal
+                    WHERE deal.id = $1
+                )
+                ORDER BY score.create_date DESC
+                LIMIT 1
+            ) review
+                ON review.store_id = store.id
             `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21112);
         if(errcode){
@@ -739,7 +752,7 @@ const get212AllStoreReviews = async(deal_id)=>{
                 )
             INNER JOIN score
                 ON score.store_id = store.id
-                AND deal.id = score.deal_id
+                AND score.deal_id = deal.id
             INNER JOIN users
                 ON users.id = score.user_id
             INNER JOIN device_detail AS detail
@@ -798,34 +811,6 @@ const post213Report = async(deal_id, type, comment)=>{
     }
 };
 
-const get213InfoForReport = async(deal_id)=>{
-    var result = {};
-    try{
-        const querytext = `
-            SELECT id AS deal_id, store_nick
-            FROM deal
-            WHERE id = $1
-        `;
-        var {rows, rowCount, errcode} = await query(querytext, [deal_id], -21312);
-        if(errcode){
-            return {result: errcode};
-        }
-        if(rowCount === 0){
-            return {result: -21313}
-        }
-        else if(rowCount > 1){
-            return {result: -21314}
-        }
-        result = {store_nick: rows[0].store_nick, result: define.const_SUCCESS};
-        return result;
-    }
-    catch(err){
-        result.result = -21311;
-        console.log(`ERROR: ${result.result}/` + err);
-        return result;
-    }
-};
-
 module.exports = {
     getDeviceInfoWithDetail_Id,
     update201AuctionState,
@@ -843,7 +828,6 @@ module.exports = {
     update210StoreAfterReview,
     get211StoreDetails,
     get212AllStoreReviews,
-    get213InfoForReport,
-    post213Report
+    post213Report,
 };
    

@@ -7,8 +7,9 @@ router.use(express.urlencoded({limit:'50mb', extended: false }));
 const define = require('../../definition/define');
 const functions = require('../../controller/function');
 const fcm_store = require('../../common/fcm_store');
-const fcm_query = require('../common/query_fcm');
+const fcm_query = require('../../common/query_fcm');
 
+//not done yet
 router.post('/get1000NewReviews', async(req,res) =>{
     var result ={};
     try{
@@ -20,7 +21,7 @@ router.post('/get1000NewReviews', async(req,res) =>{
         return res.json(result);
     }
     catch(err){
-        console.log('router ERROR: UserShutAccount410/' + err);
+        console.log('router ERROR: get1000NewReviews/' + err);
         result.result = -10001;
         return res.json(result);
     }

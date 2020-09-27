@@ -1,5 +1,5 @@
 const Pool = require('./pool');
-const define = require('../../definition/define');
+const define = require('../definition/define');
 const e = require('express');
 
 const pool = Pool.pool;
@@ -99,7 +99,7 @@ const myReview403 = async(user_id)=>{
       ON detail.id = deal.device_detail_id
     INNER JOIN device
       ON device.id = deal.device_id
-    `;
+  `;
     var {rows, rowCount, errcode} = await query(querytext, [user_id], -4032);
     if(errcode){
         return {result: errcode};
@@ -184,31 +184,31 @@ const changeNick404 = async(nick, user_id)=>{
 const changeLocationInfo = async(user_id)=>{
   var result = {};
   try{
-    const querytext = `
-      SELECT sd.name AS sido_name, sgg.name AS sgg_name
-      FROM users
-      INNER JOIN location_sd AS sd
-        ON users.id = $1
-        AND sd.code = users.sido_code
-      INNER JOIN location_sgg AS sgg
-        ON sgg.code = users.sgg_code
-    `;
-    var {rows, rowCount, errcode} = await query(querytext, [user_id], -40502);
-    if(errcode){
-        return {result: errcode};
-    }
-    if(rowCount === 0){
-        return {result: -40503}
-    }
-    if(rowCount > 1){
-      return {result: -40504}
-    }
-    result = {
-      result: define.const_SUCCESS, 
-      sido_name: rows[0].sido_name,
-      sgg_name: rows[0].sgg_name
-    };
-    return result;
+      const querytext = `
+        SELECT sd.name AS sido_name, sgg.name AS sgg_name
+        FROM users
+        INNER JOIN location_sd AS sd
+          ON users.id = $1
+          AND sd.code = users.sido_code
+        INNER JOIN location_sgg AS sgg
+          ON sgg.code = users.sgg_code
+      `;
+      var {rows, rowCount, errcode} = await query(querytext, [user_id], -40502);
+      if(errcode){
+          return {result: errcode};
+      }
+      if(rowCount === 0){
+          return {result: -40503}
+      }
+      if(rowCount > 1){
+        return {result: -40504}
+      }
+      result = {
+        result: define.const_SUCCESS, 
+        sido_name: rows[0].sido_name,
+        sgg_name: rows[0].sgg_name
+      };
+      return result;
   }
   catch(err){
       result.result = -40501;
@@ -220,20 +220,20 @@ const changeLocationInfo = async(user_id)=>{
 const get007SdCode = async()=>{
   var result = {};
   try{
-    const querytext = `
-        SELECT code, name
-        FROM location_sd
-        ORDER BY code ASC
-        `;
-    var {rows, rowCount, errcode} = await query(querytext, [], -40512);
-    if(errcode){
-        return {result: errcode};
-    }
-    if(rowCount < 1){
-        return {result: -40513}
-    }
-    result = {result: define.const_SUCCESS, sd: rows};
-    return result;
+      const querytext = `
+          SELECT code, name
+          FROM location_sd
+          ORDER BY code ASC
+          `;
+      var {rows, rowCount, errcode} = await query(querytext, [], -40512);
+      if(errcode){
+          return {result: errcode};
+      }
+      if(rowCount < 1){
+          return {result: -40513}
+      }
+      result = {result: define.const_SUCCESS, sd: rows};
+      return result;
   }
   catch(err){
       result.result = -40511;
@@ -245,21 +245,21 @@ const get007SdCode = async()=>{
 const get007SggCode = async(sido_code)=>{
   var result = {};
   try{
-    const querytext = `
-        SELECT code, name
-        FROM location_sgg
-        WHERE sido_code = $1
-        ORDER BY code ASC
-        `;
-    var {rows, rowCount, errcode} = await query(querytext, [sido_code], -40522);
-    if(errcode){
-        return {result: errcode}
-    }
-    if(rowCount <1){
-        return {result: -40523}
-    }
-    result ={result: define.const_SUCCESS, sgg: rows};
-    return result;
+      const querytext = `
+          SELECT code, name
+          FROM location_sgg
+          WHERE sido_code = $1
+          ORDER BY code ASC
+          `;
+      var {rows, rowCount, errcode} = await query(querytext, [sido_code], -40522);
+      if(errcode){
+          return {result: errcode}
+      }
+      if(rowCount <1){
+          return {result: -40523}
+      }
+      result ={result: define.const_SUCCESS, sgg: rows};
+      return result;
   }
   catch(err){
       result.result = -40521;
@@ -500,6 +500,7 @@ const myReview803 = async(partner_id)=>{
     return result;
   }
 };
+
 
 const getPartnerPassword804 = async(partner_id)=>{
   var result = {};

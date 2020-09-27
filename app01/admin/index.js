@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const landingRouter = require('./landing');
+const adminRouter = require('./admin');
 
-
-router.use('/landing', landingRouter);
-
+router.use('/api', adminRouter);
 
 module.exports = router;

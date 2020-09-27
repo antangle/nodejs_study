@@ -10,8 +10,8 @@ const auction = require('../common/query_myAuction');
 const myPage = require('../common/query_myPage');
 const define = require('../../definition/define');
 const functions = require('../../controller/function');
-const fcm_store = require('../common/fcm_store');
-const fcm_query = require('../common/query_fcm');
+const fcm_store = require('../../common/fcm_store');
+const fcm_query = require('../../common/query_fcm');
 
 router.get('/test1', async(req, res)=>{
     try{

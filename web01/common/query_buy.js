@@ -585,46 +585,91 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
   }
 }
 
-const selectAutobetMax = async(device_detail_id, condition, payment_id)=>{
+const selectMainPaymentId = async(payment_id)=>{
   var result = {};
   try{
     const querytext = `
-      SELECT
-        
-      FROM payment
-      INNER JOIN autobet_max AS max
-        ON max.id = $2
-      INNER JOIN device
-        ON device.id = SUBSTRING(max.device_volume_id, '[0-9]+(?=_)')::INTEGER
-      INNER JOIN official
-        ON official.device_volume_id = max.device_volume_id
-        AND official.payment_id = payment.id
-      INNER JOIN store
-        ON store.id = $1
-      WHERE payment.price >= (
-          SELECT price
-          FROM payment
-          WHERE id = $3
-        )
-        AND payment.agency = max.agency
-        AND payment.generation = device.generation
+      SELECT main_payment.id AS main_payment_id
+      FROM (
+        SELECT generation, agency, price
+        FROM payment
+        WHERE payment.id = $1
+      ) current_payment
+      INNER JOIN payment AS main_payment
+        ON main_payment.generation = current_payment.generation
+        AND main_payment.agency = current_payment.agency
+        AND main_payment.is_main = 1
     `;
-    var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, condition, payment_id], -10332);
+    
+    var {rows, rowCount, errcode} = await query(querytext, [payment_id], -10342);
     if(errcode){
       return {result: errcode};
     }
     if(rowCount === 0){
-      return {result: -10333};
+      return {result: -10343};
     }
-    result = {result: define.const_SUCCESS, discount_price: rows[0].discount_price};
+    if(rowCount > 1){
+      return {result: -10344}
+    }
+    console.log(rows);
+    result = {result: define.const_SUCCESS, main_payment_id: rows[0].main_payment_id};
     return result;
   }
   catch(err){
-    result.result = -10331;
+    result.result = -10341;
     console.log(`ERROR: ${result.result}/` + err);
     return result;
   }
 }
+
+const selectAutobetMax = async(device_detail_id, condition, payment_id)=>{
+  var result = {};
+  try{
+    const querytext = `
+      SELECT COALESCE(max.discount_price, 0) AS max_discount_price
+      FROM (
+        SELECT main.id, main.price
+        FROM (
+          SELECT generation, agency, price
+          FROM payment
+          WHERE payment.id = $3
+        ) current_payment
+        INNER JOIN payment AS main
+          ON main.generation = current_payment.generation
+          AND main.agency = current_payment.agency
+          AND main.is_main = 1
+      ) main_payment
+      INNER JOIN device_detail AS detail
+        ON detail.id = $1
+      INNER JOIN payment
+        ON payment.id = $3
+      LEFT JOIN autobet_max AS max
+        ON max.device_volume_id = detail.device_volume_id
+        AND max.condition = $2
+        AND max.main_payment_id = main_payment.id
+        AND main_payment.price <= payment.price
+    `;
+    var {rows, rowCount, errcode} = await query(querytext, [device_detail_id, condition, payment_id], -10342);
+    if(errcode){
+      return {result: errcode};
+    }
+    if(rowCount === 0){
+      return {result: -10343};
+    }
+    if(rowCount > 1){
+      return {result: -10344}
+    }
+    console.log(rows);
+    result = {result: define.const_SUCCESS, max_discount_price: rows[0].max_discount_price};
+    return result;
+  }
+  catch(err){
+    result.result = -10341;
+    console.log(`ERROR: ${result.result}/` + err);
+    return result;
+  }
+}
+
 const postStep3Update = async(check, postInput)=>{
   var result = {};
   try{
@@ -964,15 +1009,19 @@ module.exports = {
   getStep3PaymentInfo,
   getSelectedPayment,
   countAuctions,
-  selectAutobetMax,
 
   postStep3Update,
 
   finishAuctionTempDeviceInfo,
   
   killAuctionTempState,
+
   //Autobet
   insert104AutoBetDealSend,
   update104AfterAutoBetDealSend,
-  insert104PartyAfterAutobet
+  insert104PartyAfterAutobet,
+
+  //select autobet max
+  selectMainPaymentId,
+  selectAutobetMax
 };

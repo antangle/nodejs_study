@@ -1,19 +1,9 @@
-//#region query
-const Pool = require('./pool');
-const define = require('../../definition/define');
-
-const pool = Pool.pool;
-const query = Pool.query;
-pool.on('error', function (err, client) {
-  console.error('idle client error', err.message, err.stack);  
-});
-
 //#region fcm_functions
 
 const admin = require("firebase-admin");
 const path = require('path');
 
-var serviceAccount = require(path.join(__dirname, '../../peachphone_store_key.json'));
+var serviceAccount = require(path.join(__dirname, '../peachphone_store_key.json'));
 
 var peachphone_store = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
