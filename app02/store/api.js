@@ -4,14 +4,23 @@ const router = express.Router();
 router.use(express.json({limit: '50mb'}));
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 
-const define = require('../../definition/define')
-const store = require('../common/query_storeAuction')
-const myPage = require('../common/query_myPage');
+const path = require('path')
+const version = require('../common/version').version;
+
+const dotenv = require('dotenv');
+dotenv.config({path: path.join(__dirname, '/../../.env')});
+
+const {helper, comparePassword} = require('../../controller/validate');
 const functions = require('../../controller/function');
+const define = require('../../definition/define');
+
+const store = require(path.join('../..', 'common' + version, 'query_storeAuction'));
+const myPage = require(path.join('../..', 'common' + version, 'query_myPage'));
+const fcm_query = require(path.join('../..', 'common' + version, 'query_fcm'));
+
 const fcm_user = require('../../fcm/fcm_user');
 const fcm_store = require('../../fcm/fcm_store');
-const fcm_query = require('../common/query_fcm');
-const {helper, comparePassword} = require('../../controller/validate');
+
 const { kStringMaxLength } = require('buffer');
 const { stringify } = require('querystring');
 
@@ -143,10 +152,11 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
         var {store_id, auction_id, discount_price, cancel} = req.body;
+        var curr_deal_id;
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
         }
-        var curr_deal_id, now_discount_price;
+        
         discount_price = functions.check_DiscountPrice(discount_price);
         if(discount_price === -1){
             return res.json({result: 60221});
@@ -166,9 +176,9 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(!info.data.deal_id){
             //내 첫입찰
             var paramArray = [
-                store_id,
-                auction_id,
-                discount_price,
+                store_id, 
+                auction_id, 
+                discount_price, 
                 info.store_nick
             ];
             store_count = 1;
@@ -182,8 +192,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
-            now_discount_price = result.now_discount_price;
-            
             result = await store.insert602Party(store_id, auction_id);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
@@ -208,20 +216,12 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 return res.json(result);
             }
             curr_deal_id = result.deal_id
-            
-            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
+
+            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count, cancel);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
-            now_discount_price = result.now_discount_price;
         }
-        //point
-        var point = functions.set_point(discount_price, now_discount_price);
-        result = await store.updateStorePoint(store_id, point);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }          
-        //push notifications
 
         var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
         if(fcm_response.result !== define.const_SUCCESS){
@@ -236,8 +236,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(message.failureCount > 0){
             return res.json({result: -1, failureCount: message.failureCount});
         }
-        result.successCount = message.successCount;
-
         return res.json(result);
     }
     catch(err){
@@ -251,7 +249,6 @@ router.delete('/HandlerDelete', async (req, res) =>{
     var result ={};
     try{
         var {pwd} = req.body;
-
         if(!pwd){
             return res.json({result: 60311});
         }
@@ -279,6 +276,31 @@ router.delete('/HandlerDelete', async (req, res) =>{
     }
 });
 
+router.post('/S204SelectDeliveryDefault', async (req, res) =>{
+    var result ={};
+    try{
+        var {store_id} = req.body;
+        
+        store_id = functions.check_StringID(store_id);
+
+        if(store_id === -1){
+            return res.json({result: 60501});
+        }
+
+        result = await store.selectS204Delivery(store_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: S204UpdateDeliveryDefault/' + err);
+        result.result = -60501;
+        return res.json(result);
+    }
+});
+
 router.post('/S204UpdateDeliveryDefault', async (req, res) =>{
     var result ={};
     try{
@@ -289,7 +311,7 @@ router.post('/S204UpdateDeliveryDefault', async (req, res) =>{
         if(
             store_id === -1 ||
             functions.check_OneTwo(delivery) === -1){
-            return res.json({result: 60411});
+            return res.json({result: 60401});
         }
 
         result = await store.updateS204StoreDelivery(store_id, delivery);
@@ -321,18 +343,23 @@ router.post('/S204AutoBetSet', async (req, res) =>{
             store_id === -1 ||
             functions.check_IsNumber(agency) === -1 ||
             functions.check_IsNumber(brand_id) === -1){
-            return res.json({result: 60411});
+            return res.json({result: 60511});
         }
-
+        result = await store.selectS204AutoBetUnset(store_id, agency, brand_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        var unsetCount = result.unsetCount
         result = await store.selectS204AutoBetSet(store_id, agency, brand_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+        result.unsetCount = unsetCount;
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: S204AutoBetSet/' + err);
-        result.result = -60411;
+        result.result = -60511;
         return res.json(result);
     }
 });
@@ -388,7 +415,6 @@ router.post('/S204AutoBetCancel', async (req, res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
-            
             //activate 시, 해당 자동입찰 관한 deal insert
             result = await store.insertS204AutoBetDealSend(store_id, autobet_max_id);
             if(result.result !== define.const_SUCCESS){
@@ -432,8 +458,9 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
             discount_price,
         } = req.body;
         //agency는 1,2,3 나머지 type 1,2
-
+        discount_price = functions.check_DiscountPrice(discount_price);
         store_id = functions.check_StringID(store_id);
+        
         if(
             store_id === -1 ||
             functions.check_IsNumber(main_payment_id) === -1 ||
@@ -442,6 +469,16 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         ){
             return res.json({result: 60441});
         }
+        if(discount_price === -1){
+            return res.json({result: 60443});
+        }
+        /*
+            store_id, device_volume_id, 
+            main_payment_id, condition,
+            autobet_max_id, device_id, 
+            discount_price, agency, 
+            change_type, state
+        */
 
         var paramArray = [
             store_id, autobet_max_id,
@@ -452,15 +489,17 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        
+        //inactivate 할때랑 쿼리가 같게 일단 해놓음
+        result = await store.updateS204AutoBetCurrentMax(autobet_max_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+
         result = await store.updateS204BeforeAutoBetDealSend(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        result = await store.updateS204AutoBetCurrentMax(store_id, discount_price, autobet_max_id);
-        if(result.result !== define.const_SUCCESS){
-            return res.json(result);
-        }
+        
         result = await store.insertS204AutoBetDealSend(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -472,8 +511,7 @@ router.post('/S204AutoBetUpsert', async (req, res) =>{
         result = await store.insertS204PartyAfterAutobet(store_id, autobet_max_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
-        }       
-
+        }
         return res.json(result);
     }
     catch(err){
@@ -502,7 +540,6 @@ router.post('/S301MyOngoingDeal', async (req, res) =>{
         return res.json(result);
     }
 });
-
 
 router.post('/S301CutDeal', async (req, res) =>{
     var result ={};
@@ -620,7 +657,7 @@ router.post('/myPageHelpS402', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-
+        
         //notification
         var fcm_response = await fcm_query.getAdminPushTokenStore();
         if(fcm_response.result !== define.const_SUCCESS){
@@ -629,14 +666,14 @@ router.post('/myPageHelpS402', async(req,res) =>{
         var push_token = fcm_response.push_token;
         
         var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_store, define.option_admin_store);
+        console.log(message);
         if(message === -1){
             return res.json(message);
         }
         if(message.failureCount > 0){
             return res.json({result: -1, failureCount: message.failureCount});
         }
-        result.successCount = message.successCount;
-                
+
         return res.json(result);
     }
     catch(err){

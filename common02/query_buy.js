@@ -1,5 +1,5 @@
 const Pool = require('./pool');
-const define = require('../../definition/define');
+const define = require('../definition/define');
 
 const pool = Pool.pool;
 const query = Pool.query;
@@ -585,43 +585,6 @@ const getSelectedPayment = async(device_detail_id, payment_id)=>{
   }
 }
 
-const selectMainPaymentId = async(payment_id)=>{
-  var result = {};
-  try{
-    const querytext = `
-      SELECT main_payment.id AS main_payment_id
-      FROM (
-        SELECT generation, agency, price
-        FROM payment
-        WHERE payment.id = $1
-      ) current_payment
-      INNER JOIN payment AS main_payment
-        ON main_payment.generation = current_payment.generation
-        AND main_payment.agency = current_payment.agency
-        AND main_payment.is_main = 1
-    `;
-    
-    var {rows, rowCount, errcode} = await query(querytext, [payment_id], -10342);
-    if(errcode){
-      return {result: errcode};
-    }
-    if(rowCount === 0){
-      return {result: -10343};
-    }
-    if(rowCount > 1){
-      return {result: -10344}
-    }
-    console.log(rows);
-    result = {result: define.const_SUCCESS, main_payment_id: rows[0].main_payment_id};
-    return result;
-  }
-  catch(err){
-    result.result = -10341;
-    console.log(`ERROR: ${result.result}/` + err);
-    return result;
-  }
-}
-
 const selectAutobetMax = async(device_detail_id, condition, payment_id)=>{
   var result = {};
   try{
@@ -659,7 +622,6 @@ const selectAutobetMax = async(device_detail_id, condition, payment_id)=>{
     if(rowCount > 1){
       return {result: -10344}
     }
-    console.log(rows);
     result = {result: define.const_SUCCESS, max_discount_price: rows[0].max_discount_price};
     return result;
   }
@@ -1009,19 +971,15 @@ module.exports = {
   getStep3PaymentInfo,
   getSelectedPayment,
   countAuctions,
+  selectAutobetMax,
 
   postStep3Update,
 
   finishAuctionTempDeviceInfo,
   
   killAuctionTempState,
-
   //Autobet
   insert104AutoBetDealSend,
   update104AfterAutoBetDealSend,
-  insert104PartyAfterAutobet,
-
-  //select autobet max
-  selectMainPaymentId,
-  selectAutobetMax
+  insert104PartyAfterAutobet
 };

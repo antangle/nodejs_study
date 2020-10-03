@@ -1,5 +1,5 @@
 const Pool = require('./pool');
-const define = require('../../definition/define');
+const define = require('../definition/define');
 const e = require('express');
 
 const pool = Pool.pool;
@@ -398,7 +398,8 @@ const myPageNeededInfo801 = async(partner_id)=>{
   try{
     const querytext = `
       SELECT partner.state, store.score, 
-        store.trade_name, store.address
+        store.trade_name, store.address,
+        store.point
       FROM partner
       LEFT JOIN store
         ON partner.id = $1
@@ -422,7 +423,8 @@ const myPageNeededInfo801 = async(partner_id)=>{
       state: rows[0].state,
       score: rows[0].score, 
       address: rows[0].address,
-      trade_name: rows[0].trade_name
+      trade_name: rows[0].trade_name,
+      point: rows[0].point
     };
     return result;
   }

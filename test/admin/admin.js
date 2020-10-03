@@ -6,7 +6,7 @@ router.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const define = require('../../definition/define');
 const functions = require('../../controller/function');
-const fcm_store = require('../../common/fcm_store');
+const fcm_store = require('../../fcm/fcm_store');
 const fcm_query = require('../common/query_fcm');
 
 router.post('/get1000NewReviews', async(req,res) =>{

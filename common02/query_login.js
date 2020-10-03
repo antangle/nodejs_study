@@ -1,5 +1,5 @@
-const Pool = require('../../common/pool');
-const define = require('../../definition/define');
+const Pool = require('./pool');
+const define = require('../definition/define');
 
 const pool = Pool.pool;
 const query = Pool.query;
@@ -13,9 +13,9 @@ const getU001GetPassword = async(login_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT id AS user_id, login_pwd AS hash_pwd, nick, sgg_code, state
-        FROM users
-        WHERE login_id = $1
+            SELECT id AS user_id, login_pwd AS hash_pwd, nick, sgg_code, state
+            FROM users
+            WHERE login_id = $1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [login_id], -9212);
         if(errcode){
@@ -41,9 +41,9 @@ const checkDupinfoUser = async(dupinfo) => {
     var result = {};
     try{
         const querytext = `
-        SELECT 1 FROM users
-        WHERE dupinfo = $1
-        AND state != -1
+            SELECT 1 FROM users
+            WHERE dupinfo = $1
+            AND state != -1
         `;
         var {rows, rowCount, errcode} = await query(querytext, [dupinfo], -92232);
         if(errcode){
@@ -55,8 +55,8 @@ const checkDupinfoUser = async(dupinfo) => {
         if(rowCount === 1){
             return {result: 92231};    
         }
-        if(rowcount > 1){
-            return {result: -92234}
+        if(rowCount > 1){
+            return {result: -92234};
         }
         return result;
     }
@@ -76,16 +76,16 @@ const postU004LoginIdCheck = async(login_id)=>{
                 COALESCE(
                     (SELECT 9231 FROM users 
                     WHERE login_id = $1), 1) AS match
-                    `;
+            `;
         var {rows, rowCount, errcode} = await query(querytext, [login_id], -9232);
         if(errcode){
-            return {result: -errcode}
+            return {result: -errcode};
         }
         if(rowCount > 1){
-            return {result: -9234}
+            return {result: -9234};
         }
         else if(rowCount <1){
-            return {result: -9235}
+            return {result: -9235};
         }
         result = {result: rows[0].match};
         return result;
@@ -140,7 +140,7 @@ const postU004IdPassword = async(login_id, hash_pwd, decode)=>{
         if(rowCount > 1){
             return {result: -9245}
         }
-        else if(rowCount < 1){
+        else if(rowCount === 0){
             return {result: -9246}
         }
         result = {result: define.const_SUCCESS, user_id: rows[0].id};
@@ -227,7 +227,7 @@ const get007SdCode = async()=>{
             return {result: errcode};
         }
         if(rowCount < 1){
-            return {result: -92703}
+            return {result: -92703};
         }
         result = {result: define.const_SUCCESS, sd: rows};
         return result;
@@ -250,10 +250,10 @@ const get007SggCode = async(sido_code)=>{
             `;
         var {rows, rowCount, errcode} = await query(querytext, [sido_code], -92712);
         if(errcode){
-            return {result: errcode}
+            return {result: errcode};
         }
         if(rowCount <1){
-            return {result: -92714}
+            return {result: -92714};
         }
         result ={result: define.const_SUCCESS, sgg: rows};
         return result;
@@ -285,10 +285,10 @@ const postU007LocationCode = async(sido_code, sgg_code, user_id)=>{
             return {result: errcode}
         }
         if(rowCount > 1){
-            return {result: -92724}
+            return {result: -92724};
         }
         else if(rowCount <1){
-            return {result: -92725}
+            return {result: -92725};
         }
         result = {
             result: define.const_SUCCESS, 
@@ -483,9 +483,10 @@ const checkDupinfoPartner = async(dupinfo) => {
         if(rowCount === 1){
             return {result: 90231};    
         }
-        if(rowcount > 1){
+        if(rowCount > 1){
             return {result:-90234};
         }
+        
         return result;
     }
     catch(err){
@@ -673,13 +674,13 @@ const updatePartnerMakeMeStore = async(partner_id)=>{
         `;
         var {rows, rowCount, errcode} = await query(querytext, [partner_id], -90815);
         if(errcode){
-            return {result: errcode}
+            return {result: errcode};
         }
         if(rowCount > 1){
-            return {result: -90816}
+            return {result: -90816};
         }
         else if(rowCount < 1){
-            return {result: -90817}
+            return {result: -90817};
         }
         result = {result: define.const_SUCCESS};
         return result;

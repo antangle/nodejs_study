@@ -1,5 +1,5 @@
 const Pool = require('./pool');
-const define = require('../../definition/define');
+const define = require('../definition/define');
 
 const pool = Pool.pool;
 const query = Pool.query;
@@ -12,7 +12,7 @@ const get501StoreAuction = async(store_id)=>{
     var result = {};
     try{
     const querytext = `
-        SELECT deal.id AS deal_id, deal.agency, 
+        SELECT deal.id AS deal_id, deal.agency,
             deal.contract_list, deal.state,
             auction.agency_use, auction.agency_hope, auction.finish_time,
             device.name, detail.volume, detail.color_hex, detail.color_name,
@@ -379,7 +379,7 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
 const updateBefore602DealSend = async(deal_id, store_id)=>{
     var result = {};
     try{
-        let querytext =`
+        var querytext = `
                 UPDATE deal SET
                 state = -1
                 WHERE id = $1
@@ -389,14 +389,13 @@ const updateBefore602DealSend = async(deal_id, store_id)=>{
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -60225);
         if(errcode){
             return {result: errcode};
-        } 
+        }
         if(rowCount === 0){
             return {result: -60226};
         }
-        else if(rowCount > 1 && cancel === -1){
+        else if(rowCount > 1){
             return {result: -60227};
         }
-        result.rowCount = rowCount;
         result.result = define.const_SUCCESS;
         return result;
     }
@@ -406,6 +405,7 @@ const updateBefore602DealSend = async(deal_id, store_id)=>{
         return result;
     } 
 };
+
 
 const updateBefore602DealSendCancel = async(deal_id, store_id)=>{
     var result = {};
@@ -418,17 +418,15 @@ const updateBefore602DealSendCancel = async(deal_id, store_id)=>{
                     WHERE id = $1
                 )
                 AND store_id = $2
-                AND state != 2
+                AND state NOT IN (2, -2)
             `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -602250);
+        console.log(rowCount)
         if(errcode){
             return {result: errcode};
         } 
         if(rowCount === 0){
             return {result: -602260};
-        }
-        else if(rowCount > 1 && cancel === -1){
-            return {result: -602270};
         }
         result.rowCount = rowCount;
         result.result = define.const_SUCCESS;
@@ -454,7 +452,7 @@ const insert602DealSend = async(paramArray) => {
             discount_payment, period,
             create_time, deal_order,
             state, store_nick,
-            comment, condition
+            condition
         )
         SELECT $1, $2,
             auction.user_id, auction.device_detail_id,
@@ -464,7 +462,7 @@ const insert602DealSend = async(paramArray) => {
             payment.price*6, auction.period,
             current_timestamp, auction.now_order +1,
             1, $4,
-            $5, auction.condition
+            auction.condition
         FROM auction
         INNER JOIN payment
             ON payment.id = auction.payment_id
@@ -483,8 +481,7 @@ const insert602DealSend = async(paramArray) => {
                 store_id, 
                 auction_id, 
                 discount_price, 
-                tempNick,
-                comment
+                tempNick
             ]
         */
 
@@ -509,23 +506,30 @@ const insert602DealSend = async(paramArray) => {
     }
 };
 
-const updateAfter602DealSendInsert = async(auction_id, discount_price, store_count) => {
+const updateAfter602DealSendInsert = async(auction_id, discount_price) => {
     var result = {};
     try{
         const querytext = `
             UPDATE auction
             SET now_discount_price = (
                 CASE WHEN now_discount_price < $2
-                THEN $2
+                    THEN $2
                 WHEN now_discount_price >= $2
-                THEN now_discount_price
+                    THEN now_discount_price
                 END
             ),
             now_order = now_order +1,
-            store_count = store_count + $3
+            store_count = store_count + 1
             WHERE id = $1
+            RETURNING now_discount_price
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [auction_id, discount_price, store_count], -60231);
+        /*var paramArray = [
+            store_id,
+            auction_id,
+            discount_price,
+            tempNick
+        ]*/
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id, discount_price], -60231);
         if(errcode){
             return {result: errcode};
         }
@@ -535,7 +539,7 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
         else if(rowCount > 1){
             return {result: -60233};
         }
-        result.result = define.const_SUCCESS;
+        result = {result: define.const_SUCCESS, now_discount_price: rows[0].now_discount_price};
         return result;
     }
     catch(err){
@@ -545,31 +549,37 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price, store_cou
     }
 };
 
-const updateAfter602DealSendInsertCancel = async(auction_id, store_count) => {
+const updateAfter602DealSendInsertCancel = async(auction_id) => {
     var result = {};
     try{
         const querytext = `
             UPDATE auction
             SET now_discount_price = (
-                CASE WHEN now_discount_price < $2
-                THEN $2
-                WHEN now_discount_price >= $2
-                THEN now_discount_price
-                END
+                SELECT 
+                    MAX(discount_price)
+                FROM deal
+                WHERE auction_id = $1
+                    AND state = 1
             ),
-            now_order = now_order +1,
-            store_count = store_count + $3
+            now_order = now_order + 1,
+            store_count = store_count + 1
             WHERE id = $1
         `;
-        var {rows, rowCount, errcode} = await query(querytext, [auction_id, discount_price, store_count], -60231);
+        /*var paramArray = [
+            store_id,
+            auction_id,
+            discount_price,
+            tempNick
+        ]*/
+        var {rows, rowCount, errcode} = await query(querytext, [auction_id], -602310);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -60232};
+            return {result: -602320};
         }
         else if(rowCount > 1){
-            return {result: -60233};
+            return {result: -602330};
         }
         result.result = define.const_SUCCESS;
         return result;
@@ -1053,24 +1063,24 @@ const updateS204AutoBetMaxInactivate = async(autobet_max_id)=>{
     }
 };
 
+
 /*
-store_id, device_volume_id,
+store_id, device_volume_id, 
 main_payment_id, condition,
-autobet_max_id, device_id,
-discount_price, agency,
+autobet_max_id, device_id, 
+discount_price, agency, 
 change_type, state
 */
-
 //특정 요금제보다 높은 가격의 payment 들에 대해 autobet upsert
 const upsertS204AutoBet = async(paramArray)=>{
     var result = {};
     try{
         const querytext = `
             INSERT INTO autobet(
-                store_id, device_volume_id,
+                store_id, device_volume_id, 
                 payment_id, condition,
-                autobet_max_id, device_id,
-                discount_price, agency,
+                autobet_max_id, device_id, 
+                discount_price, agency, 
                 change_type, delivery
             )
             SELECT
@@ -1589,8 +1599,6 @@ module.exports = {
     updateAfter602DealSendInsert,
     updateAfter602DealSendInsertCancel,
     updateStorePoint,
-
-
     //참여건
     insert602Party,
     deleteParty,

@@ -3,11 +3,15 @@ const router = express.Router();
 const { hash } = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const user = require('../../common/query_login');
-const define = require('../../definition/define');
+const path = require('path')
+const version = require('../common/version').version;
+
 const {helper} = require('../../controller/validate');
 const functions = require('../../controller/function');
+const define = require('../../definition/define');
 const {verifyToken} = require('../../middleware/verify');
+
+const user = require(path.join('../..', 'common' + version, 'query_login'));
 
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 router.use(express.json({limit: '50mb'}));

@@ -3,7 +3,7 @@ const router = express.Router();
 const { hash } = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const user = require('../common/query_login');
+const user = require('../../common/query_login');
 const define = require('../../definition/define');
 const {helper} = require('../../controller/validate');
 const functions = require('../../controller/function');

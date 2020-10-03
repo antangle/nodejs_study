@@ -3,11 +3,15 @@ const router = express.Router();
 const { hash } = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const partner = require('../../common/query_login');
-const define = require('../../definition/define');
+const path = require('path')
+const version = require('../common/version').version;
+
 const {helper} = require('../../controller/validate');
 const functions = require('../../controller/function');
+const define = require('../../definition/define');
 const verify = require('../../middleware/verify');
+
+const partner = require(path.join('../..', 'common' + version, 'query_login'));
 
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 router.use(express.json({limit: '50mb'}));
@@ -33,7 +37,10 @@ router.get('/test', async(req, res) =>{
 //partner login/signup API
 router.post('/Login901', async (req, res) =>{
     var result = {};
-    var {login_id} = req.body;
+    var {login_id, push_token} = req.body;
+    if(!push_token){
+        push_token = null;
+    }
     if (!login_id || !req.body.login_pwd) {
         return res.json({result: -9011});
     }
@@ -63,12 +70,24 @@ router.post('/Login901', async (req, res) =>{
             state: dbResponse.data.state
         }
         if(dbResponse.data.state === 1){
+            var push = await partner.updatePushTokenPartner(login_id, push_token)
+            if(push.result !== define.const_SUCCESS){
+                return res.json(push);
+            }
             result.result = 1;
         }
         else if(dbResponse.data.state === 2){
+            var push = await partner.updatePushTokenPartner(login_id, push_token)
+            if(push.result !== define.const_SUCCESS){
+                return res.json(push);
+            }
             result.result = 1;
         }
         else if(dbResponse.data.state === 3){
+            var push = await partner.updatePushTokenPartner(login_id, push_token);
+            if(push.result !== define.const_SUCCESS){
+                return res.json(push);
+            }
             result.result = 1;
         }
         else{
@@ -116,7 +135,7 @@ router.post('/checkDupinfo', async(req, res) =>{
     if (!info) {
         return res.json({result: -90234});
     }
-    var {dupinfo} = jwt.decode(info);        
+    var {dupinfo} = jwt.decode(info);      
     try{
         result = await partner.checkDupinfoPartner(dupinfo);
         if(result.result !== define.const_SUCCESS){
@@ -156,7 +175,10 @@ router.post('/CheckId904', async (req, res) =>{
 
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
-    var {login_id, info} = req.body;
+    var {login_id, info, push_token} = req.body;
+    if(!push_token){
+        push_token = null;
+    }
     if(!info){
         return res.json({result: 9041});
     }
@@ -184,6 +206,10 @@ router.post('/SignIn904', async (req, res) =>{
             return res.json(result);
         }
 
+        var push = await partner.updatePushTokenPartner(login_id, push_token);
+        if(push.result !== define.const_SUCCESS){
+            return res.json({result: -9047})
+        }
         const token = helper.generateToken(result.partner_id);
         result.token = token
         return res.json(result);
@@ -393,7 +419,7 @@ router.post('/checkState910', async(req, res) =>{
 
 
 
-/* 여기서부터 안쓰는 코드
+//#region 여기서부터 안쓰는 코드
 
 router.post('/postUpdateToken910', async (req, res) =>{
     var result ={};
@@ -446,6 +472,6 @@ router.post('/postShutAccount911', async (req, res) =>{
     }
 });
 
-*/
+//#endregion
 
 module.exports = router;

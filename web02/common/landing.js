@@ -1,11 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const app = express();
+
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit:'50mb', extended: false }));
 
-const Pool = require('../../common/pool');
+const path = require('path');
+const version = require('../common/version').version;
 
+const Pool = require(path.join('../..', 'common'+version, 'pool'));
 const pool = Pool.pool;
 const query = Pool.query;
 

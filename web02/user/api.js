@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
+const path = require('path')
+const version = require('../common/version').version;
+
 router.use(express.json({limit: '50mb'}));
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 
 const {helper} = require('../../controller/validate');
-const buy = require('../../common/query_buy');
-const auction = require('../../common/query_myAuction');
-const myPage = require('../../common/query_myPage');
-const define = require('../../definition/define');
 const functions = require('../../controller/function');
-const fcm_store = require('../../fcm/fcm_store');
-const fcm_query = require('../../common/query_fcm');
+const define = require('../../definition/define');
+
+const buy = require(path.join('../..', 'common' + version, 'query_buy'));
+const auction = require(path.join('../..', 'common' + version, 'query_myAuction'));
+const myPage = require(path.join('../..', 'common' + version, 'query_myPage'));
 
 router.get('/test', async(req, res)=>{
     try{
@@ -252,6 +254,41 @@ router.get('/getStep3OfficialInfo', async(req,res) =>{
     }
 });
 
+router.post('/selectStep3AutobetMaxInfo', async(req,res) =>{
+    var result ={};
+    try{
+        var {
+            device_detail_id, 
+            payment_id, 
+            agency_use, 
+            agency_hope
+        } = req.body;
+        if(
+            functions.check_IsNumber(device_detail_id) === -1 ||
+            functions.check_IsNumber(payment_id) === -1 ||
+            functions.check_OneTwoThree(agency_use) === -1 ||
+            functions.check_OneTwoThree(agency_hope) === -1
+        ){
+            return res.json({result: 10341});
+        }
+        var type = functions.check_type(agency_use, agency_hope);
+    
+        var condition = functions.generate_condition(
+            agency_hope, type
+        );
+
+        result = await buy.selectAutobetMax(device_detail_id, condition, payment_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+        return res.json(result);
+    }
+    catch(err){
+        console.log('router ERROR: selectStep3AutobetMaxInfo/' + err);
+        return res.json({result: -10341});
+    }
+});
+
 router.post('/countAuction', async (req, res) =>{
     var result ={};
     try{
@@ -269,7 +306,6 @@ router.post('/countAuction', async (req, res) =>{
     }
 });
 
-
 router.post('/postSaveStep3', async (req, res) =>{
     var result ={};
     try{
@@ -281,15 +317,15 @@ router.post('/postSaveStep3', async (req, res) =>{
             period, contract_list,
             delivery
         }
+        check = {
+            device_detail_id, 
+            temp_device_id
+        }
         */
-
         //TODO: contract_list 에 대한 정규식 필요함
-        if(!postInput.user_id || 
-            !postInput.payment_id ||
-            !postInput.agency_use || 
-            !postInput.agency_hope || 
-            !postInput.period || 
-            !postInput.contract_list ||
+        if(!postInput.user_id || !postInput.payment_id ||
+            !postInput.agency_use || !postInput.agency_hope || 
+            !postInput.period || !postInput.contract_list ||
             !postInput.delivery ){
                 return res.json({result: 10331});
             };
@@ -300,16 +336,9 @@ router.post('/postSaveStep3', async (req, res) =>{
         postInput.condition = condition;
 
         var check = await buy.getAuctionTempWithUserStep3(postInput.user_id);
-        /*
-            check = {
-                device_detail_id, 
-                temp_device_id
-            }
-        */
         if(check.result !== define.const_SUCCESS){
             return res.json({result: -10332});
         }
-
         var count = await buy.countAuctions(postInput.user_id);
         if(count.result !== define.const_SUCCESS){
             return res.json({result: -10333});
@@ -317,7 +346,6 @@ router.post('/postSaveStep3', async (req, res) =>{
         if(count.count >= 3){
             return res.json({result: 10332});
         }
-
         //check returning device_id, state, device_detail_id
         //postInput has all the info of step 3
         result = await buy.postStep3Update(check, postInput);
@@ -467,7 +495,7 @@ router.post('/get203MyAuctionDetails', async (req, res) =>{
         console.log('router ERROR: get203MyAuctionDetails/' + err);
         result.result = -20311;
         return res.json(result);
-    } 
+    }
 });
 
 router.post('/get204MyAuctionDetailsFinish', async (req, res) =>{
@@ -526,20 +554,6 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        //notification
-        var fcm_response = await fcm_query.getStorePushTokensByDealId(deal_id);
-        if(fcm_response.result !== define.const_SUCCESS){
-            return res.json(fcm_response);
-        }
-        //해당 store한테 notification
-        var message = await fcm_store.sendMessageToDeviceStore(fcm_response.push_tokens, define.payload_store, define.options_store);
-        if(message === -1){
-            return res.json(message);
-        }
-        if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
-        }
-
         return res.json(result);
     }
     catch(err){
@@ -745,22 +759,6 @@ router.post('/myPageHelp402', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-
-        //notification
-        var fcm_response = await fcm_query.getAdminPushTokenStore();
-        if(fcm_response.result !== define.const_SUCCESS){
-            return res.json(fcm_response);
-        }
-        var push_token = fcm_response.push_token;
-        
-        var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_user, define.option_admin_user);
-        if(message === -1){
-            return res.json(message);
-        }
-        if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
-        }
-
         return res.json(result);
     }
     catch(err){

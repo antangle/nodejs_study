@@ -46,9 +46,15 @@ app.use('/landing', landingwebRouter);
 const web01Router = require('./web01/index');
 app.use('/web01', web01Router);
 
+const web02Router = require('./web02/index');
+app.use('/web02', web02Router);
+
 //app
 const app01Router = require('./app01/index');
 app.use('/app01', app01Router);
+
+const app02Router = require('./app02/index');
+app.use('/app02', app02Router);
 
 //test
 const testRouter = require('./test/index');

@@ -3,7 +3,7 @@ const router = express.Router();
 const { hash } = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const partner = require('../common/query_login');
+const partner = require('../../common/query_login');
 const define = require('../../definition/define');
 const {helper} = require('../../controller/validate');
 const functions = require('../../controller/function');
@@ -131,7 +131,7 @@ router.post('/checkDupinfo', async(req, res) =>{
     if (!info) {
         return res.json({result: -90234});
     }
-    var {dupinfo} = jwt.decode(info);        
+    var {dupinfo} = jwt.decode(info);      
     try{
         result = await partner.checkDupinfoPartner(dupinfo);
         if(result.result !== define.const_SUCCESS){

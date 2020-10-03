@@ -3,11 +3,15 @@ const router = express.Router();
 const { hash } = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const user = require('../../common/query_login');
-const define = require('../../definition/define');
+const path = require('path')
+const version = require('../common/version').version;
+
 const {helper} = require('../../controller/validate');
 const functions = require('../../controller/function');
+const define = require('../../definition/define');
 const {verifyToken} = require('../../middleware/verify');
+
+const user = require(path.join('../..', 'common' + version, 'query_login'));
 
 router.use(express.urlencoded({limit:'50mb', extended: false }));
 router.use(express.json({limit: '50mb'}));
@@ -20,10 +24,7 @@ router.get('/test', verifyToken, (req, res) =>{
 router.post('/Login901', async (req, res) =>{
     var result = {};
     try{
-        var {login_id, push_token} = req.body;
-        if(!push_token){
-            push_token = null;
-        }
+        var {login_id} = req.body;
         if (!login_id || !req.body.login_pwd) {
             return res.json({result: -9211});
         }
@@ -44,11 +45,6 @@ router.post('/Login901', async (req, res) =>{
             return res.json({result: 9214});
         }
         delete req.body.login_pwd;
-        //push_token 업데이트
-        var push = await user.updatePushTokenUser(login_id, push_token);
-        if(push.result !== define.const_SUCCESS){
-            return res.json(push);
-        }
         const token = helper.generateToken(dbResponse.data.user_id);
         result = {
             token: token, 
@@ -118,12 +114,9 @@ router.post('/checkDupinfo', async(req, res) =>{
 
 router.post('/CheckId904', async (req, res) =>{
     var result = {};
-    var {login_id, push_token} = req.body;
+    var {login_id} = req.body;
     try{
-        if(!push_token){
-            push_token = null;
-        }
-        if(!login_id) {
+        if (!login_id) {
             return res.json({result: -9231});
         }
         else if(!helper.isValidId(login_id)){
@@ -144,44 +137,35 @@ router.post('/CheckId904', async (req, res) =>{
 
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
-    var {login_id, info, push_token} = req.body;
+    var {login_id, info} = req.body;
     try{
-        if(!push_token){
-            push_token = null;
+        if(!info){
+            return res.json({result: 9241});
         }
-        if(!login_id || !req.body.login_pwd || !info) {
+        if(!login_id || !req.body.login_pwd) {
             return res.json({result: 9241});
         }
         if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd) ||
             functions.check_StringLength(req.body.login_pwd, 6, 20) === -1){
             return res.json({result: -9241});
         }
-
         //hash password
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
-
-        //jsonwebtoken decode
-        var decode = jwt.decode(info);
-        decode.birthdate = decode.birthdate.toString();
-
-        //dup 중복확인
-        var check = await user.checkDupinfoUser(decode.dupinfo);
-        if(check.result !== define.const_SUCCESS){
-            return res.json({result: -9244});
-        }
+        //jwt decode
+        var user_info = jwt.decode(info);
+        var check = await user.checkDupinfoUser(user_info.dupinfo);
+        //dup 중복
         if(check.result === 92231){
             return res.json({result: 9242});
         }
-
+        else if(check.result !== define.const_SUCCESS){
+            return res.json({result: -9244});
+        }
+        result = await user.postU004IdPassword(login_id, hash_pwd, user_info);
         //새 계정 insert
-        result = await user.postU004IdPassword(login_id, hash_pwd, decode);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
-        }
-        var push = await user.updatePushTokenUser(login_id, push_token);
-        if(push.result !== define.const_SUCCESS){
-            return res.json(push);
         }
         const token = helper.generateToken(result.user_id);
         result.token = token
@@ -199,13 +183,13 @@ router.post('/CheckNick906', async (req, res) =>{
     var result = {};
     var {nick} = req.body;
     try{
-        if(!nick || !user_id){
+        if(!nick){
             return res.json({result: 92612});
         }
         else if(!helper.isValidNickname(nick)){
             return res.json({result: -92615});
         }
-        result = await user.post006NicknameCheck(user_id);
+        result = await user.post006NicknameCheck(nick);
         if(result.result != define.const_SUCCESS){
             return res.json(result);
         }
@@ -328,7 +312,7 @@ router.post('/checkState910', async(req, res) =>{
 
 
 
-
+/*여기서부터 안쓰는 코드
 
 router.post('/postUpdateToken909', async (req, res) =>{
     var result ={};
@@ -336,14 +320,14 @@ router.post('/postUpdateToken909', async (req, res) =>{
     try{
         result = await user.UserUpdateToken008(user_id, token);
         if(result.result != define.const_SUCCESS){
-            return res.json(result);
+            return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 008 - postUserUpdateToken909/' + err);
         result.result = -909;
-        return res.json(result);
+        return res.status(400).json(result);
     }
 });
 
@@ -353,14 +337,14 @@ router.post('/postLogout910', async (req, res) =>{
     try{
         result = await user.UserDeleteToken008(user_id);
         if(result.result != define.const_SUCCESS){
-            return res.json(result);
+            return res.status(400).json(result);
         }
         return res.json(result);
     }
     catch(err){
         console.log('router ERROR: 008 - postUserLogout910/' + err);
         result.result = -910;
-        return res.json(result);
+        return res.status(400).json(result);
     }
 });
 
@@ -380,6 +364,5 @@ router.post('/postShutAccount911', async (req, res) =>{
         return res.status(400).json(result);
     }
 });
-//#endregion
-
+*/
 module.exports = router;

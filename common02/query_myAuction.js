@@ -1,5 +1,5 @@
 const Pool = require('./pool');
-const define = require('../../definition/define');
+const define = require('../definition/define');
 
 const pool = Pool.pool;
 const query = Pool.query;

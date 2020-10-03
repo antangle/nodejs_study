@@ -41,7 +41,7 @@ async function query (queryText, params, errcode) {
   return res;
 }
 
-module.exports= {
+module.exports = {
     pool: pool,
     query: query,
   };
