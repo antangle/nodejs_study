@@ -153,16 +153,17 @@ router.post('/SignIn904', async (req, res) =>{
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
         //jwt decode
-        var user_info = jwt.decode(info);
-        var check = await user.checkDupinfoUser(user_info.dupinfo);
+        var decode = jwt.decode(info);
+        var check = await user.checkDupinfoUser(decode.dupinfo);
         //dup 중복
         if(check.result === 92231){
             return res.json({result: 9242});
         }
         else if(check.result !== define.const_SUCCESS){
-            return res.json({result: -9244});
+            return res.json({result: check.result});
         }
-        result = await user.postU004IdPassword(login_id, hash_pwd, user_info);
+
+        result = await user.postU004IdPassword(login_id, hash_pwd, decode);
         //새 계정 insert
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
