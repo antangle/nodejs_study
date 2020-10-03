@@ -171,11 +171,11 @@ router.post('/SignIn904', async (req, res) =>{
 
         //dup 중복확인
         var check = await user.checkDupinfoUser(decode.dupinfo);
-        if(check.result !== define.const_SUCCESS){
-            return res.json({result: -9244});
-        }
         if(check.result === 92231){
             return res.json({result: 9242});
+        }
+        else if(check.result !== define.const_SUCCESS){
+            return res.json({result: check.result});
         }
 
         //새 계정 insert

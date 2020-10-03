@@ -50,7 +50,7 @@ const checkDupinfoUser = async(dupinfo) => {
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: 1};
+            return {result: define.const_SUCCESS};
         }
         if(rowCount === 1){
             return {result: 92231};    
@@ -417,8 +417,10 @@ const UserShutAccount008 = async(user_id) =>{
     try{
         const querytext = `
             UPDATE users SET
-            state = -1,
-            push_token = NULL
+                state = -1,
+                push_token = NULL,
+                dupinfo = NULL,
+                login_id = NULL
             WHERE id = $1
             `;
         var {rowCount} = await query(querytext, [user_id]);
@@ -561,13 +563,14 @@ const postP004IdPassword = async(login_id, hash_pwd, decode)=>{
             decode.dupinfo
         ];
         var {rows, rowCount, errcode} = await query(querytext, paramArray, -9042);
+        console.log(rows);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount > 1){
             return {result: -9045};
         }
-        else if(rowCount <1){
+        else if(rowCount === 0){
             return {result: -9046};
         }
         result = {result: define.const_SUCCESS, partner_id: rows[0].id};
@@ -1003,8 +1006,10 @@ const PartnerShutAccount911 = async(partner_id) =>{
     try{
         const querytext = `
             UPDATE partner SET
-            state = -1,
-            push_token = NULL
+                state = -1,
+                push_token = NULL,
+                dupinfo = NULL,
+                login_id = NULL
             WHERE id = $1
             `;
         var {rowCount} = await query(querytext, [partner_id]);

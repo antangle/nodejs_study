@@ -176,32 +176,36 @@ router.post('/CheckId904', async (req, res) =>{
 router.post('/SignIn904', async (req, res) =>{
     var result = {};
     var {login_id, info, push_token} = req.body;
-    if(!push_token){
-        push_token = null;
-    }
-    if(!info){
-        return res.json({result: 9041});
-    }
-    if(!login_id || !req.body.login_pwd) {
-        return res.json({result: 9041});
-    }
-    if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd) ||
-        functions.check_StringLength(req.body.login_pwd, 6, 20) === -1){
-        return res.json({result: -9041});
-    }
     try{
+        if(!push_token){
+            push_token = null;
+        }
+        if(!info){
+            return res.json({result: 9041});
+        }
+        if(!login_id || !req.body.login_pwd) {
+            return res.json({result: 9041});
+        }
+        if(!helper.isValidId(login_id)|| !helper.isValidPassword(req.body.login_pwd) ||
+            functions.check_StringLength(req.body.login_pwd, 6, 20) === -1){
+            return res.json({result: -9041});
+        }
         //hash password
         const hash_pwd = helper.hashPassword(req.body.login_pwd);
         delete req.body.login_pwd;
-        //jwt decode
-        var store_info = jwt.decode(info);
 
-        var check = await partner.checkDupinfoPartner(store_info.dupinfo);
-        if(check.result !== define.const_SUCCESS){
+        //jwt decode
+        var decode = jwt.decode(info);
+
+        var check = await partner.checkDupinfoPartner(decode.dupinfo);
+        if(check.result === 90231){
             return res.json({result: 9042});
         }
+        else if(check.result !== define.const_SUCCESS){
+            return res.json({result: check.result});
+        }
 
-        result = await partner.postP004IdPassword(login_id, hash_pwd, store_info);
+        result = await partner.postP004IdPassword(login_id, hash_pwd, decode);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
