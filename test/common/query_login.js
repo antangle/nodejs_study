@@ -55,7 +55,7 @@ const checkDupinfoUser = async(dupinfo) => {
         if(rowCount === 1){
             return {result: 92231};    
         }
-        if(rowcount > 1){
+        if(rowCount > 1){
             return {result: -92234}
         }
         return result;
@@ -483,7 +483,7 @@ const checkDupinfoPartner = async(dupinfo) => {
         if(rowCount === 1){
             return {result: 90231};    
         }
-        if(rowcount > 1){
+        if(rowCount > 1){
             return {result:-90234}
         }
         return result;
