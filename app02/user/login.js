@@ -203,13 +203,13 @@ router.post('/CheckNick906', async (req, res) =>{
     var result = {};
     var {nick} = req.body;
     try{
-        if(!nick || !user_id){
+        if(!nick){
             return res.json({result: 92612});
         }
         else if(!helper.isValidNickname(nick)){
             return res.json({result: -92615});
         }
-        result = await user.post006NicknameCheck(user_id);
+        result = await user.post006NicknameCheck(nick);
         if(result.result != define.const_SUCCESS){
             return res.json(result);
         }
