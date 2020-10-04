@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken');
 const path = require('path')
 const version = require('../common/version').version;
 
-const {helper} = require('../../controller/validate');
-const functions = require('../../controller/function');
 const define = require('../../definition/define');
+const functions = require('../../controller/function');
+const {helper} = require('../../controller/validate');
 const {verifyToken} = require('../../middleware/verify');
 
 const user = require(path.join('../..', 'common' + version, 'query_login'));

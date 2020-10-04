@@ -198,10 +198,11 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             }
 
             var point = functions.set_point(discount_price, now_discount_price);
+
             result = await store.updateStorePoint(store_id, point);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
-            }     
+            }
         }
         else if(info.data.deal_id){
             //갱신 or 정정입찰
@@ -223,6 +224,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 if(result.result !== define.const_SUCCESS){
                     return res.json(result);
                 }
+                curr_deal_id = result.deal_id
+
                 result = await store.updateAfter602DealSendInsert(auction_id, discount_price);
                 if(result.result !== define.const_SUCCESS){
                     return res.json(result);
@@ -246,12 +249,29 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 if(result.result !== define.const_SUCCESS){
                     return res.json(result);
                 }
+                curr_deal_id = result.deal_id
+
                 result = await store.updateAfter602DealSendInsertCancel(auction_id);
                 if(result.result !== define.const_SUCCESS){
                     return res.json(result);
                 }
             }
         }
+
+        var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        var push_token = fcm_response.push_token;
+        
+        var message = await fcm_user.sendMessageToDeviceUser(push_token, define.payload_user, define.option_user);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+
         return res.json(result);
     }
     catch(err){
@@ -674,6 +694,23 @@ router.post('/myPageHelpS402', async(req,res) =>{
         result = await myPage.myPageHelp802(partner_id, type, comment);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
+        }
+
+        //help에서 문의 들어오면 admin 한테 push
+
+        var fcm_response = await fcm_query.getAdminPushTokenStore();
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        var push_token = fcm_response.push_token;
+        
+        var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_store, define.option_admin_store);
+        console.log(message);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
         }
         return res.json(result);
     }

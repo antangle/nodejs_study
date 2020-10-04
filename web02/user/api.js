@@ -11,9 +11,12 @@ const {helper} = require('../../controller/validate');
 const functions = require('../../controller/function');
 const define = require('../../definition/define');
 
-const buy = require(path.join('../..', 'common' + version, 'query_buy'));
 const auction = require(path.join('../..', 'common' + version, 'query_myAuction'));
+const buy = require(path.join('../..', 'common' + version, 'query_buy'));
+const fcm_query = require(path.join('../..', 'common' + version, 'query_fcm'));
 const myPage = require(path.join('../..', 'common' + version, 'query_myPage'));
+
+const fcm_store = require('../../fcm/fcm_store');
 
 router.get('/test', async(req, res)=>{
     try{
@@ -554,6 +557,24 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
+        //notification 해당 deal_id로 관련 partner push_token 모두 가져오기
+        var fcm_response = await fcm_query.getStorePushTokensByDealId(deal_id);
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        
+        //해당 store한테 notification
+        var message = await fcm_store.sendMessageToDeviceStore(fcm_response.push_tokens, define.payload_store, define.options_store);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+        
+        //해당 user한테 notification -- not done
+
         return res.json(result);
     }
     catch(err){
@@ -759,6 +780,23 @@ router.post('/myPageHelp402', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
+        //notification
+        var fcm_response = await fcm_query.getAdminPushTokenStore();
+        if(fcm_response.result !== define.const_SUCCESS){
+            return res.json(fcm_response);
+        }
+        var push_token = fcm_response.push_token;
+        
+        //Admin 에게 문의내용 올라올시 push
+        var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_user, define.option_admin_user);
+        if(message === -1){
+            return res.json(message);
+        }
+        if(message.failureCount > 0){
+            return res.json({result: -1, failureCount: message.failureCount});
+        }
+
         return res.json(result);
     }
     catch(err){

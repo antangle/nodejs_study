@@ -23,20 +23,21 @@ const fcm_store = require('../../fcm/fcm_store');
 
 const { kStringMaxLength } = require('buffer');
 const { stringify } = require('querystring');
+const { Console } = require('console');
 
 router.post('/S101HomepageInfo', async (req, res) =>{
     var result ={};
     try{
         var {store_id} = req.body;
         if(!store_id){
-            return res.json({result: 50111})
+            return res.json({result: 50111});
         }
         var myDeal = await store.get501StoreAuction(store_id);
         var lookaround = await store.get501Search(store_id);
         var review = await store.get501Reviews(store_id);
         result = {
-            myDeal: myDeal.myDeal, 
-            auction: lookaround.auction, 
+            myDeal: myDeal.myDeal,
+            auction: lookaround.auction,
             review: review.review
         };
         if(myDeal.result !== define.const_SUCCESS){
@@ -88,14 +89,17 @@ router.post('/S201CutAuction', async (req, res) =>{
         if(!store_id || !auction_id){
             return res.json({result: 60121});
         }
+
         result = await store.post601CutInsert(store_id, auction_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
         result = await store.post601CutAuctionUpdate(auction_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
         return res.json(result);
     }
     catch(err){
@@ -152,64 +156,29 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
         var {store_id, auction_id, discount_price, cancel} = req.body;
-        var curr_deal_id;
-        if(!store_id || !auction_id || !discount_price){
-            return res.json({result: 60221});
-        }
-        
+
+        var state, curr_deal_id, now_discount_price;
+        state = functions.check_Cancel(cancel);
         discount_price = functions.check_DiscountPrice(discount_price);
-        if(discount_price === -1){
+
+        if(!store_id || !auction_id || discount_price === -1){
             return res.json({result: 60221});
         }
-        if(cancel != 1){
-            cancel = -1;
-        }
-        else{
-            cancel = 1;
-        }
-        
+
         var info = await store.get602NeededInfoForDeal(store_id, auction_id);
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
             return res.json(result);
         }
+
         if(!info.data.deal_id){
             //내 첫입찰
-            var paramArray = [
-                store_id, 
-                auction_id, 
-                discount_price, 
-                info.store_nick
-            ];
-            store_count = 1;
-
-            result = await store.insert602DealSend(paramArray);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
-            curr_deal_id = result.deal_id
-            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
-            result = await store.insert602Party(store_id, auction_id);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
-        }
-        else if(info.data.deal_id){
-            //내 갱신입찰
-            result = await store.updateBefore602DealSend(info.data.deal_id, store_id, cancel);
-            if(result.result !== define.const_SUCCESS){
-                return res.json(result);
-            }
             var paramArray = [
                 store_id,
                 auction_id,
                 discount_price,
                 info.store_nick
             ];
-            store_count = 1;
 
             result = await store.insert602DealSend(paramArray);
             if(result.result !== define.const_SUCCESS){
@@ -217,9 +186,75 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             }
             curr_deal_id = result.deal_id
 
-            result = await store.updateAfter602DealSendInsert(auction_id, discount_price, store_count, cancel);
+            result = await store.updateAfter602DealSendInsert(auction_id, discount_price);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
+            }
+            now_discount_price = result.now_discount_price;
+
+            result = await store.insert602Party(store_id, auction_id);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+
+            var point = functions.set_point(discount_price, now_discount_price);
+
+            result = await store.updateStorePoint(store_id, point);
+            if(result.result !== define.const_SUCCESS){
+                return res.json(result);
+            }
+        }
+        else if(info.data.deal_id){
+            //갱신 or 정정입찰
+            if(state === -1){
+                //갱신입찰
+                result = await store.updateBefore602DealSend(info.data.deal_id, store_id);
+                if(result.result !== define.const_SUCCESS){
+                    return res.json(result);
+                }
+
+                var paramArray = [
+                    store_id,
+                    auction_id,
+                    discount_price,
+                    info.store_nick
+                ];
+
+                result = await store.insert602DealSend(paramArray);
+                if(result.result !== define.const_SUCCESS){
+                    return res.json(result);
+                }
+                curr_deal_id = result.deal_id
+
+                result = await store.updateAfter602DealSendInsert(auction_id, discount_price);
+                if(result.result !== define.const_SUCCESS){
+                    return res.json(result);
+                }
+            }
+            else if(state === 1){
+                //정정입찰
+                result = await store.updateBefore602DealSendCancel(info.data.deal_id, store_id);
+                if(result.result !== define.const_SUCCESS){
+                    return res.json(result);
+                }
+                store_count = result.rowCount;
+                var paramArray = [
+                    store_id,
+                    auction_id,
+                    discount_price,
+                    info.store_nick
+                ];
+
+                result = await store.insert602DealSend(paramArray);
+                if(result.result !== define.const_SUCCESS){
+                    return res.json(result);
+                }
+                curr_deal_id = result.deal_id
+
+                result = await store.updateAfter602DealSendInsertCancel(auction_id);
+                if(result.result !== define.const_SUCCESS){
+                    return res.json(result);
+                }
             }
         }
 
@@ -236,6 +271,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
         if(message.failureCount > 0){
             return res.json({result: -1, failureCount: message.failureCount});
         }
+
         return res.json(result);
     }
     catch(err){
@@ -249,6 +285,7 @@ router.delete('/HandlerDelete', async (req, res) =>{
     var result ={};
     try{
         var {pwd} = req.body;
+
         if(!pwd){
             return res.json({result: 60311});
         }
@@ -541,6 +578,7 @@ router.post('/S301MyOngoingDeal', async (req, res) =>{
     }
 });
 
+
 router.post('/S301CutDeal', async (req, res) =>{
     var result ={};
     try{
@@ -657,8 +695,9 @@ router.post('/myPageHelpS402', async(req,res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        
-        //notification
+
+        //help에서 문의 들어오면 admin 한테 push
+
         var fcm_response = await fcm_query.getAdminPushTokenStore();
         if(fcm_response.result !== define.const_SUCCESS){
             return res.json(fcm_response);
@@ -673,7 +712,6 @@ router.post('/myPageHelpS402', async(req,res) =>{
         if(message.failureCount > 0){
             return res.json({result: -1, failureCount: message.failureCount});
         }
-
         return res.json(result);
     }
     catch(err){
