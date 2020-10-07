@@ -550,6 +550,17 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
+
+        result = await auction.Update208StorePointAfterConfirm(deal_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+
+        result = await auction.Update208PointCheck(deal_id);
+        if(result.result !== define.const_SUCCESS){
+            return res.json(result);
+        }
+    
         return res.json(result);
     }
     catch(err){

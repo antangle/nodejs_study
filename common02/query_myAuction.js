@@ -479,6 +479,68 @@ const Update208DealConfirmation = async(deal_id, user_id)=>{
     }
 }
 
+const Update208StorePointAfterConfirm = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE store SET
+                point = point - 10000
+            FROM (
+                SELECT store_id, point_check
+                FROM deal
+                WHERE deal.id = $1
+            ) temp
+            WHERE store.id = temp.store_id
+                AND temp.point_check IS NULL
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id], -20818);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20819}
+        }
+        else if(rowCount > 1){
+            return {result: -20820}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -20811;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const Update208PointCheck = async(deal_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            UPDATE deal SET
+                point_check = 1
+            WHERE id = $1
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [deal_id], -20821);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: -20822}
+        }
+        else if(rowCount > 1){
+            return {result: -20823}
+        }
+        result = {result: define.const_SUCCESS};
+        return result;
+    }
+    catch(err){
+        result.result = -20811;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
 const get209ConfirmedAuction = async(deal_id, user_id)=>{
     var result = {};
     try{
@@ -816,18 +878,30 @@ module.exports = {
     update201AuctionState,
     get201AuctionInfo,
     post201StateUpdate,
+    
     update202AuctionState,
     get202AuctionInfo,
+    
     get203AuctionDeals,
+    
     get204AuctionDealsFinish,
+    
     get205DealDetail,
+
     Update208DealConfirmation,
+    Update208StorePointAfterConfirm,
+    Update208PointCheck,
+    
     get209ConfirmedAuction,
+    
     insert210Review,
     get210InfoForReview,
     update210StoreAfterReview,
+    
     get211StoreDetails,
+    
     get212AllStoreReviews,
+    
     post213Report,
 };
    
