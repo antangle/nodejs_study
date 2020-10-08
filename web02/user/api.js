@@ -580,10 +580,11 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
             return res.json(message);
         }
         if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
+            return res.json({result: -20831, failureCount: message.failureCount});
         }
         
-        //해당 user한테 notification -- not done
+        //해당 user한테 push token 이 있다면 notification -- not done
+
 
         return res.json(result);
     }

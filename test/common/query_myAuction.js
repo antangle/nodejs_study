@@ -368,7 +368,7 @@ const get205DealDetail = async(deal_id, user_id)=>{
                 deal.contract_list, deal.discount_official, 
                 deal.discount_price,
                 deal.discount_payment, deal.month_price,
-                deal.gift, deal.create_time AS deal_create_time,
+                deal.create_time AS deal_create_time,
                 deal.period, deal.agency,
                 payment.price AS payment_price, payment.alias AS payment_alias, 
                 payment.data AS payment_data, payment.call AS payment_call, 
@@ -485,7 +485,7 @@ const get209ConfirmedAuction = async(deal_id, user_id)=>{
             SELECT deal.id AS deal_id, store.name AS store_name, 
                 device.name AS device_name, deal.agency,
                 deal.discount_price, deal.month_price,
-                deal.gift, payment.alias
+                payment.alias
             FROM deal
             INNER JOIN store
                 ON store.id = deal.store_id
