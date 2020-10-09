@@ -170,6 +170,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             result = {result: info.result}
             return res.json(result);
         }
+        now_discount_price = info.now_discount_price;
 
         if(!info.data.deal_id){
             //내 첫입찰
@@ -190,8 +191,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
             }
-            now_discount_price = result.now_discount_price;
-
+            
             result = await store.insert602Party(store_id, auction_id);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
@@ -237,7 +237,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 if(result.result !== define.const_SUCCESS){
                     return res.json(result);
                 }
-                store_count = result.rowCount;
+
                 var paramArray = [
                     store_id,
                     auction_id,
@@ -258,20 +258,39 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             }
         }
 
-        var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
-        if(fcm_response.result !== define.const_SUCCESS){
-            return res.json(fcm_response);
-        }
-        var push_token = fcm_response.push_token;
-        
-        var message = await fcm_user.sendMessageToDeviceUser(push_token, define.payload_user, define.option_user);
-        if(message === -1){
-            return res.json(message);
-        }
-        if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
-        }
+        if(now_discount_price < discount_price){
+            //user 에게 notification
+            var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
+            if(fcm_response.result !== define.const_SUCCESS){
+                return res.json({result: 60225});
+            }
 
+            var push_token_user = fcm_response.push_token;
+
+            var message_user = await fcm_user.sendMessageToDeviceUser(push_token_user, define.payload_user_higherAuction, define.option_user);
+            if(message_user === -1){
+                return res.json({result: -60251});
+            }
+
+            //해당 auction에 제시한 store 에게 모두 notification, 자기자신 제외
+            var fcm_response = await fcm_query.getAllStorePushTokensByAuctionId(store_id, auction_id);
+            if(fcm_response.result !== define.const_SUCCESS){
+                return res.json({result: 60225});
+            }
+            var push_token_store = fcm_response.push_token;
+
+            var message_store = await fcm_store.sendMessageToDeviceStore(push_token_store, define.payload_store_higherAuction, define.option_user);
+            if(message_store === -1){
+                return res.json({result: -60252});
+            }
+            if(message_user.failureCount > 0){
+                return res.json({result: -60253});
+            }
+            if(message_store.failureCount > 0){
+                return res.json({result: -60254});
+            }
+        }
+        result.result = define.const_SUCCESS;
         return res.json(result);
     }
     catch(err){
@@ -700,17 +719,16 @@ router.post('/myPageHelpS402', async(req,res) =>{
 
         var fcm_response = await fcm_query.getAdminPushTokenStore();
         if(fcm_response.result !== define.const_SUCCESS){
-            return res.json(fcm_response);
+            return res.json({result: 8022});
         }
         var push_token = fcm_response.push_token;
         
         var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_store, define.option_admin_store);
-        console.log(message);
         if(message === -1){
-            return res.json(message);
+            return res.json({result: -80211});
         }
         if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
+            return res.json({result: -80212});
         }
         return res.json(result);
     }

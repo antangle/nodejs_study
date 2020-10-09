@@ -193,7 +193,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             result = await store.updateStorePoint(store_id, point);
             if(result.result !== define.const_SUCCESS){
                 return res.json(result);
-            }     
+            }
         }
         else if(info.data.deal_id){
             //갱신 or 정정입찰

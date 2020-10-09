@@ -23,13 +23,14 @@ const getPushTokenByDealId = async(deal_id)=>{
             INNER JOIN deal
                 ON deal.id = $1
             WHERE users.id = deal.user_id
+                AND users.push_token IS NOT NULL
         `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id], -90002);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -90003};
+            return {result: 90001};
         }
         result = {result: define.const_SUCCESS, push_token: rows[0].push_token};
         return result;
@@ -48,13 +49,14 @@ const getPushTokenByUserId = async(user_id)=>{
             SELECT push_token
             FROM users
             WHERE id = $1
+                AND push_token IS NOT NULL
         `;
         var {rows, rowCount, errcode} = await query(querytext, [user_id], -90004);
         if(errcode){
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -90005};
+            return {result: 90001};
         }
         else if(rowCount > 1){
             return {result: -90006};
@@ -88,18 +90,51 @@ const getAdminPushTokenStore = async()=>{
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -90009};
+            return {result: 90001};
         }
         var push_token = [];
         for(var i=0; i<rows.length; ++i){
             push_token.push(rows[i].push_token);
         }
-        console.log(push_token);
         result = {result: define.const_SUCCESS, push_token: push_token};
         return result;
     }
     catch(err){
         result.result = -90010;
+        console.log(`ERROR: ${result.result}/` + err);
+        return result;
+    }
+};
+
+const getAllStorePushTokensByAuctionId = async(store_id, auction_id)=>{
+    var result = {};
+    try{
+        const querytext = `
+            SELECT partner.push_token
+            FROM partner
+            INNER JOIN deal
+                ON deal.auction_id = $2
+                AND deal.store_id != $1
+                AND deal.state = 1
+            WHERE partner.store_id = deal.store_id
+                AND partner.push_token IS NOT NULL
+        `;
+        var {rows, rowCount, errcode} = await query(querytext, [store_id, auction_id], -90011);
+        if(errcode){
+            return {result: errcode};
+        }
+        if(rowCount === 0){
+            return {result: 90001};
+        }
+        var push_tokens = [];
+        for(var i=0; i<rows.length; ++i){
+            push_tokens.push(rows[i].push_token);
+        }
+        result = {result: define.const_SUCCESS, push_token: push_tokens};
+        return result;
+    }
+    catch(err){
+        result.result = -90013;
         console.log(`ERROR: ${result.result}/` + err);
         return result;
     }
@@ -121,13 +156,13 @@ const getStorePushTokensByDealId = async(deal_id)=>{
             return {result: errcode};
         }
         if(rowCount === 0){
-            return {result: -90012};
+            return {result: 90001};
         }
         var push_tokens = [];
         for(var i=0; i<rows.length; ++i){
             push_tokens.push(rows[i].push_token);
         }
-        result = {result: define.const_SUCCESS, push_tokens: push_tokens};
+        result = {result: define.const_SUCCESS, push_token: push_tokens};
         return result;
     }
     catch(err){
@@ -144,4 +179,5 @@ module.exports ={
     //store
     getAdminPushTokenStore,
     getStorePushTokensByDealId,
+    getAllStorePushTokensByAuctionId,
 }

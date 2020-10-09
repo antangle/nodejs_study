@@ -9,10 +9,24 @@ const payload_user = {
     }
 }
 
+const payload_user_higherAuction = {
+    notification: {
+        title: "경매 갱신",
+        body: "더 높은 할인 금액을 제시한 입찰이 들어왔어요. 지금 확인해보세요."
+    }
+}
+
 const payload_store = {
     notification: {
         title: "경매 낙찰",
-        body: "내가 제시한 딜이 낙찰되었어요! 내 입찰>지난 입찰에서 확인하세요~"
+        body: "축하합니다~ 사장님께서 제시한 경매가 낙찰되었어요!"
+    }
+}
+
+const payload_store_higherAuction = {
+    notification: {
+        title: "경매 갱신",
+        body: "경쟁자가 나타났어요! 현재 경매가보다 더 좋은 조건을 제시하세요!"
     }
 }
 
@@ -31,15 +45,15 @@ const payload_admin_store = {
 }
 
 const option_user = {
-    dryRun: true
+    dryRun: false
 }
 
 const options_store = {
-    dryRun: true
+    dryRun: false
 }
 
 const option_admin = {
-    dryRun: true
+    dryRun: false
 }
 
 
@@ -52,6 +66,9 @@ module.exports = {
     payload_user,
     payload_store,
     
+    payload_user_higherAuction,
+    payload_store_higherAuction,
+
     payload_admin_user,
     payload_admin_store,
     

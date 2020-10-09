@@ -325,9 +325,11 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
     var result = {};
     try{
         const querytext = `
-        SELECT store.region, store_nick.nick,
+        SELECT 
+            store.region, store_nick.nick,
             auction.now_discount_price, auction.now_order,
-            deal.id AS deal_id, deal.deal_order, deal.store_nick
+            deal.id AS deal_id, deal.deal_order, 
+            deal.store_nick
         FROM store
         INNER JOIN auction
             ON auction.id = $2
@@ -355,17 +357,19 @@ const get602NeededInfoForDeal = async(store_id, auction_id)=>{
             result = {
                 store_nick: tempNick, 
                 data: rows[0],
+                now_discount_price: rows[0].now_discount_price,
                 result: define.const_SUCCESS
             };
         }
         else if(rows[0].store_nick){
             result = {
-                store_nick: rows[0].store_nick, 
+                store_nick: rows[0].store_nick,
+                now_discount_price: rows[0].now_discount_price,
                 data: rows[0],
                 result: define.const_SUCCESS
             };
         }
-            return result;
+        return result;
     }
     catch(err){
         result.result = -60221;
@@ -421,7 +425,6 @@ const updateBefore602DealSendCancel = async(deal_id, store_id)=>{
                 AND state NOT IN (2, -2)
             `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id, store_id], -602250);
-        console.log(rowCount)
         if(errcode){
             return {result: errcode};
         } 
@@ -521,7 +524,6 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price) => {
             now_order = now_order +1,
             store_count = store_count + 1
             WHERE id = $1
-            RETURNING now_discount_price
         `;
         /*var paramArray = [
             store_id,
@@ -539,7 +541,7 @@ const updateAfter602DealSendInsert = async(auction_id, discount_price) => {
         else if(rowCount > 1){
             return {result: -60233};
         }
-        result = {result: define.const_SUCCESS, now_discount_price: rows[0].now_discount_price};
+        result = {result: define.const_SUCCESS};
         return result;
     }
     catch(err){

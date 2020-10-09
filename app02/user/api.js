@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const path = require('path')
+const path = require('path');
 const version = require('../common/version').version;
 
 router.use(express.json({limit: '50mb'}));
@@ -24,17 +24,17 @@ router.get('/test', async(req, res)=>{
         var result = {}
         var array = [];
         /*
-        for(var device_id=1; device_id<54; ++device_id){
-            result = await buy.test(device_id);
-            if(!result.errDevice){
-                for(var i=0; i<result.rowCount; ++i){
-                    if(result.rows[i].discount_official === null){
-                        array.push(result.rows[i].device_id)
-                        break;
+            for(var device_id=1; device_id<54; ++device_id){
+                result = await buy.test(device_id);
+                if(!result.errDevice){
+                    for(var i=0; i<result.rowCount; ++i){
+                        if(result.rows[i].discount_official === null){
+                            array.push(result.rows[i].device_id)
+                            break;
+                        }
                     }
                 }
             }
-        }
         */
         result = await buy.test(device_id);
         return res.json(result);
@@ -45,13 +45,13 @@ router.get('/test', async(req, res)=>{
         return res.json(result);
     }
 });
-  
+
 router.get('/getHomepageDevice', async (req, res) =>{
     var result ={};
     try{
         result = await buy.get100LatestDeviceHomepage(); 
         if(result.result !== define.const_SUCCESS){
-            return res.json(result)
+            return res.json(result);
         }
         return res.json(result);
     }
@@ -553,6 +553,7 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         if(!deal_id || !user_id){
             return res.json({result: 20811});
         }
+
         result = await auction.Update208DealConfirmation(deal_id, user_id);
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
@@ -567,24 +568,22 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
         if(result.result !== define.const_SUCCESS){
             return res.json(result);
         }
-        
+
         //notification 해당 deal_id로 관련 partner push_token 모두 가져오기
         var fcm_response = await fcm_query.getStorePushTokensByDealId(deal_id);
         if(fcm_response.result !== define.const_SUCCESS){
             return res.json(fcm_response);
         }
-        
+
         //해당 store한테 notification
-        var message = await fcm_store.sendMessageToDeviceStore(fcm_response.push_tokens, define.payload_store, define.options_store);
+        var message = await fcm_store.sendMessageToDeviceStore(fcm_response.push_token, define.payload_store, define.options_store);
         if(message === -1){
-            return res.json(message);
+            return res.json({result: 20812});
         }
         if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
+            return res.json({result: -20831});
         }
         
-        //해당 user한테 notification -- not done
-
         return res.json(result);
     }
     catch(err){
@@ -801,10 +800,10 @@ router.post('/myPageHelp402', async(req,res) =>{
         //Admin 에게 문의내용 올라올시 push
         var message = await fcm_store.sendMessageToDeviceStore(push_token, define.payload_admin_user, define.option_admin_user);
         if(message === -1){
-            return res.json(message);
+            return res.json({result: 4022});
         }
         if(message.failureCount > 0){
-            return res.json({result: -1, failureCount: message.failureCount});
+            return res.json({result: -40211});
         }
 
         return res.json(result);
