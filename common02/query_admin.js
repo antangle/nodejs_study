@@ -10,7 +10,7 @@ pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);  
 });
 
-const path = require('path')
+const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config({path: path.join(__dirname, '../.env')});
 

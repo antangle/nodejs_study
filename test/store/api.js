@@ -142,10 +142,15 @@ router.post('/S202AuctionInfo', async (req, res) =>{
 router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
-        var {store_id, auction_id, discount_price, cancel} = req.body;
+        var {store_id, auction_id, discount_price, cancel, comment} = req.body;
         if(!store_id || !auction_id || !discount_price){
             return res.json({result: 60221});
-        }
+        };
+
+        if(!comment){
+            comment = null;
+        };
+        
         var curr_deal_id, now_discount_price;
         discount_price = functions.check_DiscountPrice(discount_price);
         if(discount_price === -1){
@@ -169,7 +174,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 store_id,
                 auction_id,
                 discount_price,
-                info.store_nick
+                info.store_nick,
+                comment
             ];
             store_count = 1;
 
