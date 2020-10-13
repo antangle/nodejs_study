@@ -165,6 +165,10 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             return res.json({result: 60221});
         }
 
+        if(!comment){
+            comment = null;
+        };
+        
         var info = await store.get602NeededInfoForDeal(store_id, auction_id);
         if(info.result !== define.const_SUCCESS){
             result = {result: info.result}
