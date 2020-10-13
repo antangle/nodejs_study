@@ -155,7 +155,7 @@ router.post('/S202AuctionInfo', async (req, res) =>{
 router.post('/S202AuctionDealSend', async (req,res) =>{
     var result ={};
     try{
-        var {store_id, auction_id, discount_price, cancel} = req.body;
+        var {store_id, auction_id, discount_price, cancel, comment} = req.body;
 
         var state, curr_deal_id, now_discount_price;
         state = functions.check_Cancel(cancel);
@@ -177,7 +177,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 store_id,
                 auction_id,
                 discount_price,
-                info.store_nick
+                info.store_nick,
+                comment
             ];
 
             result = await store.insert602DealSend(paramArray);
@@ -217,7 +218,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                     store_id,
                     auction_id,
                     discount_price,
-                    info.store_nick
+                    info.store_nick,
+                    comment
                 ];
 
                 result = await store.insert602DealSend(paramArray);
@@ -242,7 +244,8 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                     store_id,
                     auction_id,
                     discount_price,
-                    info.store_nick
+                    info.store_nick,
+                    comment
                 ];
 
                 result = await store.insert602DealSend(paramArray);

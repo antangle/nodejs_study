@@ -455,7 +455,7 @@ const insert602DealSend = async(paramArray) => {
             discount_payment, period,
             create_time, deal_order,
             state, store_nick,
-            condition
+            condition, comment
         )
         SELECT $1, $2,
             auction.user_id, auction.device_detail_id,
@@ -465,7 +465,7 @@ const insert602DealSend = async(paramArray) => {
             payment.price*6, auction.period,
             current_timestamp, auction.now_order +1,
             1, $4,
-            auction.condition
+            auction.condition, $5
         FROM auction
         INNER JOIN payment
             ON payment.id = auction.payment_id
