@@ -296,12 +296,6 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             if(message_store === -1){
                 return res.json({result: -60252});
             }
-            if(message_user.failureCount > 0){
-                return res.json({result: -60253});
-            }
-            if(message_store.failureCount > 0){
-                return res.json({result: -60254});
-            }
         }
         result.result = define.const_SUCCESS;
         return res.json(result);
