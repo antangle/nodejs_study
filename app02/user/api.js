@@ -795,7 +795,10 @@ router.post('/myPageHelp402', async(req,res) =>{
 
         //notification
         var fcm_response = await fcm_query.getAdminPushTokenStore();
-        if(fcm_response.result !== define.const_SUCCESS){
+        if(fcm_response.result === 90001){
+            return res.json({result: define.const_SUCCESS});
+        }
+        else if(fcm_response.result !== define.const_SUCCESS){
             return res.json(fcm_response);
         }
         var push_token = fcm_response.push_token;

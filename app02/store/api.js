@@ -725,7 +725,10 @@ router.post('/myPageHelpS402', async(req,res) =>{
         //help에서 문의 들어오면 admin 한테 push
 
         var fcm_response = await fcm_query.getAdminPushTokenStore();
-        if(fcm_response.result !== define.const_SUCCESS){
+        if(fcm_response.result === 90001){
+            return res.json({result: define.const_SUCCESS});
+        }
+        else if(fcm_response.result !== define.const_SUCCESS){
             return res.json({result: 8022});
         }
         var push_token = fcm_response.push_token;
