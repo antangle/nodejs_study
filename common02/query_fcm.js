@@ -23,7 +23,6 @@ const getPushTokenByDealId = async(deal_id)=>{
             INNER JOIN deal
                 ON deal.id = $1
             WHERE users.id = deal.user_id
-                AND users.push_token IS NOT NULL
         `;
         var {rows, rowCount, errcode} = await query(querytext, [deal_id], -90002);
         if(errcode){
