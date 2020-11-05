@@ -267,9 +267,11 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
 
         if(now_discount_price < discount_price){
             //user 에게 notification
-            console.log(curr_deal_id);
             var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
-            if(fcm_response.result !== define.const_SUCCESS){
+            if(fcm_response.result === 90001){
+                return res.json({result: define.const_SUCCESS});
+            }
+            else if(fcm_response.result !== define.const_SUCCESS){
                 return res.json({result: 60225});
             }
 
@@ -283,7 +285,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             //해당 auction에 제시한 store 에게 모두 notification, 자기자신 제외
             var fcm_response = await fcm_query.getAllStorePushTokensByAuctionId(store_id, auction_id);
             if(fcm_response.result === 90001){
-                return res.json({result: 1});
+                return res.json({result: define.const_SUCCESS});
             }
             else if(fcm_response.result !== define.const_SUCCESS){
                 return res.json({result: 60226});
