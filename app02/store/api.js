@@ -215,6 +215,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
                 //갱신입찰
                 result = await store.updateBefore602DealSend(info.data.deal_id, store_id);
                 if(result.result !== define.const_SUCCESS){
+                    console.log('here1');
                     return res.json(result);
                 }
 
@@ -269,7 +270,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
             //user 에게 notification
             var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
             if(fcm_response.result !== define.const_SUCCESS){
-                console.log('here');
+                console.log('here2');
                 console.log(fcm_response);
                 return res.json({result: 60225});
             }
