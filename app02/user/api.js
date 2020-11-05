@@ -571,7 +571,10 @@ router.patch('/patch208ConfirmPopup', async (req, res) =>{
 
         //notification 해당 deal_id로 관련 partner push_token 모두 가져오기
         var fcm_response = await fcm_query.getStorePushTokensByDealId(deal_id);
-        if(fcm_response.result !== define.const_SUCCESS){
+        if(fcm_response.result === 90001){
+            return res.json({result: define.const_SUCCESS});
+        }
+        else if(fcm_response.result !== define.const_SUCCESS){
             return res.json(fcm_response);
         }
 
