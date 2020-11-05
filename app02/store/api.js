@@ -267,6 +267,7 @@ router.post('/S202AuctionDealSend', async (req,res) =>{
 
         if(now_discount_price < discount_price){
             //user 에게 notification
+            console.log(curr_deal_id);
             var fcm_response = await fcm_query.getPushTokenByDealId(curr_deal_id);
             if(fcm_response.result !== define.const_SUCCESS){
                 console.log('here2');
